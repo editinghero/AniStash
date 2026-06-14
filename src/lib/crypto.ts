@@ -102,28 +102,12 @@ export async function decryptApiKey(encrypted: string, secretKey: string): Promi
   const iv = fromBase64(ivBase64);
   const ciphertext = fromBase64(ciphertextBase64);
 
-  const candidateKeys = [
-    secretKey,
-    "fallback-encryption-key-for-local-dev-123",
-    "my-secdsfsdfsdfsgfhdgfure-32-bdcvfyte-local-encryption-key-123456",
-  ];
-
-  let lastError: any = null;
-  for (const keyStr of candidateKeys) {
-    if (!keyStr) continue;
-    try {
-      const cryptoKey = await getCryptoKey(keyStr);
-      const decrypted = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv },
-        cryptoKey,
-        ciphertext
-      );
-      const decoder = new TextDecoder();
-      return decoder.decode(decrypted);
-    } catch (err) {
-      lastError = err;
-    }
-  }
-
-  throw lastError || new Error("Decryption failed");
+  const key = await getCryptoKey(secretKey);
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv },
+    key,
+    ciphertext
+  );
+  const decoder = new TextDecoder();
+  return decoder.decode(decrypted);
 }
