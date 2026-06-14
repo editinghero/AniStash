@@ -75,7 +75,7 @@ export default function SignupPage() {
     <main className="mx-auto max-w-md px-4 py-20">
       <div className="space-y-6 rounded-3xl bg-gradient-card p-8 ring-1 ring-border/60 shadow-card">
         <header className="text-center space-y-2">
-          <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-gradient-accent shadow-glow font-display text-xl font-bold text-primary-foreground">
+          <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-gradient-accent shadow-glow font-display text-xl font-bold text-white">
             鬼
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight">
