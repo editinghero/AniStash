@@ -154,7 +154,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 bg-gradient-accent text-primary-foreground hover:opacity-95"
+              className="w-full mt-2 bg-gradient-accent text-white hover:opacity-95"
             >
               {loading ? (
                 <>
