@@ -2,6 +2,10 @@
 
 A modern, privacy-focused anime and manga tracking application built on Cloudflare's edge platform. Track your watchlist, reading list, and discover new series with AI-powered bookmark import.
 
+Live Site - https://anistash.pages.dev
+
+`Maybe disabled registration if DB is abused `
+
 ##  Features
 
 - **Smart Bookmark Import** - Paste any anime/manga URL and let AI identify and add it to your library
