@@ -1,11 +1,29 @@
+let localDb: any = null;
+
 export async function getDB() {
   if (typeof window !== "undefined") {
     throw new Error("getDB() cannot be called on the client");
   }
 
+  if (localDb) return localDb as D1Database;
+
   // If DB binding is directly available in process.env (e.g. mocked or local sqlite proxy)
   if (typeof process !== "undefined" && process.env && (process.env as any).DB) {
     return (process.env as any).DB as D1Database;
+  }
+
+  // Local development via getPlatformProxy (No wrangler dev needed)
+  if (typeof process !== "undefined" && process.env && process.env.NODE_ENV === "development") {
+    try {
+      const { getPlatformProxy } = await import(/* @vite-ignore */ "wrangler");
+      const proxy = await getPlatformProxy();
+      if (proxy.env.DB) {
+        localDb = proxy.env.DB;
+        return localDb as D1Database;
+      }
+    } catch (err) {
+      console.warn("Could not get DB from getPlatformProxy:", err);
+    }
   }
 
   try {

@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "dev:wrangler": "wrangler pages dev --compatibility-date=2024-11-01 --d1=DB=anistash --port=8788 -- npm run dev",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
@@ -67,6 +66,8 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.40.2",
+    "@cloudflare/workers-types": "^4.20260613.1",
     "@eslint/js": "^9.32.0",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
@@ -82,6 +83,8 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1"
+    "vinxi": "^0.5.11",
+    "vite": "^7.3.1",
+    "wrangler": "^4.100.0"
   }
 }

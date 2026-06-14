@@ -9,11 +9,14 @@ export default defineConfig({
     tsConfigPaths(),
     tailwindcss(),
     tanstackStart({
-      server: { 
-        entry: "src/server.ts",
-        preset: "cloudflare-pages"
-      },
+      server: { entry: "src/server.ts" },
     }),
     react(),
   ],
+  optimizeDeps: {
+    exclude: ["wrangler"],
+  },
+  build: {
+    target: "esnext",
+  },
 });
