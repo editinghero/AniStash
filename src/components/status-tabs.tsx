@@ -26,7 +26,7 @@ export function StatusTabs({ type, value, counts, onChange }: Props) {
             className={cn(
               "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               active
-                ? "bg-gradient-accent text-primary-foreground shadow-card"
+                ? "bg-gradient-accent text-white shadow-card"
                 : "text-muted-foreground hover:text-foreground hover:bg-surface",
             )}
           >

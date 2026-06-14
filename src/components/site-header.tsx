@@ -39,7 +39,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4">
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-accent shadow-glow font-display text-lg font-bold text-primary-foreground transition-transform group-hover:rotate-3">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-accent shadow-glow font-display text-lg font-bold text-white transition-transform group-hover:rotate-3">
             鬼
           </span>
           <span className="font-display text-xl font-semibold tracking-tight">
@@ -91,7 +91,7 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/add"
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-3 sm:px-4 py-2 text-sm font-semibold text-primary-foreground shadow-card hover:opacity-95 transition-opacity"
+            className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-3 sm:px-4 py-2 text-sm font-semibold text-white shadow-card hover:opacity-95 transition-opacity"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Add from URL</span>

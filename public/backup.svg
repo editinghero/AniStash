@@ -1,0 +1,26 @@
+<svg width="150" height="36" viewBox="0 0 150 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circle Icon -->
+  <circle cx="18" cy="18" r="18" fill="url(#circle-gradient)" />
+  <text x="18" y="24.5" fill="white" font-family="'Space Grotesk', 'Inter', sans-serif" font-weight="600" font-size="18" text-anchor="middle">鬼</text>
+  
+  <!-- Logo Text with Reduced Spacing and Semibold Font -->
+  <!-- "Ani" in White -->
+  <text x="46" y="25" fill="white" font-family="'Space Grotesk', 'Inter', sans-serif" font-weight="600" font-size="20" letter-spacing="-0.02em">Ani</text>
+  
+  <!-- "Stash" in Accent Gradient -->
+  <text x="80" y="25" fill="url(#text-gradient)" font-family="'Space Grotesk', 'Inter', sans-serif" font-weight="600" font-size="20" letter-spacing="-0.02em">Stash</text>
+  
+  <defs>
+    <!-- Circle Gradient (Diagonal) -->
+    <linearGradient id="circle-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff604b" />
+      <stop offset="100%" stop-color="#ff4ebb" />
+    </linearGradient>
+    
+    <!-- Text Gradient (Horizontal) -->
+    <linearGradient id="text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff604b" />
+      <stop offset="100%" stop-color="#ff4ebb" />
+    </linearGradient>
+  </defs>
+</svg>

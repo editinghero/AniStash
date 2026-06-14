@@ -36,7 +36,7 @@ export default function Home() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to="/add"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-accent px-5 py-3 text-sm font-semibold text-primary-foreground shadow-glow"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-accent px-5 py-3 text-sm font-semibold text-white shadow-glow"
             >
               <Link2 className="h-4 w-4" />
               Paste a bookmark

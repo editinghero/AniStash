@@ -212,7 +212,7 @@ export default function AddPage() {
                   className={cn(
                     "inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                     type === v
-                      ? "bg-gradient-accent text-primary-foreground"
+                      ? "bg-gradient-accent text-white"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
@@ -230,7 +230,7 @@ export default function AddPage() {
                   required
                   value={seriesTitle}
                   onChange={(e) => setSeriesTitle(e.target.value)}
-                  placeholder="The Bear, Severance, your indie web show…"
+                  placeholder="Bocchi the Rock!, Chainsaw Man…"
                   className="w-full rounded-lg bg-surface px-3 py-2.5 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </Field>

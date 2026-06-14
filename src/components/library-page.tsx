@@ -57,7 +57,7 @@ export function LibraryPage({
         </div>
         <Link
           to="/add"
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-card self-start"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-4 py-2.5 text-sm font-semibold text-white shadow-card self-start"
         >
           <Plus className="h-4 w-4" /> Add from URL
         </Link>
@@ -85,7 +85,7 @@ export function LibraryPage({
           {entries.length === 0 && (
             <Link
               to="/add"
-              className="mt-5 inline-flex rounded-lg bg-gradient-accent px-4 py-2 text-sm font-semibold text-primary-foreground"
+              className="mt-5 inline-flex rounded-lg bg-gradient-accent px-4 py-2 text-sm font-semibold text-white"
             >
               Add your first
             </Link>

@@ -105,13 +105,13 @@ export default function SettingsPage() {
             className="mt-2 bg-surface font-mono text-sm"
           />
           <p className="mt-1.5 text-[11px] text-muted-foreground">
-            e.g. <code>gemini-2.5-flash</code>, <code>gemini-2.5-pro</code>, <code>gemini-2.0-flash</code>.
+            e.g. <code>gemini-2.5-flash</code>, <code>gemini-3.5-flash</code>, <code>gemma-4-31b-it</code>.
           </p>
         </div>
 
         <Button
           type="submit"
-          className="w-full bg-gradient-accent text-primary-foreground hover:opacity-95"
+          className="w-full bg-gradient-accent text-white hover:opacity-95"
         >
           Save
         </Button>
