@@ -1,0 +1,25 @@
+{
+  "name": "AniStash — Anime & Manga Tracker",
+  "short_name": "AniStash",
+  "description": "Stash every anime, manga, and series worth remembering.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#181225",
+  "theme_color": "#181225",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

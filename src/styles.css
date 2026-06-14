@@ -1,0 +1,202 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Otaku — anime/manga tracker design system.
+ * Dark "midnight ink" base with coral accent + cyan secondary.
+ * All colors are oklch tokens — never hardcode in components.
+ */
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+
+  --color-status-watching: var(--status-watching);
+  --color-status-completed: var(--status-completed);
+  --color-status-planning: var(--status-planning);
+  --color-status-hold: var(--status-hold);
+  --color-status-dropped: var(--status-dropped);
+
+  --gradient-hero: var(--gradient-hero);
+  --gradient-accent: var(--gradient-accent);
+  --gradient-card: var(--gradient-card);
+
+  --shadow-glow: var(--shadow-glow);
+  --shadow-card: var(--shadow-card);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Midnight ink base */
+  --background: oklch(0.18 0.025 270);
+  --foreground: oklch(0.97 0.01 270);
+  --surface: oklch(0.22 0.03 270);
+  --surface-elevated: oklch(0.26 0.035 270);
+
+  --card: oklch(0.22 0.03 270);
+  --card-foreground: oklch(0.97 0.01 270);
+  --popover: oklch(0.24 0.032 270);
+  --popover-foreground: oklch(0.97 0.01 270);
+
+  /* Coral primary */
+  --primary: oklch(0.72 0.19 18);
+  --primary-foreground: oklch(0.16 0.02 270);
+
+  /* Cyan secondary */
+  --secondary: oklch(0.78 0.13 200);
+  --secondary-foreground: oklch(0.16 0.02 270);
+
+  --muted: oklch(0.28 0.025 270);
+  --muted-foreground: oklch(0.72 0.02 270);
+
+  --accent: oklch(0.7 0.18 330);
+  --accent-foreground: oklch(0.16 0.02 270);
+
+  --destructive: oklch(0.65 0.23 25);
+  --destructive-foreground: oklch(0.97 0.01 270);
+
+  --border: oklch(0.32 0.03 270);
+  --input: oklch(0.28 0.03 270);
+  --ring: oklch(0.72 0.19 18);
+
+  /* List status colors */
+  --status-watching: oklch(0.78 0.13 200);
+  --status-completed: oklch(0.74 0.18 145);
+  --status-planning: oklch(0.78 0.14 85);
+  --status-hold: oklch(0.7 0.15 60);
+  --status-dropped: oklch(0.65 0.2 25);
+
+  /* Gradients */
+  --gradient-hero: radial-gradient(
+      120% 80% at 10% 0%,
+      oklch(0.72 0.19 18 / 0.25) 0%,
+      transparent 55%
+    ),
+    radial-gradient(100% 70% at 90% 10%, oklch(0.7 0.18 330 / 0.22) 0%, transparent 60%),
+    linear-gradient(180deg, oklch(0.2 0.03 270) 0%, oklch(0.16 0.02 270) 100%);
+  --gradient-accent: linear-gradient(
+    135deg,
+    oklch(0.72 0.19 18) 0%,
+    oklch(0.7 0.18 330) 100%
+  );
+  --gradient-card: linear-gradient(
+    180deg,
+    oklch(0.25 0.035 270) 0%,
+    oklch(0.21 0.028 270) 100%
+  );
+
+  --shadow-glow: 0 0 0 1px oklch(0.72 0.19 18 / 0.4),
+    0 18px 50px -12px oklch(0.72 0.19 18 / 0.45);
+  --shadow-card: 0 8px 24px -12px oklch(0 0 0 / 0.55),
+    0 2px 6px -2px oklch(0 0 0 / 0.4);
+}
+
+.dark {
+  /* Single dark theme — keep parity for shadcn dark variant */
+  --background: oklch(0.18 0.025 270);
+  --foreground: oklch(0.97 0.01 270);
+  --card: oklch(0.22 0.03 270);
+  --card-foreground: oklch(0.97 0.01 270);
+  --popover: oklch(0.24 0.032 270);
+  --popover-foreground: oklch(0.97 0.01 270);
+  --primary: oklch(0.72 0.19 18);
+  --primary-foreground: oklch(0.16 0.02 270);
+  --secondary: oklch(0.78 0.13 200);
+  --secondary-foreground: oklch(0.16 0.02 270);
+  --muted: oklch(0.28 0.025 270);
+  --muted-foreground: oklch(0.72 0.02 270);
+  --accent: oklch(0.7 0.18 330);
+  --accent-foreground: oklch(0.16 0.02 270);
+  --destructive: oklch(0.65 0.23 25);
+  --destructive-foreground: oklch(0.97 0.01 270);
+  --border: oklch(0.32 0.03 270);
+  --input: oklch(0.28 0.03 270);
+  --ring: oklch(0.72 0.19 18);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .bg-hero {
+    background: var(--gradient-hero);
+  }
+  .bg-gradient-accent {
+    background: var(--gradient-accent);
+  }
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
