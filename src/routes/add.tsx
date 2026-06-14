@@ -78,10 +78,8 @@ export default function AddPage() {
       setLoading("parse");
       try {
         const res = await parseBookmark({
-          data: {
-            url: inputVal,
-            hintType: type as "ANIME" | "MANGA",
-          },
+          url: inputVal,
+          hintType: type as "ANIME" | "MANGA",
         });
         setType(res.type);
         setEditedTitle(res.title);

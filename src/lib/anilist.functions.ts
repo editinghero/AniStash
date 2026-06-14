@@ -21,8 +21,14 @@ export async function parseBookmark(data: { url: string; hintType?: "ANIME" | "M
   if (!res.ok) {
     let errorMsg = "Failed to parse bookmark";
     if (contentType.includes("application/json")) {
-      const json = await res.json();
-      errorMsg = (json as any).error || errorMsg;
+      const json = (await res.json()) as any;
+      if (typeof json.error === "string") {
+        errorMsg = json.error;
+      } else if (json.error && typeof json.error === "object") {
+        errorMsg = json.error.message || json.error.issues?.[0]?.message || JSON.stringify(json.error);
+      } else if (json.message) {
+        errorMsg = json.message;
+      }
     } else {
       const text = await res.text();
       errorMsg = text || errorMsg;

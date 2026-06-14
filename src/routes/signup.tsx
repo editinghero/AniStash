@@ -44,8 +44,14 @@ export default function SignupPage() {
       if (!res.ok) {
         let errorMsg = "Failed to register account";
         if (contentType.includes("application/json")) {
-          const data = await res.json();
-          errorMsg = data.error || errorMsg;
+          const data = (await res.json()) as any;
+          if (typeof data.error === "string") {
+            errorMsg = data.error;
+          } else if (data.error && typeof data.error === "object") {
+            errorMsg = data.error.message || data.error.issues?.[0]?.message || JSON.stringify(data.error);
+          } else if (data.message) {
+            errorMsg = data.message;
+          }
         } else {
           const text = await res.text();
           errorMsg = text || errorMsg;
