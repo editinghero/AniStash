@@ -1,9 +1,0 @@
-name = "anistash"
-compatibility_date = "2024-11-01"
-compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = "dist"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "anistash"
-database_id = "c99e16f6-2985-42d4-9504-5b1d77d110ca"
