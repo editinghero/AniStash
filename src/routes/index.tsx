@@ -1,23 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, useDocumentMetadata } from "@/lib/router";
 import { useLibrary } from "@/lib/use-library";
 import { MediaCard } from "@/components/media-card";
 import { ArrowRight, Sparkles, Tv, BookOpen, Film, Link2 } from "lucide-react";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "AniStash — Your anime & manga library" },
-      {
-        name: "description",
-        content:
-          "Paste a bookmark URL. AniStash detects the title, fetches the cover and rating, and files it under watching, reading, or plan-to.",
-      },
-    ],
-  }),
-  component: Home,
-});
-
-function Home() {
+export default function Home() {
+  useDocumentMetadata(
+    "AniStash — Your anime & manga library",
+    "Paste a bookmark URL. AniStash detects the title, fetches the cover and rating, and files it under watching, reading, or plan-to."
+  );
   const anime = useLibrary("ANIME").slice(0, 6);
   const manga = useLibrary("MANGA").slice(0, 6);
   const series = useLibrary("SERIES").slice(0, 6);

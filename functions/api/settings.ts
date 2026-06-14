@@ -1,33 +1,33 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { getDB, getEnvVar } from "./db";
-import { validateSession } from "./auth";
-import { encryptApiKey, decryptApiKey } from "./crypto";
+import { Hono } from 'hono';
+import { z } from 'zod';
+import { zValidator } from '@hono/zod-validator';
+import { validateSession } from '../../src/lib/auth';
+import { encryptApiKey, decryptApiKey } from '../../src/lib/crypto';
+
+type Bindings = {
+  DB: D1Database;
+  ENCRYPTION_KEY?: string;
+};
 
 export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 
-export interface AppSettings {
-  geminiApiKey?: string;
-  geminiModel?: string;
-}
+export const settingsRouter = new Hono<{ Bindings: Bindings }>()
+  .get('/', async (c) => {
+    const userId = await validateSession(c.env.DB, c.req.raw);
+    if (!userId) return c.json({});
 
-export const fetchSettingsServer = createServerFn({ method: "GET" })
-  .handler(async ({ request }) => {
-    const userId = await validateSession(request);
-    if (!userId) return {};
-
-    const db = await getDB();
+    const db = c.env.DB;
     const row = await db
       .prepare("SELECT gemini_api_key, gemini_model FROM user_settings WHERE user_id = ?")
       .bind(userId)
       .first<{ gemini_api_key: string | null; gemini_model: string | null }>();
 
-    if (!row) return {};
+    if (!row) return c.json({});
 
     let maskedKey = "";
     if (row.gemini_api_key) {
       try {
-        const encryptionKey = (await getEnvVar("ENCRYPTION_KEY")) ?? "fallback-encryption-key-for-local-dev-123";
+        const encryptionKey = c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
         const decrypted = await decryptApiKey(row.gemini_api_key, encryptionKey);
         maskedKey = decrypted.length > 4 ? `••••••••${decrypted.slice(-4)}` : decrypted;
       } catch (err) {
@@ -36,26 +36,22 @@ export const fetchSettingsServer = createServerFn({ method: "GET" })
       }
     }
 
-    return {
+    return c.json({
       geminiApiKey: maskedKey || undefined,
       geminiModel: row.gemini_model || DEFAULT_GEMINI_MODEL,
-    };
-  });
+    });
+  })
+  .post('/', zValidator('json', z.object({
+    geminiApiKey: z.string().optional(),
+    geminiModel: z.string().min(1),
+  })), async (c) => {
+    const data = c.req.valid('json');
+    const userId = await validateSession(c.env.DB, c.req.raw);
+    if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
-export const saveSettingsServer = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      geminiApiKey: z.string().optional(),
-      geminiModel: z.string().min(1),
-    }),
-  )
-  .handler(async ({ data, request }) => {
-    const userId = await validateSession(request);
-    if (!userId) throw new Error("Unauthorized");
-
-    const db = await getDB();
+    const db = c.env.DB;
     const now = Date.now();
-    const encryptionKey = (await getEnvVar("ENCRYPTION_KEY")) ?? "fallback-encryption-key-for-local-dev-123";
+    const encryptionKey = c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
 
     const existing = await db
       .prepare("SELECT gemini_api_key FROM user_settings WHERE user_id = ?")
@@ -92,5 +88,5 @@ export const saveSettingsServer = createServerFn({ method: "POST" })
         .run();
     }
 
-    return { success: true };
+    return c.json({ success: true });
   });

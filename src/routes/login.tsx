@@ -1,63 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useDocumentMetadata } from "@/lib/router";
 import { useState } from "react";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2, Lock, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { rpc } from "@/lib/rpc";
 
-export const loginUser = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      email: z.string().email(),
-      password: z.string().min(6),
-    }),
-  )
-  .handler(async ({ data }) => {
-    const { getDB } = await import("@/lib/db");
-    const db = await getDB();
-    const user = await db
-      .prepare("SELECT id, password_hash FROM users WHERE email = ?")
-      .bind(data.email.toLowerCase().trim())
-      .first<{ id: string; password_hash: string | null }>();
-
-    if (!user || !user.password_hash) {
-      throw new Error("Invalid email or password");
-    }
-
-    const { verifyPassword } = await import("@/lib/crypto");
-    const isValid = await verifyPassword(data.password, user.password_hash);
-    if (!isValid) {
-      throw new Error("Invalid email or password");
-    }
-
-    const { createSession } = await import("@/lib/auth");
-    const { token, expiresAt } = await createSession(user.id);
-
-    const httpMod = "vinxi/http";
-    const { setResponseHeader } = await import(httpMod);
-    const isDev = process.env.NODE_ENV === "development";
-    setResponseHeader(
-      "Set-Cookie",
-      `anistash_session=${token}; Path=/; HttpOnly; SameSite=Lax${isDev ? "" : "; Secure"}; Expires=${new Date(expiresAt).toUTCString()}`,
-    );
-
-    return { success: true };
-  });
-
-export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Sign in — AniStash" },
-      { name: "description", content: "Sign in to your AniStash account." },
-    ],
-  }),
-  component: LoginPage,
-});
-
-function LoginPage() {
+export default function LoginPage() {
+  useDocumentMetadata(
+    "Sign in — AniStash",
+    "Sign in to your AniStash account."
+  );
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,7 +23,25 @@ function LoginPage() {
 
     setLoading(true);
     try {
-      await loginUser({ data: { email, password } });
+      const res = await rpc.api.auth.login.$post({
+        json: { email, password }
+      });
+      const contentType = res.headers.get("content-type") || "";
+      if (!res.ok) {
+        let errorMsg = "Failed to sign in";
+        if (contentType.includes("application/json")) {
+          const data = await res.json();
+          errorMsg = data.error || errorMsg;
+        } else {
+          const text = await res.text();
+          errorMsg = text || errorMsg;
+        }
+        throw new Error(errorMsg);
+      }
+      const data = await res.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       toast.success("Successfully logged in");
       // Force reload or redirect to root to refresh auth state
       window.location.href = "/";

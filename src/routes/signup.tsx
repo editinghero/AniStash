@@ -1,114 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useDocumentMetadata } from "@/lib/router";
 import { useEffect, useState } from "react";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2, Lock, Mail, User, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
+import { rpc } from "@/lib/rpc";
 
-export const getSignupStatus = createServerFn({ method: "GET" })
-  .handler(async () => {
-    try {
-      const { isSignupAllowed } = await import("@/lib/auth");
-      const allowed = await isSignupAllowed();
-      console.log("[getSignupStatus] Returning allowed:", allowed);
-      return { allowed };
-    } catch (error) {
-      console.error("[getSignupStatus] Error:", error);
-      // Default to true on error (dev mode)
-      return { allowed: true };
-    }
-  });
-
-export const signupUser = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      displayName: z.string().min(2).max(50),
-      email: z.string().email(),
-      password: z.string().min(6),
-    }),
-  )
-  .handler(async ({ data }) => {
-    try {
-      // CRITICAL: Check signup permission FIRST before any processing
-      const { isSignupAllowed, createSession } = await import("@/lib/auth");
-      const allowed = await isSignupAllowed();
-      
-      if (!allowed) {
-        console.warn("[SIGNUP BLOCKED] Attempt to signup with email:", data.email);
-        throw new Error("Signups are currently disabled on this instance.");
-      }
-
-      const { getDB } = await import("@/lib/db");
-      const db = await getDB();
-      const existing = await db
-        .prepare("SELECT id FROM users WHERE email = ?")
-        .bind(data.email.toLowerCase().trim())
-        .first();
-
-      if (existing) {
-        throw new Error("An account with this email already exists.");
-      }
-
-      const { hashPassword } = await import("@/lib/crypto");
-      const userId = crypto.randomUUID();
-      const passHash = await hashPassword(data.password);
-      const now = Date.now();
-
-      // Create user
-      await db
-        .prepare(
-          "INSERT INTO users (id, email, email_verified, display_name, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        )
-        .bind(userId, data.email.toLowerCase().trim(), 1, data.displayName.trim(), passHash, now, now)
-        .run();
-
-      // Create default settings
-      await db
-        .prepare(
-          "INSERT INTO user_settings (user_id, gemini_model, theme, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-        )
-        .bind(userId, "gemini-2.5-flash", "dark", now, now)
-        .run();
-
-      const { token, expiresAt } = await createSession(userId);
-
-      const httpMod = "vinxi/http";
-      const { setResponseHeader } = await import(httpMod);
-      const isDev = process.env.NODE_ENV === "development";
-      setResponseHeader(
-        "Set-Cookie",
-        `anistash_session=${token}; Path=/; HttpOnly; SameSite=Lax${isDev ? "" : "; Secure"}; Expires=${new Date(expiresAt).toUTCString()}`,
-      );
-
-      return { success: true };
-    } catch (error) {
-      console.error("[SIGNUP ERROR]", error);
-      
-      // Provide helpful error message
-      if (error instanceof Error) {
-        if (error.message.includes("D1 database binding")) {
-          throw new Error("Database not available. Please run: npx wrangler d1 execute anistash --file=./schema.d1.sql --local");
-        }
-        throw error;
-      }
-      throw new Error("Failed to create account. Please try again.");
-    }
-  });
-
-export const Route = createFileRoute("/signup")({
-  head: () => ({
-    meta: [
-      { title: "Sign up — AniStash" },
-      { name: "description", content: "Create an account on AniStash." },
-    ],
-  }),
-  component: SignupPage,
-});
-
-function SignupPage() {
+export default function SignupPage() {
+  useDocumentMetadata(
+    "Sign up — AniStash",
+    "Create an account on AniStash."
+  );
   const navigate = useNavigate();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -117,9 +20,9 @@ function SignupPage() {
   const [allowed, setAllowed] = useState<boolean>(true); // Default to true
 
   useEffect(() => {
-    getSignupStatus()
+    rpc.api.auth.status.$get()
+      .then(res => res.json())
       .then((res) => {
-        console.log("[Signup Page] Signup status:", res.allowed);
         setAllowed(res.allowed);
       })
       .catch((err) => {
@@ -134,7 +37,25 @@ function SignupPage() {
 
     setLoading(true);
     try {
-      await signupUser({ data: { displayName, email, password } });
+      const res = await rpc.api.auth.signup.$post({
+        json: { displayName, email, password }
+      });
+      const contentType = res.headers.get("content-type") || "";
+      if (!res.ok) {
+        let errorMsg = "Failed to register account";
+        if (contentType.includes("application/json")) {
+          const data = await res.json();
+          errorMsg = data.error || errorMsg;
+        } else {
+          const text = await res.text();
+          errorMsg = text || errorMsg;
+        }
+        throw new Error(errorMsg);
+      }
+      const data = await res.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       toast.success("Account created successfully!");
       window.location.href = "/";
     } catch (err) {

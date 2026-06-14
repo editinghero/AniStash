@@ -4,16 +4,12 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  HeadContent,
-  Scripts,
   redirect,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect } from "react";
 
-import appCss from "../styles.css?url";
 import { SiteHeader } from "../components/site-header";
 import { Toaster } from "@/components/ui/sonner";
-import { getCurrentUser } from "../lib/auth";
 
 function NotFoundComponent() {
   return (
@@ -72,7 +68,19 @@ export const Route = createRootRouteWithContext<{
   user?: { id: string; email: string; displayName: string | null; avatarUrl: string | null } | null;
 }>()({
   beforeLoad: async ({ location }) => {
-    const user = await getCurrentUser();
+    let user = null;
+    try {
+      const { rpc } = await import("../lib/rpc");
+      const res = await rpc.api.auth.me.$get();
+      // Guard: only parse JSON if the response is actually JSON
+      // (Vite dev server may return index.html for unproxied /api routes)
+      const ct = res.headers.get("content-type") || "";
+      if (res.ok && ct.includes("application/json")) {
+        user = await res.json();
+      }
+    } catch (e) {
+      console.error("Failed to fetch user session", e);
+    }
     const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
     if (!user && !isAuthPage) {
       throw redirect({ to: "/login" });
@@ -82,68 +90,10 @@ export const Route = createRootRouteWithContext<{
     }
     return { user };
   },
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AniStash — Track your anime & manga" },
-      {
-        name: "description",
-        content:
-          "A refined tracker for the anime and manga you're watching, reading, and planning. Paste any bookmark — AniStash detects the title and fills in the rest.",
-      },
-      { name: "author", content: "AniStash" },
-      { property: "og:title", content: "AniStash — Track your anime & manga" },
-      {
-        property: "og:description",
-        content: "Paste any bookmark URL and stash anime or manga into your library.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "theme-color", content: "#181225" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "AniStash" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", type: "image/png", href: "/icon-512.png" },
-      { rel: "apple-touch-icon", href: "/icon-512.png" },
-      {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en" className="dark">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

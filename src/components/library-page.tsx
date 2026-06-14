@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link } from "@/lib/router";
 import { useLibrary } from "@/lib/use-library";
 import { MediaCard } from "@/components/media-card";
 import { StatusTabs } from "@/components/status-tabs";

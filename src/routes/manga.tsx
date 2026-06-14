@@ -1,27 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { LibraryPage } from "@/components/library-page";
+import { useDocumentMetadata } from "@/lib/router";
 
-export const Route = createFileRoute("/manga")({
-  head: () => ({
-    meta: [
-      { title: "Manga — AniStash" },
-      {
-        name: "description",
-        content:
-          "Your manga list: reading, completed, plan to read, on hold, and dropped.",
-      },
-      { property: "og:title", content: "Manga — AniStash" },
-      {
-        property: "og:description",
-        content: "Track everything you're reading in one place.",
-      },
-    ],
-  }),
-  component: () => (
+export function MangaPage() {
+  useDocumentMetadata(
+    "Manga — AniStash",
+    "Your manga list: reading, completed, plan to read, on hold, and dropped."
+  );
+
+  return (
     <LibraryPage
       type="MANGA"
       title="Manga"
       intro="Everything you're reading, planning, or have finished."
     />
-  ),
-});
+  );
+}

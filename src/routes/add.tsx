@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, useDocumentMetadata } from "@/lib/router";
 import { useState } from "react";
 import { parseBookmark } from "@/lib/anilist.functions";
 import {
@@ -27,21 +27,11 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 
-export const Route = createFileRoute("/add")({
-  head: () => ({
-    meta: [
-      { title: "Add entry — AniStash" },
-      {
-        name: "description",
-        content:
-          "Add anime or manga from a URL, or a fully-custom series entry with your own title and notes.",
-      },
-    ],
-  }),
-  component: AddPage,
-});
-
-function AddPage() {
+export default function AddPage() {
+  useDocumentMetadata(
+    "Add entry — AniStash",
+    "Add anime or manga from a URL, or a fully-custom series entry with your own title and notes."
+  );
   const navigate = useNavigate();
 
   const [url, setUrl] = useState("");

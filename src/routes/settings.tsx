@@ -1,28 +1,25 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, useDocumentMetadata } from "@/lib/router";
 import { useEffect, useState } from "react";
-import { fetchSettingsServer, saveSettingsServer, DEFAULT_GEMINI_MODEL } from "@/lib/settings";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, KeyRound, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { rpc } from "@/lib/rpc";
 
-export const Route = createFileRoute("/settings")({
-  head: () => ({
-    meta: [
-      { title: "Settings — AniStash" },
-      { name: "description", content: "Configure your Gemini API key and model." },
-    ],
-  }),
-  component: SettingsPage,
-});
+const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 
-function SettingsPage() {
+export default function SettingsPage() {
+  useDocumentMetadata(
+    "Settings — AniStash",
+    "Configure your Gemini API key and model."
+  );
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState(DEFAULT_GEMINI_MODEL);
 
   useEffect(() => {
-    fetchSettingsServer()
+    rpc.api.settings.$get()
+      .then(res => res.json())
       .then((s) => {
         setApiKey(s.geminiApiKey ?? "");
         setModel(s.geminiModel ?? DEFAULT_GEMINI_MODEL);
@@ -35,12 +32,13 @@ function SettingsPage() {
   async function onSave(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await saveSettingsServer({
-        data: {
+      const res = await rpc.api.settings.$post({
+        json: {
           geminiApiKey: apiKey.trim() || undefined,
           geminiModel: model.trim() || DEFAULT_GEMINI_MODEL,
         },
       });
+      if (!res.ok) throw new Error("Failed to save settings");
       toast.success("Settings saved to database");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to save settings");

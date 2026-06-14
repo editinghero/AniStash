@@ -1,8 +1,17 @@
-import { Link, useRouterState, useRouteContext } from "@tanstack/react-router";
-import { Library, Plus, BookOpen, Tv, Film, Settings } from "lucide-react";
+import { Link, useRouter, useRouteContext } from "@/lib/router";
+import { Library, Plus, BookOpen, Tv, Film, Settings, LogOut, User as UserIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { logoutUser } from "@/lib/auth";
+import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const nav = [
   { to: "/", label: "Home", icon: Library },
@@ -12,12 +21,14 @@ const nav = [
 ];
 
 export function SiteHeader() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
   const { user } = useRouteContext({ from: "__root__" }) as any;
 
   async function handleLogout() {
     try {
-      await logoutUser();
+      await rpc.api.auth.logout.$post();
+      router.invalidate();
       window.location.href = "/login";
     } catch {
       toast.error("Failed to log out");
