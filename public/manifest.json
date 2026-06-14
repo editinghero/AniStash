@@ -12,13 +12,13 @@
   "icons": [
     {
       "src": "/splash-logo-square.png",
-      "sizes": "512x512",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "/icon-512.png",
-      "sizes": "1024x1024",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
