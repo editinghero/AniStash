@@ -105,7 +105,9 @@ export default function App() {
       <div className="flex min-h-screen items-center justify-center bg-hero px-4">
         <div className="max-w-md text-center">
           <h1 className="font-display text-8xl font-bold text-gradient">404</h1>
-          <h2 className="mt-4 font-display text-2xl font-semibold">Page not found</h2>
+          <h2 className="mt-4 font-display text-2xl font-semibold">
+            Page not found
+          </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             This corner of the AniStash doesn't exist.
           </p>
@@ -121,7 +123,9 @@ export default function App() {
   }
 
   return (
-    <RouterProvider value={{ pathname, user, navigate, invalidate: fetchSession }}>
+    <RouterProvider
+      value={{ pathname, user, navigate, invalidate: fetchSession }}
+    >
       <div className="min-h-screen bg-background bg-hero">
         {!isAuthPage && <SiteHeader />}
         {pageComponent}

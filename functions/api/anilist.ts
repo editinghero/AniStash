@@ -1,9 +1,9 @@
-import { Hono } from 'hono';
-import { z } from 'zod';
-import { zValidator } from '@hono/zod-validator';
-import { validateSession } from '../../src/lib/auth';
-import { decryptApiKey } from '../../src/lib/crypto';
-import type { AnilistMedia } from '../../src/lib/anilist.functions';
+import { Hono } from "hono";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
+import { validateSession } from "../../src/lib/auth";
+import { decryptApiKey } from "../../src/lib/crypto";
+import type { AnilistMedia } from "../../src/lib/anilist.functions";
 
 type Bindings = {
   DB: D1Database;
@@ -33,7 +33,10 @@ const MEDIA_FIELDS = `
   season
 `;
 
-async function anilist<T>(query: string, variables: Record<string, unknown>): Promise<T> {
+async function anilist<T>(
+  query: string,
+  variables: Record<string, unknown>,
+): Promise<T> {
   const res = await fetch(ANILIST_ENDPOINT, {
     method: "POST",
     headers: {
@@ -47,7 +50,10 @@ async function anilist<T>(query: string, variables: Record<string, unknown>): Pr
     const body = await res.text().catch(() => "");
     throw new Error(`AniList ${res.status}: ${body.slice(0, 200)}`);
   }
-  const json = (await res.json()) as { data: T; errors?: { message: string }[] };
+  const json = (await res.json()) as {
+    data: T;
+    errors?: { message: string }[];
+  };
   if (json.errors?.length) throw new Error(json.errors[0].message);
   return json.data;
 }
@@ -84,7 +90,8 @@ async function fetchPageContext(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; AniStash/1.0; +https://anistash.app)",
+        "User-Agent":
+          "Mozilla/5.0 (compatible; AniStash/1.0; +https://anistash.app)",
         Accept: "text/html,*/*",
       },
       signal: AbortSignal.timeout(8000),
@@ -93,7 +100,9 @@ async function fetchPageContext(url: string): Promise<string> {
     const html = await res.text();
     const pick = (re: RegExp) => html.match(re)?.[1]?.trim() ?? "";
     const title = pick(/<title[^>]*>([^<]+)<\/title>/i);
-    const og = pick(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
+    const og = pick(
+      /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i,
+    );
     const ogDesc = pick(
       /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i,
     );
@@ -105,13 +114,19 @@ async function fetchPageContext(url: string): Promise<string> {
 }
 
 export const anilistRouter = new Hono<{ Bindings: Bindings }>()
-  .post('/search', zValidator('json', z.object({
-    query: z.string().min(1).max(200),
-    type: z.enum(["ANIME", "MANGA"]),
-    perPage: z.number().int().min(1).max(15).default(10),
-  })), async (c) => {
-    const data = c.req.valid('json');
-    const gql = `
+  .post(
+    "/search",
+    zValidator(
+      "json",
+      z.object({
+        query: z.string().min(1).max(200),
+        type: z.enum(["ANIME", "MANGA"]),
+        perPage: z.number().int().min(1).max(15).default(10),
+      }),
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      const gql = `
       query ($q: String, $type: MediaType, $perPage: Int) {
         Page(page: 1, perPage: $perPage) {
           media(search: $q, type: $type, sort: [SEARCH_MATCH, POPULARITY_DESC]) {
@@ -120,46 +135,72 @@ export const anilistRouter = new Hono<{ Bindings: Bindings }>()
         }
       }
     `;
-    const out = await anilist<{ Page: { media: AnilistMedia[] } }>(gql, {
-      q: data.query,
-      type: data.type,
-      perPage: data.perPage,
-    });
-    return c.json({ results: out.Page.media });
-  })
-  .post('/get', zValidator('json', z.object({
-    id: z.number().int().positive()
-  })), async (c) => {
-    const data = c.req.valid('json');
-    const gql = `query ($id: Int) { Media(id: $id) { ${MEDIA_FIELDS} } }`;
-    const out = await anilist<{ Media: AnilistMedia }>(gql, { id: data.id });
-    return c.json({ media: out.Media });
-  })
-  .post('/parse-bookmark', zValidator('json', z.object({
-    url: z.string().url().max(2048),
-    hintType: z.enum(["ANIME", "MANGA"]).optional(),
-  })), async (c) => {
-    const data = c.req.valid('json');
-    const userId = await validateSession(c.env.DB, c.req.raw);
-    if (!userId) return c.json({ error: "Unauthorized" }, 401);
+      const out = await anilist<{ Page: { media: AnilistMedia[] } }>(gql, {
+        q: data.query,
+        type: data.type,
+        perPage: data.perPage,
+      });
+      return c.json({ results: out.Page.media });
+    },
+  )
+  .post(
+    "/get",
+    zValidator(
+      "json",
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      const gql = `query ($id: Int) { Media(id: $id) { ${MEDIA_FIELDS} } }`;
+      const out = await anilist<{ Media: AnilistMedia }>(gql, { id: data.id });
+      return c.json({ media: out.Media });
+    },
+  )
+  .post(
+    "/parse-bookmark",
+    zValidator(
+      "json",
+      z.object({
+        url: z.string().url().max(2048),
+        hintType: z.enum(["ANIME", "MANGA"]).optional(),
+      }),
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      const userId = await validateSession(c.env.DB, c.req.raw);
+      if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
-    const db = c.env.DB;
-    const settings = await db
-      .prepare("SELECT gemini_api_key, gemini_model FROM user_settings WHERE user_id = ?")
-      .bind(userId)
-      .first<{ gemini_api_key: string | null; gemini_model: string | null }>();
+      const db = c.env.DB;
+      const settings = await db
+        .prepare(
+          "SELECT gemini_api_key, gemini_model FROM user_settings WHERE user_id = ?",
+        )
+        .bind(userId)
+        .first<{
+          gemini_api_key: string | null;
+          gemini_model: string | null;
+        }>();
 
-    if (!settings || !settings.gemini_api_key) {
-      return c.json({ error: "Add your Gemini API key in Settings first." }, 400);
-    }
+      if (!settings || !settings.gemini_api_key) {
+        return c.json(
+          { error: "Add your Gemini API key in Settings first." },
+          400,
+        );
+      }
 
-    const encryptionKey = c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
-    const decryptedKey = await decryptApiKey(settings.gemini_api_key, encryptionKey);
-    const geminiModel = settings.gemini_model || "gemini-2.5-flash";
+      const encryptionKey =
+        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
+      const decryptedKey = await decryptApiKey(
+        settings.gemini_api_key,
+        encryptionKey,
+      );
+      const geminiModel = settings.gemini_model || "gemini-2.5-flash";
 
-    const pageContext = await fetchPageContext(data.url);
+      const pageContext = await fetchPageContext(data.url);
 
-    const sys = `You extract a clean anime or manga title from a bookmark URL and (when available) the page's title/og:title text.
+      const sys = `You extract a clean anime or manga title from a bookmark URL and (when available) the page's title/og:title text.
 Return ONLY JSON of shape:
 {"title": string, "type": "ANIME"|"MANGA", "confidence": "high"|"medium"|"low", "notes": string}
 
@@ -169,39 +210,39 @@ Rules:
 - Default type to ANIME if uncertain unless the URL/title clearly says manga, chapter, or read.
 - "notes" is one short sentence explaining anything ambiguous.`;
 
-    const user = `URL: ${data.url}
+      const user = `URL: ${data.url}
 Page text: ${pageContext || "(could not fetch)"}
 Hint: ${data.hintType ?? "none"}`;
 
-    const raw = await callGemini(decryptedKey, geminiModel, sys, user);
+      const raw = await callGemini(decryptedKey, geminiModel, sys, user);
 
-    let parsed: {
-      title?: string;
-      type?: "ANIME" | "MANGA";
-      confidence?: string;
-      notes?: string;
-    } = {};
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      const m = raw.match(/\{[\s\S]*\}/);
-      if (m) parsed = JSON.parse(m[0]);
-    }
+      let parsed: {
+        title?: string;
+        type?: "ANIME" | "MANGA";
+        confidence?: string;
+        notes?: string;
+      } = {};
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (m) parsed = JSON.parse(m[0]);
+      }
 
-    const title = (parsed.title || "").trim();
-    const type = parsed.type === "MANGA" ? "MANGA" : "ANIME";
+      const title = (parsed.title || "").trim();
+      const type = parsed.type === "MANGA" ? "MANGA" : "ANIME";
 
-    if (!title) {
-      return c.json({
-        title: "",
-        type,
-        confidence: "low" as const,
-        notes: parsed.notes || "Could not extract a title from this URL.",
-        candidates: [] as AnilistMedia[],
-      });
-    }
+      if (!title) {
+        return c.json({
+          title: "",
+          type,
+          confidence: "low" as const,
+          notes: parsed.notes || "Could not extract a title from this URL.",
+          candidates: [] as AnilistMedia[],
+        });
+      }
 
-    const gql = `
+      const gql = `
       query ($q: String, $type: MediaType) {
         Page(page: 1, perPage: 6) {
           media(search: $q, type: $type, sort: [SEARCH_MATCH, POPULARITY_DESC]) {
@@ -210,22 +251,24 @@ Hint: ${data.hintType ?? "none"}`;
         }
       }
     `;
-    let candidates: AnilistMedia[] = [];
-    try {
-      const out = await anilist<{ Page: { media: AnilistMedia[] } }>(gql, {
-        q: title,
-        type,
-      });
-      candidates = out.Page.media;
-    } catch {
-      candidates = [];
-    }
+      let candidates: AnilistMedia[] = [];
+      try {
+        const out = await anilist<{ Page: { media: AnilistMedia[] } }>(gql, {
+          q: title,
+          type,
+        });
+        candidates = out.Page.media;
+      } catch {
+        candidates = [];
+      }
 
-    return c.json({
-      title,
-      type,
-      confidence: (parsed.confidence as "high" | "medium" | "low") || "medium",
-      notes: parsed.notes || "",
-      candidates,
-    });
-  });
+      return c.json({
+        title,
+        type,
+        confidence:
+          (parsed.confidence as "high" | "medium" | "low") || "medium",
+        notes: parsed.notes || "",
+        candidates,
+      });
+    },
+  );

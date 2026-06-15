@@ -36,7 +36,8 @@ export function useNavigate() {
 
 export function useRouteContext(options?: { from: string }) {
   const ctx = useContext(RouterContext);
-  if (!ctx) throw new Error("useRouteContext must be used within RouterProvider");
+  if (!ctx)
+    throw new Error("useRouteContext must be used within RouterProvider");
   return { user: ctx.user };
 }
 

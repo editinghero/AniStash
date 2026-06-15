@@ -1,4 +1,6 @@
-export function parseCookies(cookieHeader: string | null): Record<string, string> {
+export function parseCookies(
+  cookieHeader: string | null,
+): Record<string, string> {
   const cookies: Record<string, string> = {};
   if (!cookieHeader) return cookies;
   for (const part of cookieHeader.split(";")) {
@@ -12,7 +14,10 @@ export function parseCookies(cookieHeader: string | null): Record<string, string
   return cookies;
 }
 
-export async function validateSession(db: any, request: Request): Promise<string | null> {
+export async function validateSession(
+  db: any,
+  request: Request,
+): Promise<string | null> {
   const cookieHeader = request.headers.get("Cookie");
   const cookies = parseCookies(cookieHeader);
   const sessionId = cookies["anistash_session"];
@@ -27,7 +32,10 @@ export async function validateSession(db: any, request: Request): Promise<string
     if (!session) return null;
 
     if (session.expires_at < Date.now()) {
-      await db.prepare("DELETE FROM sessions WHERE id = ?").bind(sessionId).run();
+      await db
+        .prepare("DELETE FROM sessions WHERE id = ?")
+        .bind(sessionId)
+        .run();
       return null;
     }
 
@@ -37,15 +45,20 @@ export async function validateSession(db: any, request: Request): Promise<string
   }
 }
 
-export async function createSession(db: any, userId: string): Promise<{ token: string; expiresAt: number }> {
+export async function createSession(
+  db: any,
+  userId: string,
+): Promise<{ token: string; expiresAt: number }> {
   const token = crypto.randomUUID();
   const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
-  
+
   await db
-    .prepare("INSERT INTO sessions (id, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)")
+    .prepare(
+      "INSERT INTO sessions (id, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)",
+    )
     .bind(token, userId, expiresAt, Date.now())
     .run();
-    
+
   return { token, expiresAt };
 }
 
@@ -57,12 +70,15 @@ export async function destroySession(db: any, request: Request): Promise<void> {
 
   try {
     await db.prepare("DELETE FROM sessions WHERE id = ?").bind(sessionId).run();
-  } catch {
-  }
+  } catch {}
 }
 
 export async function isSignupAllowed(allowedEnv?: string): Promise<boolean> {
-  if (allowedEnv !== undefined && allowedEnv !== null && allowedEnv.toLowerCase() === "false") {
+  if (
+    allowedEnv !== undefined &&
+    allowedEnv !== null &&
+    allowedEnv.toLowerCase() === "false"
+  ) {
     return false;
   }
   return true;

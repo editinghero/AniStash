@@ -8,10 +8,7 @@ import { toast } from "sonner";
 import { rpc } from "@/lib/rpc";
 
 export default function SignupPage() {
-  useDocumentMetadata(
-    "Sign up — AniStash",
-    "Create an account on AniStash."
-  );
+  useDocumentMetadata("Sign up — AniStash", "Create an account on AniStash.");
   const navigate = useNavigate();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,8 +17,9 @@ export default function SignupPage() {
   const [allowed, setAllowed] = useState<boolean>(true); // Default to true
 
   useEffect(() => {
-    rpc.api.auth.status.$get()
-      .then(res => res.json())
+    rpc.api.auth.status
+      .$get()
+      .then((res) => res.json())
       .then((res) => {
         setAllowed(res.allowed);
       })
@@ -38,7 +36,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const res = await rpc.api.auth.signup.$post({
-        json: { displayName, email, password }
+        json: { displayName, email, password },
       });
       const contentType = res.headers.get("content-type") || "";
       if (!res.ok) {
@@ -48,7 +46,10 @@ export default function SignupPage() {
           if (typeof data.error === "string") {
             errorMsg = data.error;
           } else if (data.error && typeof data.error === "object") {
-            errorMsg = data.error.message || data.error.issues?.[0]?.message || JSON.stringify(data.error);
+            errorMsg =
+              data.error.message ||
+              data.error.issues?.[0]?.message ||
+              JSON.stringify(data.error);
           } else if (data.message) {
             errorMsg = data.message;
           }
@@ -65,7 +66,9 @@ export default function SignupPage() {
       toast.success("Account created successfully!");
       window.location.href = "/";
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to register account");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to register account",
+      );
     } finally {
       setLoading(false);
     }
@@ -93,10 +96,14 @@ export default function SignupPage() {
               Signups are Closed
             </h2>
             <p className="text-xs text-muted-foreground leading-normal">
-              New registration has been disabled on this instance by the administrator.
+              New registration has been disabled on this instance by the
+              administrator.
             </p>
             <div className="pt-2">
-              <Link to="/login" className="text-xs text-primary hover:underline font-medium">
+              <Link
+                to="/login"
+                className="text-xs text-primary hover:underline font-medium"
+              >
                 Go to login
               </Link>
             </div>
@@ -104,7 +111,10 @@ export default function SignupPage() {
         ) : (
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
+              <Label
+                htmlFor="name"
+                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+              >
                 <User className="h-3 w-3" /> Display Name
               </Label>
               <Input
@@ -120,7 +130,10 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
+              <Label
+                htmlFor="email"
+                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+              >
                 <Mail className="h-3 w-3" /> Email Address
               </Label>
               <Input
@@ -136,7 +149,10 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="pass" className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
+              <Label
+                htmlFor="pass"
+                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+              >
                 <Lock className="h-3 w-3" /> Password
               </Label>
               <Input
@@ -158,7 +174,8 @@ export default function SignupPage() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating account…
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating
+                  account…
                 </>
               ) : (
                 "Sign Up"
@@ -170,7 +187,10 @@ export default function SignupPage() {
         {allowed !== false && (
           <div className="text-center text-xs text-muted-foreground pt-2 border-t border-border/40">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary hover:underline font-medium">
+            <Link
+              to="/login"
+              className="text-primary hover:underline font-medium"
+            >
               Log in here
             </Link>
           </div>

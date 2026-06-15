@@ -21,8 +21,16 @@ export interface AnilistMedia {
   isAdult: boolean;
   genres: string[];
   description: string | null;
-  title: { romaji: string | null; english: string | null; native: string | null };
-  coverImage: { large: string | null; extraLarge: string | null; color: string | null };
+  title: {
+    romaji: string | null;
+    english: string | null;
+    native: string | null;
+  };
+  coverImage: {
+    large: string | null;
+    extraLarge: string | null;
+    color: string | null;
+  };
   bannerImage: string | null;
   startDate: { year: number | null } | null;
   season: string | null;
@@ -67,7 +75,10 @@ async function anilist<T>(
     const body = await res.text().catch(() => "");
     throw new Error(`AniList ${res.status}: ${body.slice(0, 200)}`);
   }
-  const json = (await res.json()) as { data: T; errors?: { message: string }[] };
+  const json = (await res.json()) as {
+    data: T;
+    errors?: { message: string }[];
+  };
   if (json.errors?.length) throw new Error(json.errors[0].message);
   return json.data;
 }
@@ -184,7 +195,7 @@ Hint type: ${hintType ?? "none"}`;
   }
 
   const title = (parsed.title || urlHint || "").trim();
-  const type = parsed.type === "MANGA" ? "MANGA" : hintType ?? "ANIME";
+  const type = parsed.type === "MANGA" ? "MANGA" : (hintType ?? "ANIME");
 
   if (!title) {
     return {

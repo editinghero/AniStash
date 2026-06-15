@@ -14,7 +14,10 @@ interface ChatMessage {
 }
 
 export default function DiscoverPage() {
-  useDocumentMetadata("Discover AI — AniStash", "Chat with AI to discover new anime and query your stash.");
+  useDocumentMetadata(
+    "Discover AI — AniStash",
+    "Chat with AI to discover new anime and query your stash.",
+  );
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -66,7 +69,10 @@ export default function DiscoverPage() {
         throw new Error(data.error || "Failed to communicate with AI");
       }
 
-      setMessages((prev) => [...prev, { role: "model", text: data.text, thought: data.thought }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", text: data.text, thought: data.thought },
+      ]);
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
       setMessages((prev) => prev.slice(0, -1)); // Revert user message on error
@@ -103,7 +109,12 @@ export default function DiscoverPage() {
           </p>
         </div>
         {messages.length > 0 && (
-          <Button variant="ghost" size="sm" onClick={handleClear} className="text-muted-foreground hover:text-foreground self-start sm:self-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="text-muted-foreground hover:text-foreground self-start sm:self-auto"
+          >
             <Trash2 className="mr-2 h-4 w-4" />
             Clear Chat
           </Button>
@@ -122,35 +133,51 @@ export default function DiscoverPage() {
                 <Sparkles className="h-8 w-8" />
               </div>
               <div>
-                <p className="font-medium text-foreground">Welcome to Discover AI</p>
-                <p className="text-sm mt-1 max-w-xs">I know what you've watched and read. Ask me what you should start next, or ask for your stats!</p>
+                <p className="font-medium text-foreground">
+                  Welcome to Discover AI
+                </p>
+                <p className="text-sm mt-1 max-w-xs">
+                  I know what you've watched and read. Ask me what you should
+                  start next, or ask for your stats!
+                </p>
               </div>
             </div>
           ) : (
             messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex gap-4 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"
-                  }`}
+                className={`flex gap-4 ${
+                  msg.role === "user" ? "flex-row-reverse" : "flex-row"
+                }`}
               >
                 <div
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${msg.role === "user"
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${
+                    msg.role === "user"
                       ? "bg-surface ring-1 ring-border"
                       : "bg-gradient-accent text-white shadow-glow"
-                    }`}
+                  }`}
                 >
-                  {msg.role === "user" ? <User className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4" />}
+                  {msg.role === "user" ? (
+                    <User className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Bot className="h-4 w-4" />
+                  )}
                 </div>
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[90%] sm:max-w-[75%] ${msg.role === "user"
+                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[90%] sm:max-w-[75%] ${
+                    msg.role === "user"
                       ? "bg-surface text-foreground ring-1 ring-border/60 whitespace-pre-wrap"
                       : "bg-background text-foreground/90 shadow-sm ring-1 ring-border/40"
-                    }`}
+                  }`}
                 >
                   {msg.role === "model" && msg.thought && (
                     <ThinkingProcess thought={msg.thought} />
                   )}
-                  {msg.role === "user" ? msg.text : <MarkdownRenderer content={msg.text} />}
+                  {msg.role === "user" ? (
+                    msg.text
+                  ) : (
+                    <MarkdownRenderer content={msg.text} />
+                  )}
                 </div>
               </div>
             ))

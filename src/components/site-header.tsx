@@ -1,5 +1,15 @@
 import { Link, useRouter, useRouteContext } from "@/lib/router";
-import { Library, Plus, BookOpen, Tv, Film, Settings, LogOut, User as UserIcon, Sparkles } from "lucide-react";
+import {
+  Library,
+  Plus,
+  BookOpen,
+  Tv,
+  Film,
+  Settings,
+  LogOut,
+  User as UserIcon,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
@@ -72,7 +82,10 @@ export function SiteHeader() {
           {user && (
             <div className="flex items-center gap-3 mr-2 border-r border-border/40 pr-3">
               <span className="text-xs text-muted-foreground hidden sm:inline">
-                Stashing as <span className="font-semibold text-foreground">{user.displayName || user.email}</span>
+                Stashing as{" "}
+                <span className="font-semibold text-foreground">
+                  {user.displayName || user.email}
+                </span>
               </span>
               <button
                 type="button"

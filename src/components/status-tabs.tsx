@@ -1,4 +1,9 @@
-import { ALL_STATUSES, statusLabels, type ListStatus, type MediaType } from "@/lib/types";
+import {
+  ALL_STATUSES,
+  statusLabels,
+  type ListStatus,
+  type MediaType,
+} from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -31,7 +36,12 @@ export function StatusTabs({ type, value, counts, onChange }: Props) {
             )}
           >
             {t.label}
-            <span className={cn("ml-2 text-xs", active ? "opacity-80" : "opacity-60")}>
+            <span
+              className={cn(
+                "ml-2 text-xs",
+                active ? "opacity-80" : "opacity-60",
+              )}
+            >
               {counts[t.key] ?? 0}
             </span>
           </button>

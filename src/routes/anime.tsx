@@ -4,7 +4,7 @@ import { useDocumentMetadata } from "@/lib/router";
 export function AnimePage() {
   useDocumentMetadata(
     "Anime — AniStash",
-    "Your anime list: watching, completed, plan to watch, on hold, and dropped."
+    "Your anime list: watching, completed, plan to watch, on hold, and dropped.",
   );
 
   return (

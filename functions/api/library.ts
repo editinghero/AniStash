@@ -1,7 +1,7 @@
-import { Hono } from 'hono';
-import { z } from 'zod';
-import { zValidator } from '@hono/zod-validator';
-import { validateSession } from '../../src/lib/auth';
+import { Hono } from "hono";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
+import { validateSession } from "../../src/lib/auth";
 
 type Bindings = {
   DB: D1Database;
@@ -17,13 +17,14 @@ function hashStringToInt(str: string): number {
 }
 
 export const libraryRouter = new Hono<{ Bindings: Bindings }>()
-  .get('/', async (c) => {
+  .get("/", async (c) => {
     const userId = await validateSession(c.env.DB, c.req.raw);
     if (!userId) return c.json([]);
 
     const db = c.env.DB;
     const { results } = await db
-      .prepare(`
+      .prepare(
+        `
         SELECT 
           um.id,
           m.type,
@@ -54,7 +55,8 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         JOIN media m ON m.id = um.media_id
         WHERE um.user_id = ?
         ORDER BY um.updated_at DESC
-      `)
+      `,
+      )
       .bind(userId)
       .all<any>();
 
@@ -65,41 +67,55 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
     }));
     return c.json(mapped);
   })
-  .post('/upsert', zValidator('json', z.object({
-    id: z.string().optional(),
-    type: z.enum(["ANIME", "MANGA", "SERIES"]),
-    status: z.enum(["WATCHING", "COMPLETED", "PLANNING", "ON_HOLD", "DROPPED"]),
-    anilistId: z.number().int().optional(),
-    malId: z.number().int().optional(),
-    title: z.string().min(1),
-    englishTitle: z.string().optional().nullable(),
-    nativeTitle: z.string().optional().nullable(),
-    coverImage: z.string().optional().nullable(),
-    bannerImage: z.string().optional().nullable(),
-    genres: z.array(z.string()).optional().nullable(),
-    format: z.string().optional().nullable(),
-    episodes: z.number().int().optional().nullable(),
-    chapters: z.number().int().optional().nullable(),
-    averageScore: z.number().optional().nullable(),
-    ageRating: z.string().optional().nullable(),
-    description: z.string().optional().nullable(),
-    sourceUrl: z.string().optional().nullable(),
-    notes: z.string().optional().nullable(),
-    progress: z.number().int().optional().nullable(),
-    userScore: z.number().optional().nullable(),
-    startedAt: z.number().optional().nullable(),
-    finishedAt: z.number().optional().nullable(),
-  })), async (c) => {
-    const data = c.req.valid('json');
-    const userId = await validateSession(c.env.DB, c.req.raw);
-    if (!userId) return c.json({ error: "Unauthorized" }, 401);
+  .post(
+    "/upsert",
+    zValidator(
+      "json",
+      z.object({
+        id: z.string().optional(),
+        type: z.enum(["ANIME", "MANGA", "SERIES"]),
+        status: z.enum([
+          "WATCHING",
+          "COMPLETED",
+          "PLANNING",
+          "ON_HOLD",
+          "DROPPED",
+        ]),
+        anilistId: z.number().int().optional(),
+        malId: z.number().int().optional(),
+        title: z.string().min(1),
+        englishTitle: z.string().optional().nullable(),
+        nativeTitle: z.string().optional().nullable(),
+        coverImage: z.string().optional().nullable(),
+        bannerImage: z.string().optional().nullable(),
+        genres: z.array(z.string()).optional().nullable(),
+        format: z.string().optional().nullable(),
+        episodes: z.number().int().optional().nullable(),
+        chapters: z.number().int().optional().nullable(),
+        averageScore: z.number().optional().nullable(),
+        ageRating: z.string().optional().nullable(),
+        description: z.string().optional().nullable(),
+        sourceUrl: z.string().optional().nullable(),
+        notes: z.string().optional().nullable(),
+        progress: z.number().int().optional().nullable(),
+        userScore: z.number().optional().nullable(),
+        startedAt: z.number().optional().nullable(),
+        finishedAt: z.number().optional().nullable(),
+      }),
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      const userId = await validateSession(c.env.DB, c.req.raw);
+      if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
-    const db = c.env.DB;
-    const now = Date.now();
-    const finalAnilistId = data.anilistId ?? (-1 * Math.abs(hashStringToInt(data.title)));
+      const db = c.env.DB;
+      const now = Date.now();
+      const finalAnilistId =
+        data.anilistId ?? -1 * Math.abs(hashStringToInt(data.title));
 
-    const mediaRow = await db
-      .prepare(`
+      const mediaRow = await db
+        .prepare(
+          `
         INSERT INTO media (
           anilist_id, mal_id, type, format, title_romaji, title_english, title_native,
           cover_image, banner_image, genres_json, episodes, chapters, average_score,
@@ -122,35 +138,38 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           description=excluded.description,
           updated_at=excluded.updated_at
         RETURNING id
-      `)
-      .bind(
-        finalAnilistId,
-        data.malId ?? null,
-        data.type === "SERIES" ? "ANIME" : data.type,
-        data.format ?? null,
-        data.title,
-        data.englishTitle ?? null,
-        data.nativeTitle ?? null,
-        data.coverImage ?? null,
-        data.bannerImage ?? null,
-        data.genres ? JSON.stringify(data.genres) : null,
-        data.episodes ?? null,
-        data.chapters ?? null,
-        data.averageScore ?? null,
-        0,
-        data.ageRating ?? null,
-        data.description ?? null,
-        now,
-        now,
-      )
-      .first<{ id: number }>();
+      `,
+        )
+        .bind(
+          finalAnilistId,
+          data.malId ?? null,
+          data.type === "SERIES" ? "ANIME" : data.type,
+          data.format ?? null,
+          data.title,
+          data.englishTitle ?? null,
+          data.nativeTitle ?? null,
+          data.coverImage ?? null,
+          data.bannerImage ?? null,
+          data.genres ? JSON.stringify(data.genres) : null,
+          data.episodes ?? null,
+          data.chapters ?? null,
+          data.averageScore ?? null,
+          0,
+          data.ageRating ?? null,
+          data.description ?? null,
+          now,
+          now,
+        )
+        .first<{ id: number }>();
 
-    if (!mediaRow) return c.json({ error: "Failed to insert media metadata" }, 500);
+      if (!mediaRow)
+        return c.json({ error: "Failed to insert media metadata" }, 500);
 
-    const finalId = data.id ?? crypto.randomUUID();
+      const finalId = data.id ?? crypto.randomUUID();
 
-    const userMedia = await db
-      .prepare(`
+      const userMedia = await db
+        .prepare(
+          `
         INSERT INTO user_media (
           id, user_id, media_id, status, progress, user_score, notes, source_url,
           started_at, finished_at, created_at, updated_at
@@ -165,48 +184,60 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           finished_at=excluded.finished_at,
           updated_at=excluded.updated_at
         RETURNING id, created_at, updated_at
-      `)
-      .bind(
-        finalId,
-        userId,
-        mediaRow.id,
-        data.status,
-        data.progress ?? 0,
-        data.userScore ?? null,
-        data.notes ?? null,
-        data.sourceUrl ?? null,
-        data.startedAt ?? null,
-        data.finishedAt ?? null,
-        now,
-        now,
-      )
-      .first<{ id: string; created_at: number; updated_at: number }>();
+      `,
+        )
+        .bind(
+          finalId,
+          userId,
+          mediaRow.id,
+          data.status,
+          data.progress ?? 0,
+          data.userScore ?? null,
+          data.notes ?? null,
+          data.sourceUrl ?? null,
+          data.startedAt ?? null,
+          data.finishedAt ?? null,
+          now,
+          now,
+        )
+        .first<{ id: string; created_at: number; updated_at: number }>();
 
-    if (!userMedia) return c.json({ error: "Failed to save user media list entry" }, 500);
+      if (!userMedia)
+        return c.json({ error: "Failed to save user media list entry" }, 500);
 
-    return c.json({
-      ...data,
-      id: userMedia.id,
-      createdAt: userMedia.created_at,
-      updatedAt: userMedia.updated_at,
-    });
-  })
-  .post('/update', zValidator('json', z.object({
-    id: z.string(),
-    status: z.enum(["WATCHING", "COMPLETED", "PLANNING", "ON_HOLD", "DROPPED"]).optional(),
-    progress: z.number().int().optional(),
-    userScore: z.number().optional(),
-    notes: z.string().optional(),
-    startedAt: z.number().optional(),
-    finishedAt: z.number().optional(),
-  })), async (c) => {
-    const data = c.req.valid('json');
-    const userId = await validateSession(c.env.DB, c.req.raw);
-    if (!userId) return c.json({ error: "Unauthorized" }, 401);
+      return c.json({
+        ...data,
+        id: userMedia.id,
+        createdAt: userMedia.created_at,
+        updatedAt: userMedia.updated_at,
+      });
+    },
+  )
+  .post(
+    "/update",
+    zValidator(
+      "json",
+      z.object({
+        id: z.string(),
+        status: z
+          .enum(["WATCHING", "COMPLETED", "PLANNING", "ON_HOLD", "DROPPED"])
+          .optional(),
+        progress: z.number().int().optional(),
+        userScore: z.number().optional(),
+        notes: z.string().optional(),
+        startedAt: z.number().optional(),
+        finishedAt: z.number().optional(),
+      }),
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      const userId = await validateSession(c.env.DB, c.req.raw);
+      if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
-    const db = c.env.DB;
-    await db
-      .prepare(`
+      const db = c.env.DB;
+      await db
+        .prepare(
+          `
         UPDATE user_media SET
           status = COALESCE(?, status),
           progress = COALESCE(?, progress),
@@ -216,34 +247,43 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           finished_at = COALESCE(?, finished_at),
           updated_at = ?
         WHERE id = ? AND user_id = ?
-      `)
-      .bind(
-        data.status ?? null,
-        data.progress !== undefined ? data.progress : null,
-        data.userScore !== undefined ? data.userScore : null,
-        data.notes !== undefined ? data.notes : null,
-        data.startedAt !== undefined ? data.startedAt : null,
-        data.finishedAt !== undefined ? data.finishedAt : null,
-        Date.now(),
-        data.id,
-        userId,
-      )
-      .run();
+      `,
+        )
+        .bind(
+          data.status ?? null,
+          data.progress !== undefined ? data.progress : null,
+          data.userScore !== undefined ? data.userScore : null,
+          data.notes !== undefined ? data.notes : null,
+          data.startedAt !== undefined ? data.startedAt : null,
+          data.finishedAt !== undefined ? data.finishedAt : null,
+          Date.now(),
+          data.id,
+          userId,
+        )
+        .run();
 
-    return c.json({ success: true });
-  })
-  .post('/delete', zValidator('json', z.object({
-    id: z.string()
-  })), async (c) => {
-    const data = c.req.valid('json');
-    const userId = await validateSession(c.env.DB, c.req.raw);
-    if (!userId) return c.json({ error: "Unauthorized" }, 401);
+      return c.json({ success: true });
+    },
+  )
+  .post(
+    "/delete",
+    zValidator(
+      "json",
+      z.object({
+        id: z.string(),
+      }),
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      const userId = await validateSession(c.env.DB, c.req.raw);
+      if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
-    const db = c.env.DB;
-    await db
-      .prepare("DELETE FROM user_media WHERE id = ? AND user_id = ?")
-      .bind(data.id, userId)
-      .run();
+      const db = c.env.DB;
+      await db
+        .prepare("DELETE FROM user_media WHERE id = ? AND user_id = ?")
+        .bind(data.id, userId)
+        .run();
 
-    return c.json({ success: true });
-  });
+      return c.json({ success: true });
+    },
+  );

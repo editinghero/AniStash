@@ -12,14 +12,15 @@ const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 export default function SettingsPage() {
   useDocumentMetadata(
     "Settings — AniStash",
-    "Configure your Gemini API key and model."
+    "Configure your Gemini API key and model.",
   );
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState(DEFAULT_GEMINI_MODEL);
 
   useEffect(() => {
-    rpc.api.settings.$get()
-      .then(res => res.json())
+    rpc.api.settings
+      .$get()
+      .then((res) => res.json())
       .then((s) => {
         setApiKey(s.geminiApiKey ?? "");
         setModel(s.geminiModel ?? DEFAULT_GEMINI_MODEL);
@@ -41,7 +42,9 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error("Failed to save settings");
       toast.success("Settings saved to database");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save settings");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to save settings",
+      );
     }
   }
 
@@ -55,10 +58,13 @@ export default function SettingsPage() {
       </Link>
 
       <header>
-        <h1 className="font-display text-3xl md:text-4xl font-bold">Settings</h1>
+        <h1 className="font-display text-3xl md:text-4xl font-bold">
+          Settings
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          AniStash uses your own Google Gemini key for bookmark title extraction.
-          It is stored encrypted at rest in the database and is decrypted only when querying Gemini.
+          AniStash uses your own Google Gemini key for bookmark title
+          extraction. It is stored encrypted at rest in the database and is
+          decrypted only when querying Gemini.
         </p>
       </header>
 
@@ -67,7 +73,10 @@ export default function SettingsPage() {
         className="space-y-5 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card"
       >
         <div>
-          <Label htmlFor="key" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
+          <Label
+            htmlFor="key"
+            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground"
+          >
             <KeyRound className="h-3 w-3" /> Gemini API key
           </Label>
           <Input
@@ -94,7 +103,10 @@ export default function SettingsPage() {
         </div>
 
         <div>
-          <Label htmlFor="model" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
+          <Label
+            htmlFor="model"
+            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground"
+          >
             <Sparkles className="h-3 w-3" /> Model ID
           </Label>
           <Input
@@ -105,7 +117,8 @@ export default function SettingsPage() {
             className="mt-2 bg-surface font-mono text-sm"
           />
           <p className="mt-1.5 text-[11px] text-muted-foreground">
-            e.g. <code>gemini-2.5-flash</code>, <code>gemini-3.5-flash</code>, <code>gemma-4-31b-it</code>.
+            e.g. <code>gemini-2.5-flash</code>, <code>gemini-3.5-flash</code>,{" "}
+            <code>gemma-4-31b-it</code>.
           </p>
         </div>
 

@@ -1,24 +1,29 @@
-import { Hono } from 'hono';
-import { handle } from 'hono/cloudflare-pages';
-import { authRouter } from './auth';
-import { settingsRouter } from './settings';
-import { libraryRouter } from './library';
-import { anilistRouter } from './anilist';
-import { aiRouter } from './ai';
+import { Hono } from "hono";
+import { handle } from "hono/cloudflare-pages";
+import { authRouter } from "./auth";
+import { settingsRouter } from "./settings";
+import { libraryRouter } from "./library";
+import { anilistRouter } from "./anilist";
+import { aiRouter } from "./ai";
 
 type Bindings = {
   DB: D1Database;
 };
 
-const app = new Hono<{ Bindings: Bindings }>().basePath('/api');
+const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
+
+app.onError((err, c) => {
+  console.error(err);
+  return c.json({ error: err.message || "Internal Server Error" }, 500);
+});
 
 // Mount sub-routers
 const routes = app
-  .route('/auth', authRouter)
-  .route('/settings', settingsRouter)
-  .route('/library', libraryRouter)
-  .route('/anilist', anilistRouter)
-  .route('/ai', aiRouter);
+  .route("/auth", authRouter)
+  .route("/settings", settingsRouter)
+  .route("/library", libraryRouter)
+  .route("/anilist", anilistRouter)
+  .route("/ai", aiRouter);
 
 export type AppRouter = typeof routes;
 

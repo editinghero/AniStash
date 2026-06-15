@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
-import {
-  statusLabels,
-  type LibraryEntry,
-  type ListStatus,
-} from "@/lib/types";
+import { statusLabels, type LibraryEntry, type ListStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { EntryDetailDialog } from "@/components/entry-detail-dialog";
 
 const statusColor: Record<ListStatus, string> = {
-  WATCHING: "bg-status-watching/15 text-status-watching ring-status-watching/30",
-  COMPLETED: "bg-status-completed/15 text-status-completed ring-status-completed/30",
-  PLANNING: "bg-status-planning/15 text-status-planning ring-status-planning/30",
+  WATCHING:
+    "bg-status-watching/15 text-status-watching ring-status-watching/30",
+  COMPLETED:
+    "bg-status-completed/15 text-status-completed ring-status-completed/30",
+  PLANNING:
+    "bg-status-planning/15 text-status-planning ring-status-planning/30",
   ON_HOLD: "bg-status-hold/15 text-status-hold ring-status-hold/30",
   DROPPED: "bg-status-dropped/15 text-status-dropped ring-status-dropped/30",
 };
@@ -19,7 +18,9 @@ const statusColor: Record<ListStatus, string> = {
 export function MediaCard({ entry }: { entry: LibraryEntry }) {
   const [open, setOpen] = useState(false);
   const labels = statusLabels(entry.type);
-  const score = entry.averageScore ? (entry.averageScore / 10).toFixed(1) : null;
+  const score = entry.averageScore
+    ? (entry.averageScore / 10).toFixed(1)
+    : null;
   const total =
     entry.type === "MANGA"
       ? entry.chapters
@@ -27,7 +28,8 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
         ? undefined
         : entry.episodes;
   const progress = entry.progress ?? 0;
-  const progressPct = total && total > 0 ? Math.min(100, (progress / total) * 100) : 0;
+  const progressPct =
+    total && total > 0 ? Math.min(100, (progress / total) * 100) : 0;
 
   return (
     <>
@@ -92,7 +94,7 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
           <p className="line-clamp-1 text-[10px] sm:text-[11px] text-muted-foreground">
             {entry.genres && entry.genres.length > 0
               ? entry.genres.slice(0, 2).join(" · ")
-              : entry.format ?? ""}
+              : (entry.format ?? "")}
             {total != null && (
               <span className="ml-1 opacity-70">
                 · {progress}/{total}

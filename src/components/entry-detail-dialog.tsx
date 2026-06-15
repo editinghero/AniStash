@@ -24,9 +24,12 @@ import { toast } from "sonner";
 import { CardAIChat } from "./card-ai-chat";
 
 const statusRing: Record<ListStatus, string> = {
-  WATCHING: "ring-status-watching/50 bg-status-watching/15 text-status-watching",
-  COMPLETED: "ring-status-completed/50 bg-status-completed/15 text-status-completed",
-  PLANNING: "ring-status-planning/50 bg-status-planning/15 text-status-planning",
+  WATCHING:
+    "ring-status-watching/50 bg-status-watching/15 text-status-watching",
+  COMPLETED:
+    "ring-status-completed/50 bg-status-completed/15 text-status-completed",
+  PLANNING:
+    "ring-status-planning/50 bg-status-planning/15 text-status-planning",
   ON_HOLD: "ring-status-hold/50 bg-status-hold/15 text-status-hold",
   DROPPED: "ring-status-dropped/50 bg-status-dropped/15 text-status-dropped",
 };
@@ -88,13 +91,20 @@ export function EntryDetailDialog({
   const isManga = entry.type === "MANGA";
   const isSeries = entry.type === "SERIES";
   const labels = statusLabels(entry.type);
-  const total = isManga ? entry.chapters : isSeries ? undefined : entry.episodes;
+  const total = isManga
+    ? entry.chapters
+    : isSeries
+      ? undefined
+      : entry.episodes;
   const unit = isManga ? "chapters" : isSeries ? "episodes" : "episodes";
   const anilistScore =
     entry.averageScore != null ? (entry.averageScore / 10).toFixed(1) : null;
 
   function save() {
-    const score = userScore === "" ? undefined : Math.max(0, Math.min(10, Number(userScore)));
+    const score =
+      userScore === ""
+        ? undefined
+        : Math.max(0, Math.min(10, Number(userScore)));
     const prog = progress === "" ? 0 : Math.max(0, Number(progress));
     updateEntry(entry!.id, {
       status,
@@ -148,18 +158,25 @@ export function EntryDetailDialog({
                 <DialogTitle className="font-display text-lg sm:text-xl leading-tight line-clamp-2">
                   {entry.englishTitle || entry.title}
                 </DialogTitle>
-                {entry.title && entry.englishTitle && entry.title !== entry.englishTitle && (
-                  <DialogDescription className="text-xs line-clamp-1">
-                    {entry.title}
-                  </DialogDescription>
-                )}
+                {entry.title &&
+                  entry.englishTitle &&
+                  entry.title !== entry.englishTitle && (
+                    <DialogDescription className="text-xs line-clamp-1">
+                      {entry.title}
+                    </DialogDescription>
+                  )}
               </DialogHeader>
               <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-muted-foreground">
                 {entry.format && <span>{entry.format}</span>}
-                {total != null && <span>· {total} {unit}</span>}
+                {total != null && (
+                  <span>
+                    · {total} {unit}
+                  </span>
+                )}
                 {anilistScore && (
                   <span className="inline-flex items-center gap-1 text-status-planning">
-                    <Star className="h-3 w-3 fill-status-planning" /> {anilistScore} AniList
+                    <Star className="h-3 w-3 fill-status-planning" />{" "}
+                    {anilistScore} AniList
                   </span>
                 )}
               </div>
@@ -193,10 +210,12 @@ export function EntryDetailDialog({
                   <span className="text-[10px] uppercase font-semibold tracking-wide text-muted-foreground block mb-1">
                     Status
                   </span>
-                  <span className={cn(
-                    "inline-block rounded-md px-2 py-0.5 text-[10px] font-semibold ring-1",
-                    statusRing[status]
-                  )}>
+                  <span
+                    className={cn(
+                      "inline-block rounded-md px-2 py-0.5 text-[10px] font-semibold ring-1",
+                      statusRing[status],
+                    )}
+                  >
                     {labels[status]}
                   </span>
                 </div>
@@ -223,7 +242,9 @@ export function EntryDetailDialog({
                         {Number(userScore).toFixed(1)}/10
                       </>
                     ) : (
-                      <span className="text-muted-foreground font-normal text-[11px]">Unrated</span>
+                      <span className="text-muted-foreground font-normal text-[11px]">
+                        Unrated
+                      </span>
                     )}
                   </span>
                 </div>
@@ -235,13 +256,27 @@ export function EntryDetailDialog({
                   </span>
                   <div className="text-[10px] space-y-0.5 text-foreground/90 font-medium leading-tight">
                     {startedAt ? (
-                      <div>Started: {new Date(startedAt + "T00:00:00").toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</div>
+                      <div>
+                        Started:{" "}
+                        {new Date(startedAt + "T00:00:00").toLocaleDateString(
+                          undefined,
+                          { month: "short", day: "numeric", year: "numeric" },
+                        )}
+                      </div>
                     ) : null}
                     {finishedAt ? (
-                      <div>Finished: {new Date(finishedAt + "T00:00:00").toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</div>
+                      <div>
+                        Finished:{" "}
+                        {new Date(finishedAt + "T00:00:00").toLocaleDateString(
+                          undefined,
+                          { month: "short", day: "numeric", year: "numeric" },
+                        )}
+                      </div>
                     ) : null}
                     {!startedAt && !finishedAt && (
-                      <span className="text-muted-foreground text-[11px] font-normal">No dates</span>
+                      <span className="text-muted-foreground text-[11px] font-normal">
+                        No dates
+                      </span>
                     )}
                   </div>
                 </div>
@@ -270,7 +305,7 @@ export function EntryDetailDialog({
                   <ExternalLink className="h-3 w-3" /> Source bookmark
                 </a>
               )}
-              
+
               {/* AI Chat */}
               <CardAIChat entry={entry} />
             </div>
@@ -303,8 +338,14 @@ export function EntryDetailDialog({
               {/* Progress + score */}
               <div className="mt-5 grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="progress" className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                    Progress {total != null && <span className="normal-case opacity-70">/ {total}</span>}
+                  <Label
+                    htmlFor="progress"
+                    className="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
+                    Progress{" "}
+                    {total != null && (
+                      <span className="normal-case opacity-70">/ {total}</span>
+                    )}
                   </Label>
                   <Input
                     id="progress"
@@ -317,8 +358,12 @@ export function EntryDetailDialog({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="score" className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                    Your score <span className="normal-case opacity-70">/ 10</span>
+                  <Label
+                    htmlFor="score"
+                    className="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
+                    Your score{" "}
+                    <span className="normal-case opacity-70">/ 10</span>
                   </Label>
                   <Input
                     id="score"
@@ -337,7 +382,10 @@ export function EntryDetailDialog({
               {/* Dates */}
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="started" className="text-[11px] uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1">
+                  <Label
+                    htmlFor="started"
+                    className="text-[11px] uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1"
+                  >
                     <Calendar className="h-3 w-3" /> Started
                   </Label>
                   <Input
@@ -349,7 +397,10 @@ export function EntryDetailDialog({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="finished" className="text-[11px] uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1">
+                  <Label
+                    htmlFor="finished"
+                    className="text-[11px] uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1"
+                  >
                     <Calendar className="h-3 w-3" /> Finished
                   </Label>
                   <Input
@@ -364,7 +415,10 @@ export function EntryDetailDialog({
 
               {/* Notes */}
               <div className="mt-4">
-                <Label htmlFor="notes" className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                <Label
+                  htmlFor="notes"
+                  className="text-[11px] uppercase tracking-wide text-muted-foreground"
+                >
                   Notes
                 </Label>
                 <Textarea
@@ -394,7 +448,13 @@ export function EntryDetailDialog({
         <DialogFooter className="flex-row gap-2 border-t border-border/60 bg-card/80 px-5 sm:px-6 py-3 backdrop-blur">
           {!isEditing ? (
             <>
-              <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)} className="ml-auto">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onOpenChange(false)}
+                className="ml-auto"
+              >
                 Close
               </Button>
               <Button
@@ -417,7 +477,12 @@ export function EntryDetailDialog({
               >
                 <Trash2 className="h-4 w-4 mr-1.5" /> Remove
               </Button>
-              <Button type="button" variant="outline" size="sm" onClick={handleCancelEdit}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleCancelEdit}
+              >
                 Cancel
               </Button>
               <Button

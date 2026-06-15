@@ -13,7 +13,7 @@ async function refresh() {
   try {
     const res = await rpc.api.library.$get();
     if (res.ok) {
-      cache = await res.json() as unknown as LibraryEntry[];
+      cache = (await res.json()) as unknown as LibraryEntry[];
       loaded = true;
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("otaku:library-changed"));
@@ -39,17 +39,20 @@ export function getEntry(id: string): LibraryEntry | undefined {
 export function upsertEntry(
   entry: Omit<LibraryEntry, "id" | "createdAt" | "updatedAt"> & { id?: string },
 ): LibraryEntry {
-  void rpc.api.library.upsert.$post({ json: entry as any }).then(async (res) => {
-    if (res.ok) {
-      const row = await res.json() as unknown as LibraryEntry;
-      const idx = cache.findIndex((e) => e.id === row.id);
-      if (idx >= 0) cache[idx] = row;
-      else cache.push(row);
-      window.dispatchEvent(new CustomEvent("otaku:library-changed"));
-    }
-  }).catch((err) => {
-    console.error("Failed to upsert entry on D1", err);
-  });
+  void rpc.api.library.upsert
+    .$post({ json: entry as any })
+    .then(async (res) => {
+      if (res.ok) {
+        const row = (await res.json()) as unknown as LibraryEntry;
+        const idx = cache.findIndex((e) => e.id === row.id);
+        if (idx >= 0) cache[idx] = row;
+        else cache.push(row);
+        window.dispatchEvent(new CustomEvent("otaku:library-changed"));
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to upsert entry on D1", err);
+    });
   return {
     ...entry,
     id: entry.id ?? crypto.randomUUID(),
@@ -64,19 +67,22 @@ export function updateEntry(id: string, patch: Partial<LibraryEntry>) {
     cache[idx] = { ...cache[idx], ...patch, updatedAt: Date.now() };
     window.dispatchEvent(new CustomEvent("otaku:library-changed"));
   }
-  void rpc.api.library.update.$post({
-    json: {
-      id,
-      status: patch.status,
-      progress: patch.progress,
-      userScore: patch.userScore,
-      notes: patch.notes,
-      startedAt: patch.startedAt,
-      finishedAt: patch.finishedAt,
-    },
-  }).then(refresh).catch((err) => {
-    console.error("Failed to update entry on D1", err);
-  });
+  void rpc.api.library.update
+    .$post({
+      json: {
+        id,
+        status: patch.status,
+        progress: patch.progress,
+        userScore: patch.userScore,
+        notes: patch.notes,
+        startedAt: patch.startedAt,
+        finishedAt: patch.finishedAt,
+      },
+    })
+    .then(refresh)
+    .catch((err) => {
+      console.error("Failed to update entry on D1", err);
+    });
 }
 
 export function setStatus(id: string, status: ListStatus) {
@@ -86,9 +92,12 @@ export function setStatus(id: string, status: ListStatus) {
 export function deleteEntry(id: string) {
   cache = cache.filter((e) => e.id !== id);
   window.dispatchEvent(new CustomEvent("otaku:library-changed"));
-  void rpc.api.library.delete.$post({ json: { id } }).then(refresh).catch((err) => {
-    console.error("Failed to delete entry on D1", err);
-  });
+  void rpc.api.library.delete
+    .$post({ json: { id } })
+    .then(refresh)
+    .catch((err) => {
+      console.error("Failed to delete entry on D1", err);
+    });
 }
 
 export function subscribe(cb: () => void) {

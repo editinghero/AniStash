@@ -35,7 +35,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         tokens.push(
           <strong key={keyIdx++} className="font-semibold text-foreground">
             {matchedText.slice(2, -2)}
-          </strong>
+          </strong>,
         );
       } else if (
         (matchedText.startsWith("*") && matchedText.endsWith("*")) ||
@@ -44,9 +44,12 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         tokens.push(<em key={keyIdx++}>{matchedText.slice(1, -1)}</em>);
       } else if (matchedText.startsWith("`") && matchedText.endsWith("`")) {
         tokens.push(
-          <code key={keyIdx++} className="px-1 py-0.5 rounded bg-muted/60 text-xs font-mono font-medium text-foreground">
+          <code
+            key={keyIdx++}
+            className="px-1 py-0.5 rounded bg-muted/60 text-xs font-mono font-medium text-foreground"
+          >
             {matchedText.slice(1, -1)}
-          </code>
+          </code>,
         );
       } else if (matchedText.startsWith("[") && matchedText.includes("](")) {
         const closeBrack = matchedText.indexOf("]");
@@ -61,7 +64,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             className="text-status-planning hover:underline font-medium break-all"
           >
             {label}
-          </a>
+          </a>,
         );
       }
 
@@ -80,7 +83,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       const lines = trimmed.split("\n");
       const codeLines = lines.slice(1, -1).join("\n");
       return (
-        <pre key={blockIdx} className="p-3 my-2 rounded-lg bg-surface border border-border/40 font-mono text-xs overflow-x-auto text-foreground/90">
+        <pre
+          key={blockIdx}
+          className="p-3 my-2 rounded-lg bg-surface border border-border/40 font-mono text-xs overflow-x-auto text-foreground/90"
+        >
           <code>{codeLines}</code>
         </pre>
       );
@@ -89,31 +95,47 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     // Headers
     if (trimmed.startsWith("# ")) {
       return (
-        <h1 key={blockIdx} className="text-xl font-bold font-display mt-4 mb-2 text-foreground">
+        <h1
+          key={blockIdx}
+          className="text-xl font-bold font-display mt-4 mb-2 text-foreground"
+        >
           {parseInline(trimmed.slice(2))}
         </h1>
       );
     }
     if (trimmed.startsWith("## ")) {
       return (
-        <h2 key={blockIdx} className="text-lg font-bold font-display mt-3 mb-2 text-foreground">
+        <h2
+          key={blockIdx}
+          className="text-lg font-bold font-display mt-3 mb-2 text-foreground"
+        >
           {parseInline(trimmed.slice(3))}
         </h2>
       );
     }
     if (trimmed.startsWith("### ")) {
       return (
-        <h3 key={blockIdx} className="text-base font-bold font-display mt-3 mb-1.5 text-foreground">
+        <h3
+          key={blockIdx}
+          className="text-base font-bold font-display mt-3 mb-1.5 text-foreground"
+        >
           {parseInline(trimmed.slice(4))}
         </h3>
       );
     }
 
     // Bullet list
-    if (trimmed.startsWith("* ") || trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
+    if (
+      trimmed.startsWith("* ") ||
+      trimmed.startsWith("- ") ||
+      trimmed.startsWith("• ")
+    ) {
       const items = trimmed.split(/\n[*\-•]\s+/);
       return (
-        <ul key={blockIdx} className="list-disc pl-5 my-2 space-y-1 text-foreground/80">
+        <ul
+          key={blockIdx}
+          className="list-disc pl-5 my-2 space-y-1 text-foreground/80"
+        >
           {items.map((item, itemIdx) => {
             // Clean up prefix if any
             const cleaned = item.replace(/^[*\-•]\s+/, "");
@@ -127,7 +149,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     if (/^\d+\.\s+/.test(trimmed)) {
       const items = trimmed.split(/\n\d+\.\s+/);
       return (
-        <ol key={blockIdx} className="list-decimal pl-5 my-2 space-y-1 text-foreground/80">
+        <ol
+          key={blockIdx}
+          className="list-decimal pl-5 my-2 space-y-1 text-foreground/80"
+        >
           {items.map((item, itemIdx) => {
             const cleaned = item.replace(/^\d+\.\s+/, "");
             return <li key={itemIdx}>{parseInline(cleaned)}</li>;
@@ -150,5 +175,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     );
   };
 
-  return <div className="space-y-2">{blocks.map((block, idx) => renderBlock(block, idx))}</div>;
+  return (
+    <div className="space-y-2">
+      {blocks.map((block, idx) => renderBlock(block, idx))}
+    </div>
+  );
 }

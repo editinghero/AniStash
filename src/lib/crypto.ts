@@ -15,7 +15,7 @@ async function getCryptoKey(secretKey: string): Promise<CryptoKey> {
     hashed,
     { name: "AES-GCM" },
     false,
-    ["encrypt", "decrypt"]
+    ["encrypt", "decrypt"],
   );
 }
 
@@ -26,7 +26,7 @@ async function getPbkdf2Key(password: string): Promise<CryptoKey> {
     encoder.encode(password),
     { name: "PBKDF2" },
     false,
-    ["deriveKey", "deriveBits"]
+    ["deriveKey", "deriveBits"],
   );
 }
 
@@ -38,19 +38,22 @@ export async function hashPassword(password: string): Promise<string> {
       name: "PBKDF2",
       salt,
       iterations: 100000,
-      hash: "SHA-256"
+      hash: "SHA-256",
     },
     baseKey,
     { name: "HMAC", hash: "SHA-256", length: 256 },
     true,
-    ["sign"]
+    ["sign"],
   );
   const exported = await crypto.subtle.exportKey("raw", derivedKey);
   const keyBytes = new Uint8Array(exported);
   return `${toBase64(salt)}:${toBase64(keyBytes)}`;
 }
 
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+export async function verifyPassword(
+  password: string,
+  hash: string,
+): Promise<boolean> {
   const parts = hash.split(":");
   if (parts.length !== 2) return false;
   const [saltBase64, keyBase64] = parts;
@@ -63,12 +66,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
       name: "PBKDF2",
       salt,
       iterations: 100000,
-      hash: "SHA-256"
+      hash: "SHA-256",
     },
     baseKey,
     { name: "HMAC", hash: "SHA-256", length: 256 },
     true,
-    ["sign"]
+    ["sign"],
   );
   const exported = await crypto.subtle.exportKey("raw", derivedKey);
   const keyBytes = new Uint8Array(exported);
@@ -81,7 +84,10 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return matches;
 }
 
-export async function encryptApiKey(apiKey: string, secretKey: string): Promise<string> {
+export async function encryptApiKey(
+  apiKey: string,
+  secretKey: string,
+): Promise<string> {
   if (!secretKey) throw new Error("Encryption key not configured");
   const key = await getCryptoKey(secretKey);
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -89,12 +95,15 @@ export async function encryptApiKey(apiKey: string, secretKey: string): Promise<
   const ciphertext = await crypto.subtle.encrypt(
     { name: "AES-GCM", iv },
     key,
-    encoder.encode(apiKey)
+    encoder.encode(apiKey),
   );
   return `${toBase64(iv)}:${toBase64(new Uint8Array(ciphertext))}`;
 }
 
-export async function decryptApiKey(encrypted: string, secretKey: string): Promise<string> {
+export async function decryptApiKey(
+  encrypted: string,
+  secretKey: string,
+): Promise<string> {
   if (!secretKey) throw new Error("Encryption key not configured");
   const parts = encrypted.split(":");
   if (parts.length !== 2) throw new Error("Invalid encrypted format");
@@ -106,7 +115,7 @@ export async function decryptApiKey(encrypted: string, secretKey: string): Promi
   const decrypted = await crypto.subtle.decrypt(
     { name: "AES-GCM", iv },
     key,
-    ciphertext
+    ciphertext,
   );
   const decoder = new TextDecoder();
   return decoder.decode(decrypted);

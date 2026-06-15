@@ -3,11 +3,7 @@ import { Link } from "@/lib/router";
 import { useLibrary } from "@/lib/use-library";
 import { MediaCard } from "@/components/media-card";
 import { StatusTabs } from "@/components/status-tabs";
-import {
-  ALL_STATUSES,
-  type ListStatus,
-  type MediaType,
-} from "@/lib/types";
+import { ALL_STATUSES, type ListStatus, type MediaType } from "@/lib/types";
 import { Plus } from "lucide-react";
 
 export function LibraryPage({
@@ -41,7 +37,8 @@ export function LibraryPage({
       if (status !== "ALL" && e.status !== status) return false;
       if (query) {
         const q = query.toLowerCase();
-        const hay = `${e.title} ${e.englishTitle ?? ""} ${e.nativeTitle ?? ""} ${(e.genres ?? []).join(" ")}`.toLowerCase();
+        const hay =
+          `${e.title} ${e.englishTitle ?? ""} ${e.nativeTitle ?? ""} ${(e.genres ?? []).join(" ")}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -52,7 +49,9 @@ export function LibraryPage({
     <main className="mx-auto max-w-6xl px-4 py-10 space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold">{title}</h1>
+          <h1 className="font-display text-3xl md:text-4xl font-bold">
+            {title}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground max-w-xl">{intro}</p>
         </div>
         <Link
@@ -64,7 +63,12 @@ export function LibraryPage({
       </div>
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <StatusTabs type={type} value={status} counts={counts} onChange={setStatus} />
+        <StatusTabs
+          type={type}
+          value={status}
+          counts={counts}
+          onChange={setStatus}
+        />
         <input
           type="search"
           placeholder="Search your list…"
@@ -101,7 +105,8 @@ export function LibraryPage({
 
       {/* hint to use status filter */}
       <p className="text-xs text-muted-foreground pt-2">
-        Tip: click the status pill on any card to change it ({ALL_STATUSES.length} states).
+        Tip: click the status pill on any card to change it (
+        {ALL_STATUSES.length} states).
       </p>
     </main>
   );

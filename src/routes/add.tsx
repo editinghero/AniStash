@@ -1,10 +1,7 @@
 import { useNavigate, useDocumentMetadata } from "@/lib/router";
 import { useState } from "react";
 import { parseBookmark } from "@/lib/anilist.functions";
-import {
-  searchAnilist,
-  type AnilistMedia,
-} from "@/lib/anilist-client";
+import { searchAnilist, type AnilistMedia } from "@/lib/anilist-client";
 import { upsertEntry } from "@/lib/repo/library";
 import {
   ALL_STATUSES,
@@ -30,7 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 export default function AddPage() {
   useDocumentMetadata(
     "Add entry — AniStash",
-    "Add anime or manga from a URL, or a fully-custom series entry with your own title and notes."
+    "Add anime or manga from a URL, or a fully-custom series entry with your own title and notes.",
   );
   const navigate = useNavigate();
 
@@ -40,7 +37,9 @@ export default function AddPage() {
   const [editedTitle, setEditedTitle] = useState("");
   const [aiNotes, setAiNotes] = useState("");
   const [candidates, setCandidates] = useState<AnilistMedia[]>([]);
-  const [loading, setLoading] = useState<"parse" | "search" | "save" | null>(null);
+  const [loading, setLoading] = useState<"parse" | "search" | "save" | null>(
+    null,
+  );
   const [step, setStep] = useState<"input" | "confirm">("input");
   const [seriesTitle, setSeriesTitle] = useState("");
   const [seriesDescription, setSeriesDescription] = useState("");
@@ -72,7 +71,8 @@ export default function AddPage() {
     }
     const inputVal = url.trim();
     if (!inputVal) return;
-    const isUrlInput = inputVal.startsWith("http://") || inputVal.startsWith("https://");
+    const isUrlInput =
+      inputVal.startsWith("http://") || inputVal.startsWith("https://");
 
     if (isUrlInput) {
       setLoading("parse");
@@ -86,7 +86,8 @@ export default function AddPage() {
         setAiNotes(res.notes);
         setCandidates(res.candidates);
         setStep("confirm");
-        if (!res.title) toast.error("Couldn't extract a title. Try editing it manually.");
+        if (!res.title)
+          toast.error("Couldn't extract a title. Try editing it manually.");
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Failed to parse URL");
       } finally {
@@ -137,7 +138,8 @@ export default function AddPage() {
     if (type === "SERIES") return;
     setLoading("save");
     try {
-      const isUrlInput = url.trim().startsWith("http://") || url.trim().startsWith("https://");
+      const isUrlInput =
+        url.trim().startsWith("http://") || url.trim().startsWith("https://");
       const sourceUrl = isUrlInput
         ? url.trim()
         : `https://anilist.co/${media.type.toLowerCase()}/${media.id}`;
@@ -174,7 +176,9 @@ export default function AddPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 space-y-6">
       <button
-        onClick={() => (step === "confirm" ? setStep("input") : navigate({ to: "/" }))}
+        onClick={() =>
+          step === "confirm" ? setStep("input") : navigate({ to: "/" })
+        }
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" /> Back
@@ -299,7 +303,8 @@ export default function AddPage() {
                 <Loader2 className="h-4 w-4 animate-spin" />
                 {type === "SERIES"
                   ? "Saving…"
-                  : url.trim().startsWith("http://") || url.trim().startsWith("https://")
+                  : url.trim().startsWith("http://") ||
+                      url.trim().startsWith("https://")
                     ? "Extracting title…"
                     : "Searching AniList…"}
               </>
@@ -309,7 +314,10 @@ export default function AddPage() {
               </>
             ) : (
               <>
-                {url.trim().startsWith("http://") || url.trim().startsWith("https://") ? "Detect & find matches" : "Search AniList"}
+                {url.trim().startsWith("http://") ||
+                url.trim().startsWith("https://")
+                  ? "Detect & find matches"
+                  : "Search AniList"}
               </>
             )}
           </button>

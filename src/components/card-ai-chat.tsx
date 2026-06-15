@@ -20,6 +20,7 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   const [isInitializing, setIsInitializing] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchHistory();
   }, [entry.id]);
@@ -64,7 +65,10 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
         throw new Error(data.error || "Failed to communicate with AI");
       }
 
-      setMessages((prev) => [...prev, { role: "model", text: data.text, thought: data.thought }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", text: data.text, thought: data.thought },
+      ]);
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
       setMessages((prev) => prev.slice(0, -1)); // Revert
@@ -74,7 +78,8 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   };
 
   const handleClear = async () => {
-    if (!confirm("Are you sure you want to clear this item's chat history?")) return;
+    if (!confirm("Are you sure you want to clear this item's chat history?"))
+      return;
     try {
       const res = await fetch("/api/ai/clear-chat", {
         method: "DELETE",
@@ -123,15 +128,30 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
           </div>
         ) : (
           messages.map((msg, idx) => (
-            <div key={idx} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-              <div className={`grid h-6 w-6 shrink-0 place-items-center rounded-full ${msg.role === "user" ? "bg-surface ring-1 ring-border" : "bg-gradient-accent text-white"}`}>
-                {msg.role === "user" ? <User className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+            <div
+              key={idx}
+              className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+            >
+              <div
+                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full ${msg.role === "user" ? "bg-surface ring-1 ring-border" : "bg-gradient-accent text-white"}`}
+              >
+                {msg.role === "user" ? (
+                  <User className="h-3 w-3" />
+                ) : (
+                  <Bot className="h-3 w-3" />
+                )}
               </div>
-              <div className={`rounded-xl px-3 py-2 text-[13px] leading-relaxed max-w-[85%] ${msg.role === "user" ? "bg-surface text-foreground whitespace-pre-wrap" : "bg-background text-foreground/90 shadow-sm"}`}>
+              <div
+                className={`rounded-xl px-3 py-2 text-[13px] leading-relaxed max-w-[85%] ${msg.role === "user" ? "bg-surface text-foreground whitespace-pre-wrap" : "bg-background text-foreground/90 shadow-sm"}`}
+              >
                 {msg.role === "model" && msg.thought && (
                   <ThinkingProcess thought={msg.thought} />
                 )}
-                {msg.role === "user" ? msg.text : <MarkdownRenderer content={msg.text} />}
+                {msg.role === "user" ? (
+                  msg.text
+                ) : (
+                  <MarkdownRenderer content={msg.text} />
+                )}
               </div>
             </div>
           ))

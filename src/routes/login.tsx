@@ -10,7 +10,7 @@ import { rpc } from "@/lib/rpc";
 export default function LoginPage() {
   useDocumentMetadata(
     "Sign in — AniStash",
-    "Sign in to your AniStash account."
+    "Sign in to your AniStash account.",
   );
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await rpc.api.auth.login.$post({
-        json: { email, password }
+        json: { email, password },
       });
       const contentType = res.headers.get("content-type") || "";
       if (!res.ok) {
@@ -34,7 +34,10 @@ export default function LoginPage() {
           if (typeof data.error === "string") {
             errorMsg = data.error;
           } else if (data.error && typeof data.error === "object") {
-            errorMsg = data.error.message || data.error.issues?.[0]?.message || JSON.stringify(data.error);
+            errorMsg =
+              data.error.message ||
+              data.error.issues?.[0]?.message ||
+              JSON.stringify(data.error);
           } else if (data.message) {
             errorMsg = data.message;
           }
@@ -75,7 +78,10 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
+            <Label
+              htmlFor="email"
+              className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+            >
               <Mail className="h-3 w-3" /> Email Address
             </Label>
             <Input
@@ -91,7 +97,10 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="pass" className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground">
+            <Label
+              htmlFor="pass"
+              className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+            >
               <Lock className="h-3 w-3" /> Password
             </Label>
             <Input
@@ -123,7 +132,10 @@ export default function LoginPage() {
 
         <div className="text-center text-xs text-muted-foreground pt-2 border-t border-border/40">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline font-medium">
+          <Link
+            to="/signup"
+            className="text-primary hover:underline font-medium"
+          >
             Sign up here
           </Link>
         </div>
