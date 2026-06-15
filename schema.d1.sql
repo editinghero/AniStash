@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS user_media (
   source_url  TEXT,                             -- the URL the user pasted
   started_at  INTEGER,
   finished_at INTEGER,
+  ai_chat_history TEXT,                 -- JSON array of messages
   created_at  INTEGER NOT NULL,
   updated_at  INTEGER NOT NULL,
   UNIQUE (user_id, media_id)
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS user_settings (
   gemini_api_key   TEXT,                 -- encrypted ciphertext (recommended)
   gemini_model     TEXT DEFAULT 'gemini-2.5-flash',
   theme            TEXT DEFAULT 'dark',
+  global_chat_history TEXT,              -- JSON array of messages
   created_at       INTEGER NOT NULL,
   updated_at       INTEGER NOT NULL
 );

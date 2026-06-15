@@ -292,7 +292,7 @@ export default function AddPage() {
               loading != null ||
               (type === "SERIES" ? !seriesTitle.trim() : !url.trim())
             }
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-accent px-4 py-3 text-sm font-semibold text-primary-foreground shadow-glow disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-accent px-4 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-50"
           >
             {loading === "parse" || loading === "save" ? (
               <>
@@ -309,7 +309,7 @@ export default function AddPage() {
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" /> {url.trim().startsWith("http://") || url.trim().startsWith("https://") ? "Detect & find matches" : "Search AniList"}
+                {url.trim().startsWith("http://") || url.trim().startsWith("https://") ? "Detect & find matches" : "Search AniList"}
               </>
             )}
           </button>

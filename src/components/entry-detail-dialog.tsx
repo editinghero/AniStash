@@ -21,6 +21,7 @@ import { deleteEntry, updateEntry } from "@/lib/repo/library";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Trash2, Star, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { CardAIChat } from "./card-ai-chat";
 
 const statusRing: Record<ListStatus, string> = {
   WATCHING: "ring-status-watching/50 bg-status-watching/15 text-status-watching",
@@ -269,6 +270,9 @@ export function EntryDetailDialog({
                   <ExternalLink className="h-3 w-3" /> Source bookmark
                 </a>
               )}
+              
+              {/* AI Chat */}
+              <CardAIChat entry={entry} />
             </div>
           ) : (
             <div className="space-y-4">
@@ -397,7 +401,7 @@ export function EntryDetailDialog({
                 type="button"
                 size="sm"
                 onClick={() => setIsEditing(true)}
-                className="bg-gradient-accent text-primary-foreground hover:opacity-95"
+                className="bg-gradient-accent text-white hover:opacity-95"
               >
                 Edit entry
               </Button>
@@ -420,7 +424,7 @@ export function EntryDetailDialog({
                 type="button"
                 size="sm"
                 onClick={save}
-                className="bg-gradient-accent text-primary-foreground hover:opacity-95"
+                className="bg-gradient-accent text-white hover:opacity-95"
               >
                 Save changes
               </Button>

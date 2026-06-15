@@ -13,6 +13,7 @@ import { SeriesPage } from "./routes/series";
 import SettingsPage from "./routes/settings";
 import LoginPage from "./routes/login";
 import SignupPage from "./routes/signup";
+import DiscoverPage from "./routes/discover";
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -96,6 +97,8 @@ export default function App() {
     pageComponent = <LoginPage />;
   } else if (pathname === "/signup") {
     pageComponent = <SignupPage />;
+  } else if (pathname === "/discover") {
+    pageComponent = <DiscoverPage />;
   } else {
     // 404 Page
     pageComponent = (

@@ -1,5 +1,5 @@
 import { Link, useRouter, useRouteContext } from "@/lib/router";
-import { Library, Plus, BookOpen, Tv, Film, Settings, LogOut, User as UserIcon } from "lucide-react";
+import { Library, Plus, BookOpen, Tv, Film, Settings, LogOut, User as UserIcon, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ const nav = [
   { to: "/anime", label: "Anime", icon: Tv },
   { to: "/manga", label: "Manga", icon: BookOpen },
   { to: "/series", label: "Series", icon: Film },
+  { to: "/discover", icon: Sparkles },
 ];
 
 export function SiteHeader() {

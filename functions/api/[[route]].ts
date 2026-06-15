@@ -4,6 +4,7 @@ import { authRouter } from './auth';
 import { settingsRouter } from './settings';
 import { libraryRouter } from './library';
 import { anilistRouter } from './anilist';
+import { aiRouter } from './ai';
 
 type Bindings = {
   DB: D1Database;
@@ -16,7 +17,8 @@ const routes = app
   .route('/auth', authRouter)
   .route('/settings', settingsRouter)
   .route('/library', libraryRouter)
-  .route('/anilist', anilistRouter);
+  .route('/anilist', anilistRouter)
+  .route('/ai', aiRouter);
 
 export type AppRouter = typeof routes;
 
