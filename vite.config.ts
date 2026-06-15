@@ -13,6 +13,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       injectRegister: "auto",
       manifestFilename: "manifest.json",
+      devOptions: {
+        enabled: true,
+      },
       manifest: {
         name: "AniStash — Anime & Manga Tracker",
         short_name: "AniStash",
@@ -46,6 +49,9 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    host: true,
+  },
   optimizeDeps: {
     exclude: ["wrangler"],
   },

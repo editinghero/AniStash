@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { validateSession } from "../../src/lib/auth";
 import { decryptApiKey } from "../../src/lib/crypto";
-import type { AnilistMedia } from "../../src/lib/anilist.functions";
+import type { AnilistMedia } from "../../src/lib/anilist-client";
 
 type Bindings = {
   DB: D1Database;

@@ -214,7 +214,7 @@ export default function AddPage() {
                   type="button"
                   onClick={() => setType(v)}
                   className={cn(
-                    "inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-md px-1.5 sm:px-3 py-2 text-xs sm:text-sm font-medium transition-colors",
                     type === v
                       ? "bg-gradient-accent text-white"
                       : "text-muted-foreground hover:text-foreground",

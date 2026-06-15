@@ -1,5 +1,5 @@
 import { rpc } from "./rpc";
-import type { AnilistMedia } from "../../functions/api/anilist";
+import type { AnilistMedia } from "./anilist-client";
 
 export type { AnilistMedia };
 

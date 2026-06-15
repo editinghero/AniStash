@@ -3,13 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler pages dev --port=8788 -- vite dev",
+    "dev": "wrangler pages dev --ip=192.168.1.2 --port=9000 -- vite dev",
     "dev:vite": "vite dev",
+    "d1": "wrangler d1 execute anistash --local --file=./schema.d1.sql",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "preview": "vite preview",
-    "preview:d1": "vite build && npx wrangler dev dist/server/server.js --local --assets=dist/client",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "deploy": "wrangler d1 execute anistash --file=./schema.d1.sql --remote && vite build && wrangler pages deploy dist",
+    "preview:d1": "vite build && wrangler pages dev dist"
   },
   "dependencies": {
     "@google/genai": "^2.8.0",

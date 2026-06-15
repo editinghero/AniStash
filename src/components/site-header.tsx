@@ -24,7 +24,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const nav = [
-  { to: "/", label: "Home", icon: Library },
+  { to: "/", icon: Library },
   { to: "/anime", label: "Anime", icon: Tv },
   { to: "/manga", label: "Manga", icon: BookOpen },
   { to: "/series", label: "Series", icon: Film },
@@ -48,7 +48,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-lg">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 sm:gap-6 px-3 sm:px-4">
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-accent shadow-glow font-display text-lg font-bold text-white transition-transform group-hover:rotate-3">
             鬼
@@ -78,9 +78,9 @@ export function SiteHeader() {
             );
           })}
         </nav>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           {user && (
-            <div className="flex items-center gap-3 mr-2 border-r border-border/40 pr-3">
+            <div className="flex items-center gap-1.5 sm:gap-3 mr-1 sm:mr-2 border-r border-border/40 pr-1.5 sm:pr-3">
               <span className="text-xs text-muted-foreground hidden sm:inline">
                 Stashing as{" "}
                 <span className="font-semibold text-foreground">
@@ -90,7 +90,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="text-[11px] font-medium text-muted-foreground hover:text-status-dropped transition-colors"
+                className="text-[10px] sm:text-[11px] font-medium text-muted-foreground hover:text-status-dropped transition-colors"
               >
                 Log Out
               </button>
@@ -105,15 +105,15 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/add"
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-3 sm:px-4 py-2 text-sm font-semibold text-white shadow-card hover:opacity-95 transition-opacity"
+            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg bg-gradient-accent px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-card hover:opacity-95 transition-opacity"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Add from URL</span>
             <span className="sm:hidden">Add</span>
           </Link>
         </div>
       </div>
-      <nav className="md:hidden flex items-center gap-1 px-4 pb-3">
+      <nav className="md:hidden flex items-center gap-1 px-3 sm:px-4 pb-3">
         {nav.map((n) => {
           const active =
             n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
@@ -122,14 +122,14 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               className={cn(
-                "flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-medium",
+                "flex flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-lg px-2 sm:px-3 py-2 text-xs font-medium",
                 active
                   ? "bg-surface text-foreground"
                   : "text-muted-foreground bg-surface/40",
               )}
             >
               <n.icon className="h-3.5 w-3.5" />
-              {n.label}
+              <span className="hidden sm:inline">{n.label}</span>
             </Link>
           );
         })}
