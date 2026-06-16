@@ -143,7 +143,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         .bind(
           finalAnilistId,
           data.malId ?? null,
-          data.type === "SERIES" ? "ANIME" : data.type,
+          data.type,
           data.format ?? null,
           data.title,
           data.englishTitle ?? null,

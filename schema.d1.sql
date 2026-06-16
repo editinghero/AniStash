@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS media (
   id                INTEGER PRIMARY KEY AUTOINCREMENT,
   anilist_id        INTEGER NOT NULL,
   mal_id            INTEGER,                    -- AniList's idMal, nullable
-  type              TEXT NOT NULL CHECK (type IN ('ANIME','MANGA')),
+  type              TEXT NOT NULL CHECK (type IN ('ANIME','MANGA','SERIES')),
   format            TEXT,                       -- TV, MOVIE, OVA, MANGA, ...
   status            TEXT,                       -- FINISHED, RELEASING, ...
   title_romaji      TEXT,
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS import_jobs (
   user_id         TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   source_url      TEXT NOT NULL,
   detected_title  TEXT,
-  detected_type   TEXT CHECK (detected_type IN ('ANIME','MANGA')),
+  detected_type   TEXT CHECK (detected_type IN ('ANIME','MANGA','SERIES')),
   resolved_media_id INTEGER REFERENCES media(id) ON DELETE SET NULL,
   status          TEXT NOT NULL CHECK (status IN
                     ('PENDING','RESOLVED','NEEDS_REVIEW','FAILED'))
