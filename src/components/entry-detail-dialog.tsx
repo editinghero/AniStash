@@ -12,6 +12,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ALL_STATUSES,
   statusLabels,
   type LibraryEntry,
@@ -19,9 +25,10 @@ import {
 } from "@/lib/types";
 import { deleteEntry, updateEntry } from "@/lib/repo/library";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Trash2, Star, Calendar } from "lucide-react";
+import { ExternalLink, Trash2, Star, Calendar, CircleHelp } from "lucide-react";
 import { toast } from "sonner";
 import { CardAIChat } from "./card-ai-chat";
+import { MarkdownRenderer } from "./ui/markdown-renderer";
 
 const statusRing: Record<ListStatus, string> = {
   WATCHING:
@@ -59,6 +66,7 @@ export function EntryDetailDialog({
   const [progress, setProgress] = useState<string>("0");
   const [userScore, setUserScore] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const [sourceUrl, setSourceUrl] = useState<string>("");
   const [startedAt, setStartedAt] = useState<string>("");
   const [finishedAt, setFinishedAt] = useState<string>("");
   const [isEditing, setIsEditing] = useState(false);
@@ -69,6 +77,7 @@ export function EntryDetailDialog({
     setProgress(String(entry.progress ?? 0));
     setUserScore(entry.userScore != null ? String(entry.userScore) : "");
     setNotes(entry.notes ?? "");
+    setSourceUrl(entry.sourceUrl ?? "");
     setStartedAt(toDateInput(entry.startedAt));
     setFinishedAt(toDateInput(entry.finishedAt));
     setIsEditing(false);
@@ -80,6 +89,7 @@ export function EntryDetailDialog({
       setProgress(String(entry.progress ?? 0));
       setUserScore(entry.userScore != null ? String(entry.userScore) : "");
       setNotes(entry.notes ?? "");
+      setSourceUrl(entry.sourceUrl ?? "");
       setStartedAt(toDateInput(entry.startedAt));
       setFinishedAt(toDateInput(entry.finishedAt));
     }
@@ -110,7 +120,8 @@ export function EntryDetailDialog({
       status,
       progress: Number.isFinite(prog) ? prog : 0,
       userScore: score != null && Number.isFinite(score) ? score : undefined,
-      notes: notes.trim() || undefined,
+      notes: notes.trim() || null,
+      sourceUrl: sourceUrl.trim() || null,
       startedAt: fromDateInput(startedAt),
       finishedAt: fromDateInput(finishedAt),
     });
@@ -127,7 +138,15 @@ export function EntryDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0 border-border/60 bg-gradient-card">
+      <DialogContent
+        onInteractOutside={(event) => {
+          if (isEditing) event.preventDefault();
+        }}
+        onEscapeKeyDown={(event) => {
+          if (isEditing) event.preventDefault();
+        }}
+        className="max-w-2xl p-0 overflow-hidden gap-0 border-border/60 bg-gradient-card"
+      >
         {/* Banner */}
         <div className="relative h-32 sm:h-40 w-full overflow-hidden bg-surface">
           {entry.bannerImage ? (
@@ -139,10 +158,10 @@ export function EntryDetailDialog({
           ) : (
             <div className="h-full w-full bg-gradient-accent opacity-30" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
         </div>
 
-        <div className="relative -mt-16 sm:-mt-20 px-5 sm:px-6 pb-5 sm:pb-6 max-h-[75vh] overflow-y-auto">
+        <div className="stash-scrollbar relative -mt-16 sm:-mt-20 px-5 sm:px-6 pb-5 sm:pb-6 max-h-[75vh] overflow-y-auto">
           <div className="flex gap-4">
             <div className="h-28 w-20 sm:h-36 sm:w-24 flex-none overflow-hidden rounded-lg ring-2 ring-border bg-surface shadow-card">
               {entry.coverImage ? (
@@ -197,9 +216,9 @@ export function EntryDetailDialog({
           )}
 
           {entry.description && (
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground line-clamp-4">
-              {entry.description}
-            </p>
+            <div className="mt-4 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
+              <MarkdownRenderer content={entry.description} />
+            </div>
           )}
 
           {!isEditing ? (
@@ -288,9 +307,9 @@ export function EntryDetailDialog({
                   <span className="text-[10px] uppercase font-semibold tracking-wide text-muted-foreground block">
                     Personal Notes
                   </span>
-                  <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap">
-                    {notes}
-                  </p>
+                  <div className="text-sm leading-relaxed text-foreground/90">
+                    <MarkdownRenderer content={notes} />
+                  </div>
                 </div>
               )}
 
@@ -415,32 +434,64 @@ export function EntryDetailDialog({
 
               {/* Notes */}
               <div className="mt-4">
-                <Label
-                  htmlFor="notes"
-                  className="text-[11px] uppercase tracking-wide text-muted-foreground"
-                >
-                  Notes
-                </Label>
+                <div className="flex items-center gap-1.5">
+                  <Label
+                    htmlFor="notes"
+                    className="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
+                    Notes
+                  </Label>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label="Markdown help"
+                          className="inline-grid h-5 w-5 place-items-center rounded-full text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                        >
+                          <CircleHelp className="h-3.5 w-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs border border-border/60 bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground shadow-card">
+                        <p className="font-semibold text-foreground">
+                          Notes markdown
+                        </p>
+                        <p># H1, ## H2, ### H3</p>
+                        <p>**bold**, *italic*, ~~strike~~, `code`</p>
+                        <p>- bullets, 1. numbered, - [ ] tasks</p>
+                        <p>
+                          [label](https://example.com), &gt; quote, --- rule
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 <Textarea
                   id="notes"
-                  rows={3}
-                  placeholder="Thoughts, quotes, who recommended it…"
+                  rows={7}
+                  placeholder="Thoughts, quotes, links, headings, lists..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="mt-1.5 bg-surface resize-none"
+                  className="mt-1.5 min-h-40 bg-surface resize-y"
                 />
               </div>
 
-              {entry.sourceUrl && (
-                <a
-                  href={entry.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              <div className="mt-4">
+                <Label
+                  htmlFor="source-url"
+                  className="text-[11px] uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1"
                 >
                   <ExternalLink className="h-3 w-3" /> Source bookmark
-                </a>
-              )}
+                </Label>
+                <Input
+                  id="source-url"
+                  type="url"
+                  value={sourceUrl}
+                  onChange={(e) => setSourceUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="mt-1.5 bg-surface"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -453,7 +504,7 @@ export function EntryDetailDialog({
                 variant="outline"
                 size="sm"
                 onClick={() => onOpenChange(false)}
-                className="ml-auto"
+                className="ml-auto hover:bg-white/10 hover:text-foreground"
               >
                 Close
               </Button>
@@ -481,9 +532,13 @@ export function EntryDetailDialog({
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={handleCancelEdit}
+                onClick={() => {
+                  handleCancelEdit();
+                  onOpenChange(false);
+                }}
+                className="hover:bg-white/10 hover:text-foreground"
               >
-                Cancel
+                Close
               </Button>
               <Button
                 type="button"

@@ -122,7 +122,7 @@ export default function DiscoverPage() {
       </div>
 
       <div className="flex h-[calc(100vh-290px)] md:h-[65vh] min-h-[400px] flex-col rounded-2xl border border-border/60 bg-surface/50 backdrop-blur-md shadow-card overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+        <div className="stash-scrollbar flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
           {isInitializing ? (
             <div className="flex h-full items-center justify-center">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -176,7 +176,7 @@ export default function DiscoverPage() {
                   {msg.role === "user" ? (
                     msg.text
                   ) : (
-                    <MarkdownRenderer content={msg.text} />
+                    <MarkdownRenderer content={msg.text} variant="basic" />
                   )}
                 </div>
               </div>

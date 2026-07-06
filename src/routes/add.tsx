@@ -1,5 +1,5 @@
-import { useNavigate, useDocumentMetadata } from "@/lib/router";
-import { useState } from "react";
+import { useNavigate, useDocumentMetadata, useRouter } from "@/lib/router";
+import { useEffect, useMemo, useState } from "react";
 import { parseBookmark } from "@/lib/anilist.functions";
 import { searchAnilist, type AnilistMedia } from "@/lib/anilist-client";
 import { upsertEntry } from "@/lib/repo/library";
@@ -24,15 +24,27 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 
+function readTypeFromSearch(search: string): MediaType {
+  const value = new URLSearchParams(search).get("type")?.toUpperCase();
+  return value === "MANGA" || value === "SERIES" || value === "ANIME"
+    ? value
+    : "ANIME";
+}
+
 export default function AddPage() {
   useDocumentMetadata(
     "Add entry — AniStash",
     "Add anime or manga from a URL, or a fully-custom series entry with your own title and notes.",
   );
   const navigate = useNavigate();
+  const router = useRouter();
+  const requestedType = useMemo(
+    () => readTypeFromSearch(router.state.location.search),
+    [router.state.location.search],
+  );
 
   const [url, setUrl] = useState("");
-  const [type, setType] = useState<MediaType>("ANIME");
+  const [type, setType] = useState<MediaType>(requestedType);
   const [status, setStatus] = useState<ListStatus>("PLANNING");
   const [editedTitle, setEditedTitle] = useState("");
   const [aiNotes, setAiNotes] = useState("");
@@ -43,6 +55,11 @@ export default function AddPage() {
   const [step, setStep] = useState<"input" | "confirm">("input");
   const [seriesTitle, setSeriesTitle] = useState("");
   const [seriesDescription, setSeriesDescription] = useState("");
+
+  useEffect(() => {
+    setType(requestedType);
+    setStep("input");
+  }, [requestedType]);
 
   const labels = statusLabels(type);
 

@@ -18,7 +18,8 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const shouldAutoScrollRef = useRef(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -26,7 +27,10 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   }, [entry.id]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!shouldAutoScrollRef.current) return;
+    const scrollEl = scrollRef.current;
+    if (!scrollEl) return;
+    scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: "smooth" });
   }, [messages, isLoading]);
 
   const fetchHistory = async () => {
@@ -48,6 +52,7 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
     if (!input.trim() || isLoading) return;
 
     const userText = input.trim();
+    shouldAutoScrollRef.current = true;
     setInput("");
     setMessages((prev) => [...prev, { role: "user", text: userText }]);
     setIsLoading(true);
@@ -116,7 +121,10 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
           </button>
         )}
       </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[350px] min-h-[200px]">
+      <div
+        ref={scrollRef}
+        className="stash-scrollbar flex-1 overflow-y-auto p-4 space-y-4 max-h-[350px] min-h-[200px]"
+      >
         {isInitializing ? (
           <div className="flex h-full items-center justify-center">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -150,7 +158,7 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
                 {msg.role === "user" ? (
                   msg.text
                 ) : (
-                  <MarkdownRenderer content={msg.text} />
+                  <MarkdownRenderer content={msg.text} variant="basic" />
                 )}
               </div>
             </div>
@@ -168,7 +176,6 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
             </div>
           </div>
         )}
-        <div ref={bottomRef} />
       </div>
       <div className="p-3 bg-background/50 border-t border-border/60">
         <form onSubmit={handleSend} className="relative flex items-center">

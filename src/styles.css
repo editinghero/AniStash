@@ -101,12 +101,17 @@
   --status-dropped: oklch(0.65 0.2 25);
 
   /* Gradients */
-  --gradient-hero: radial-gradient(
+  --gradient-hero:
+    radial-gradient(
       120% 80% at 10% 0%,
       oklch(0.72 0.19 18 / 0.25) 0%,
       transparent 55%
     ),
-    radial-gradient(100% 70% at 90% 10%, oklch(0.7 0.18 330 / 0.22) 0%, transparent 60%),
+    radial-gradient(
+      100% 70% at 90% 10%,
+      oklch(0.7 0.18 330 / 0.22) 0%,
+      transparent 60%
+    ),
     linear-gradient(180deg, oklch(0.2 0.03 270) 0%, oklch(0.16 0.02 270) 100%);
   --gradient-accent: linear-gradient(
     135deg,
@@ -119,10 +124,11 @@
     oklch(0.21 0.028 270) 100%
   );
 
-  --shadow-glow: 0 0 0 1px oklch(0.72 0.19 18 / 0.4),
+  --shadow-glow:
+    0 0 0 1px oklch(0.72 0.19 18 / 0.4),
     0 18px 50px -12px oklch(0.72 0.19 18 / 0.45);
-  --shadow-card: 0 8px 24px -12px oklch(0 0 0 / 0.55),
-    0 2px 6px -2px oklch(0 0 0 / 0.4);
+  --shadow-card:
+    0 8px 24px -12px oklch(0 0 0 / 0.55), 0 2px 6px -2px oklch(0 0 0 / 0.4);
 }
 
 .dark {
@@ -198,5 +204,25 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+  .stash-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.72 0.19 18 / 0.35) transparent;
+  }
+  .stash-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .stash-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .stash-scrollbar::-webkit-scrollbar-thumb {
+    background-color: oklch(0.72 0.19 18 / 0.28);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+  .stash-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: oklch(0.72 0.19 18 / 0.45);
   }
 }

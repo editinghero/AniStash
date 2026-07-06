@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect } from "react";
 
 export type RouterContextType = {
   pathname: string;
+  search: string;
   user: any;
   navigate: (to: string) => void;
   invalidate: () => void;
@@ -18,6 +19,7 @@ export function useRouter() {
     state: {
       location: {
         pathname: ctx.pathname,
+        search: ctx.search,
       },
     },
     navigate: ctx.navigate,

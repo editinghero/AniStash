@@ -64,8 +64,8 @@ export interface LibraryEntry {
   averageScore?: number; // AniList 0-100
   ageRating?: string; // best-effort from AniList isAdult / hints
   description?: string;
-  sourceUrl?: string; // user's original bookmark
-  notes?: string;
+  sourceUrl?: string | null; // user's original bookmark
+  notes?: string | null;
   progress?: number; // ep / chapter count
   userScore?: number; // 0-10
   startedAt?: number; // unix ms

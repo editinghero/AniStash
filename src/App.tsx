@@ -18,7 +18,11 @@ import DiscoverPage from "./routes/discover";
 export default function App() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [pathname, setPathname] = useState(window.location.pathname);
+  const [location, setLocation] = useState(() => ({
+    pathname: window.location.pathname,
+    search: window.location.search,
+  }));
+  const { pathname } = location;
 
   const fetchSession = async () => {
     try {
@@ -42,15 +46,19 @@ export default function App() {
     fetchSession();
 
     const handlePopState = () => {
-      setPathname(window.location.pathname);
+      setLocation({
+        pathname: window.location.pathname,
+        search: window.location.search,
+      });
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const navigate = (to: string) => {
-    window.history.pushState({}, "", to);
-    setPathname(to);
+    const next = new URL(to, window.location.origin);
+    window.history.pushState({}, "", `${next.pathname}${next.search}`);
+    setLocation({ pathname: next.pathname, search: next.search });
   };
 
   if (loading) {
@@ -70,13 +78,13 @@ export default function App() {
   if (!user && !isAuthPage) {
     window.history.replaceState({}, "", "/login");
     // Directly set pathname to trigger render of LoginPage
-    setPathname("/login");
+    setLocation({ pathname: "/login", search: "" });
     return null;
   }
 
   if (user && isAuthPage) {
     window.history.replaceState({}, "", "/");
-    setPathname("/");
+    setLocation({ pathname: "/", search: "" });
     return null;
   }
 
@@ -124,7 +132,13 @@ export default function App() {
 
   return (
     <RouterProvider
-      value={{ pathname, user, navigate, invalidate: fetchSession }}
+      value={{
+        pathname,
+        search: location.search,
+        user,
+        navigate,
+        invalidate: fetchSession,
+      }}
     >
       <div className="min-h-screen bg-background bg-hero">
         {!isAuthPage && <SiteHeader />}
