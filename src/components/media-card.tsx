@@ -18,9 +18,7 @@ const statusColor: Record<ListStatus, string> = {
 export function MediaCard({ entry }: { entry: LibraryEntry }) {
   const [open, setOpen] = useState(false);
   const labels = statusLabels(entry.type);
-  const score = entry.averageScore
-    ? (entry.averageScore / 10).toFixed(1)
-    : null;
+  const score = entry.userScore != null ? entry.userScore.toFixed(1) : "-";
   const total =
     entry.type === "MANGA"
       ? entry.chapters
@@ -59,12 +57,10 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* score badge */}
-          {score && (
-            <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[11px] font-semibold backdrop-blur ring-1 ring-border/40">
-              <Star className="h-3 w-3 fill-status-planning text-status-planning" />
-              {score}
-            </div>
-          )}
+          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[11px] font-semibold backdrop-blur ring-1 ring-border/40">
+            <Star className="h-3 w-3 fill-status-planning text-status-planning" />
+            {score}
+          </div>
 
           {/* status pill on cover */}
           <div
