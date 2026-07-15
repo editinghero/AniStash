@@ -50,8 +50,10 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 sm:gap-6 px-3 sm:px-4">
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-accent shadow-glow font-display text-lg font-bold text-white transition-transform group-hover:rotate-3">
-            鬼
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#181422] shadow-glow font-display text-lg font-bold transition-transform group-hover:rotate-3">
+            <span className="bg-gradient-to-r from-[#ff604b] to-[#ff4ebb] bg-clip-text text-transparent">
+              愛
+            </span>
           </span>
           <span className="font-display text-xl font-semibold tracking-tight">
             Ani<span className="text-gradient">Stash</span>
