@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { KeyRound, LockKeyhole, LogOut } from "lucide-react";
+import { KeyRound, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { verifyLocalPin } from "@/lib/local-pin";
 
@@ -61,7 +61,7 @@ export function PinLockScreen({
   return (
     <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-background bg-hero px-4 py-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,hsl(var(--primary)/0.16),transparent_32rem)]" />
-      <section className="relative w-full max-w-sm rounded-[2rem] bg-gradient-card p-6 shadow-card ring-1 ring-border/70 sm:p-8">
+      <section className="relative w-full max-w-xs rounded-[1.75rem] bg-gradient-card p-5 shadow-card ring-1 ring-border/70 sm:p-6">
         <header className="text-center">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#181422] shadow-glow ring-1 ring-primary/20">
             <span className="font-display text-3xl font-bold bg-gradient-to-r from-[#ff604b] to-[#ff4ebb] bg-clip-text text-transparent">
@@ -83,7 +83,7 @@ export function PinLockScreen({
           <label htmlFor="app-pin" className="sr-only">
             Four-digit app PIN
           </label>
-          <div className="relative h-16">
+          <div className="relative h-14 sm:h-15">
             <input
               ref={inputRef}
               id="app-pin"
@@ -102,7 +102,7 @@ export function PinLockScreen({
               aria-invalid={Boolean(error)}
             />
             <div
-              className="pointer-events-none grid h-full grid-cols-4 gap-3"
+              className="pointer-events-none grid h-full grid-cols-4 gap-2.5 sm:gap-3"
               aria-hidden="true"
             >
               {[0, 1, 2, 3].map((index) => (
@@ -141,10 +141,6 @@ export function PinLockScreen({
           <KeyRound className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           After three incorrect attempts, you will be signed out and this local
           PIN will be removed.
-        </p>
-        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <LogOut className="h-3.5 w-3.5" /> Forgot it? Clear this browser's
-          site data, then sign in again.
         </p>
       </section>
     </main>

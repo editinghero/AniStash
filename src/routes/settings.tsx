@@ -212,6 +212,12 @@ export default function SettingsPage() {
         throw new Error("Please sign in before exporting your library");
       }
       const entries = (await res.json()) as LibraryEntry[];
+      if (entries.length === 0) {
+        toast.info(
+          "There are no library entries in this database to export. Localhost uses its own local database.",
+        );
+        return;
+      }
       const backup: LibraryBackup = {
         format: "anistash-library",
         version: 1,
@@ -490,7 +496,12 @@ export default function SettingsPage() {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Button type="button" variant="outline" onClick={exportLibrary}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={exportLibrary}
+            className="border-border bg-[#181422] text-muted-foreground hover:bg-[#181422] hover:text-foreground"
+          >
             <Download /> Export library
           </Button>
           <Button

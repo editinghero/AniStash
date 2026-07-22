@@ -6,6 +6,7 @@
     "dev": "wrangler pages dev --ip=192.168.1.2 --port=9000 -- vite dev",
     "dev:vite": "vite dev",
     "d1": "wrangler d1 execute anistash --local --file=./schema.d1.sql",
+    "d1:repair-local": "wrangler d1 execute anistash --local --file=./migrations/0001_repair_user_media_media_foreign_key.sql",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
