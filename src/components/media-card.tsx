@@ -34,9 +34,10 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group relative w-full overflow-hidden rounded-2xl bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 hover:shadow-glow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="group relative w-full rounded-2xl bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary appearance-none"
       >
-        <div className="relative aspect-[2/3] overflow-hidden bg-surface">
+        <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
+        <div className="relative aspect-[2/3] overflow-hidden rounded-t-2xl bg-surface">
           {entry.coverImage ? (
             <img
               src={entry.coverImage}
