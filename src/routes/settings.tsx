@@ -500,7 +500,7 @@ export default function SettingsPage() {
             type="button"
             variant="outline"
             onClick={exportLibrary}
-            className="hover:bg-surface hover:text-foreground"
+            className="bg-surface text-muted-foreground hover:bg-surface hover:text-foreground"
           >
             <Download /> Export library
           </Button>
@@ -508,7 +508,7 @@ export default function SettingsPage() {
             type="button"
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
-            className="hover:bg-surface hover:text-foreground"
+            className="bg-surface text-muted-foreground hover:bg-surface hover:text-foreground"
           >
             <Upload /> Import library
           </Button>
