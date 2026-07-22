@@ -1,4 +1,4 @@
-import { Link, useDocumentMetadata } from "@/lib/router";
+import { Link, useDocumentMetadata, useRouteContext } from "@/lib/router";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   Download,
   KeyRound,
+  LockKeyhole,
   ShieldCheck,
   Sparkles,
   Upload,
@@ -14,6 +15,11 @@ import {
 import { toast } from "sonner";
 import { rpc } from "@/lib/rpc";
 import { refreshLibrary } from "@/lib/repo/library";
+import {
+  clearLocalPin,
+  hasLocalPinForUser,
+  setLocalPin,
+} from "@/lib/local-pin";
 import type { LibraryEntry, ListStatus, MediaType } from "@/lib/types";
 import {
   AlertDialog,
@@ -43,7 +49,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isOptionalString(value: unknown): boolean {
+function isOptionalString(value: unknown): value is string | null | undefined {
   return value === undefined || value === null || typeof value === "string";
 }
 
@@ -125,6 +131,13 @@ export default function SettingsPage() {
   const [skippedEntries, setSkippedEntries] = useState(0);
   const [isImporting, setIsImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useRouteContext({ from: "__root__" }) as {
+    user: { id: string };
+  };
+  const [newPin, setNewPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
+  const [isSavingPin, setIsSavingPin] = useState(false);
+  const [hasPin, setHasPin] = useState(() => hasLocalPinForUser(user.id));
 
   useEffect(() => {
     rpc.api.settings
@@ -155,6 +168,41 @@ export default function SettingsPage() {
         err instanceof Error ? err.message : "Failed to save settings",
       );
     }
+  }
+
+  async function saveLocalPin(event: React.FormEvent) {
+    event.preventDefault();
+    if (!/^\d{4}$/.test(newPin)) {
+      toast.error("Choose a PIN with exactly 4 digits");
+      return;
+    }
+    if (newPin !== confirmPin) {
+      toast.error("The PINs do not match");
+      return;
+    }
+
+    setIsSavingPin(true);
+    try {
+      await setLocalPin(user.id, newPin);
+      setNewPin("");
+      setConfirmPin("");
+      setHasPin(true);
+      toast.success("Local app PIN enabled");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not save the local PIN",
+      );
+    } finally {
+      setIsSavingPin(false);
+    }
+  }
+
+  function removeLocalPin() {
+    clearLocalPin(user.id);
+    setHasPin(false);
+    setNewPin("");
+    setConfirmPin("");
+    toast.success("Local app PIN removed");
   }
 
   async function exportLibrary() {
@@ -344,6 +392,89 @@ export default function SettingsPage() {
           Save
         </Button>
       </form>
+
+      <section className="space-y-5 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card">
+        <div>
+          <h2 className="inline-flex items-center gap-2 font-display text-xl font-semibold">
+            <LockKeyhole className="h-5 w-5 text-primary" /> Local app PIN
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Add a 4-digit PIN before this browser opens your library. It is
+            stored only in this browser as a protected hash—never in AniStash or
+            your database. Three incorrect attempts sign you out and remove it
+            automatically.
+          </p>
+        </div>
+
+        <form onSubmit={saveLocalPin} className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="local-pin">New 4-digit PIN</Label>
+              <Input
+                id="local-pin"
+                type="password"
+                inputMode="numeric"
+                autoComplete="new-password"
+                maxLength={4}
+                pattern="[0-9]*"
+                value={newPin}
+                onChange={(event) =>
+                  setNewPin(event.target.value.replace(/\D/g, "").slice(0, 4))
+                }
+                className="mt-2 bg-surface text-center font-mono text-lg tracking-[0.45em]"
+                placeholder="••••"
+              />
+            </div>
+            <div>
+              <Label htmlFor="confirm-local-pin">Confirm PIN</Label>
+              <Input
+                id="confirm-local-pin"
+                type="password"
+                inputMode="numeric"
+                autoComplete="new-password"
+                maxLength={4}
+                pattern="[0-9]*"
+                value={confirmPin}
+                onChange={(event) =>
+                  setConfirmPin(
+                    event.target.value.replace(/\D/g, "").slice(0, 4),
+                  )
+                }
+                className="mt-2 bg-surface text-center font-mono text-lg tracking-[0.45em]"
+                placeholder="••••"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button
+              type="submit"
+              disabled={isSavingPin}
+              className="min-h-11 flex-1 bg-gradient-accent text-white"
+            >
+              {isSavingPin
+                ? "Saving…"
+                : hasPin
+                  ? "Update local PIN"
+                  : "Enable local PIN"}
+            </Button>
+            {hasPin && (
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                onClick={removeLocalPin}
+              >
+                Remove PIN
+              </Button>
+            )}
+          </div>
+        </form>
+        <p className="rounded-xl bg-surface/60 p-3 text-xs leading-5 text-muted-foreground">
+          This is a privacy lock for this device, not a replacement for your
+          account password. If you forget it, clear this browser&apos;s AniStash
+          site data and sign in again.
+        </p>
+      </section>
 
       <section className="space-y-5 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card">
         <div>

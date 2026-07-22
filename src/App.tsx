@@ -3,6 +3,8 @@ import { RouterProvider } from "./lib/router";
 import { SiteHeader } from "./components/site-header";
 import { Toaster } from "@/components/ui/sonner";
 import { rpc } from "./lib/rpc";
+import { PinLockScreen } from "./components/pin-lock-screen";
+import { clearLocalPin, hasLocalPinForUser } from "./lib/local-pin";
 
 // Import pages
 import Home from "./routes/index";
@@ -18,6 +20,8 @@ import DiscoverPage from "./routes/discover";
 export default function App() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [pinRequired, setPinRequired] = useState(false);
+  const [pinUnlocked, setPinUnlocked] = useState(false);
   const [location, setLocation] = useState(() => ({
     pathname: window.location.pathname,
     search: window.location.search,
@@ -31,12 +35,18 @@ export default function App() {
       if (res.ok && ct.includes("application/json")) {
         const data = await res.json();
         setUser(data);
+        setPinRequired(Boolean(data && hasLocalPinForUser(data.id)));
+        setPinUnlocked(false);
       } else {
         setUser(null);
+        setPinRequired(false);
+        setPinUnlocked(false);
       }
     } catch (e) {
       console.error("Failed to fetch user session", e);
       setUser(null);
+      setPinRequired(false);
+      setPinUnlocked(false);
     } finally {
       setLoading(false);
     }
@@ -61,6 +71,23 @@ export default function App() {
     setLocation({ pathname: next.pathname, search: next.search });
   };
 
+  const handlePinLockout = async (): Promise<boolean> => {
+    try {
+      const res = await rpc.api.auth.logout.$post();
+      if (!res.ok) throw new Error("Failed to log out");
+      clearLocalPin(user.id);
+      setPinRequired(false);
+      setPinUnlocked(false);
+      setUser(null);
+      window.history.replaceState({}, "", "/login");
+      setLocation({ pathname: "/login", search: "" });
+      return true;
+    } catch (error) {
+      console.error("Failed to log out after PIN lockout", error);
+      return false;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground bg-hero">
@@ -73,6 +100,16 @@ export default function App() {
   }
 
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  if (user && pinRequired && !pinUnlocked) {
+    return (
+      <PinLockScreen
+        userId={user.id}
+        onUnlocked={() => setPinUnlocked(true)}
+        onLockout={handlePinLockout}
+      />
+    );
+  }
 
   // Navigation Guards
   if (!user && !isAuthPage) {

@@ -17,6 +17,7 @@ const statusColor: Record<ListStatus, string> = {
 
 export function MediaCard({ entry }: { entry: LibraryEntry }) {
   const [open, setOpen] = useState(false);
+  const [isPressing, setIsPressing] = useState(false);
   const labels = statusLabels(entry.type);
   const score = entry.userScore != null ? entry.userScore.toFixed(1) : "-";
   const total =
@@ -34,16 +35,23 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group relative w-full rounded-2xl bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary appearance-none"
+        onPointerDown={(event) => {
+          if (event.pointerType !== "mouse") setIsPressing(true);
+        }}
+        onPointerUp={() => setIsPressing(false)}
+        onPointerCancel={() => setIsPressing(false)}
+        onPointerLeave={() => setIsPressing(false)}
+        data-pressed={isPressing}
+        className="group relative w-full touch-manipulation rounded-2xl bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 data-[pressed=true]:-translate-y-1 data-[pressed=true]:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary appearance-none motion-reduce:transition-none"
       >
-        <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 group-data-[pressed=true]:opacity-100 motion-reduce:transition-none" />
         <div className="relative aspect-[2/3] overflow-hidden rounded-t-2xl bg-surface">
           {entry.coverImage ? (
             <img
               src={entry.coverImage}
               alt={entry.title}
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 group-data-[pressed=true]:scale-105 motion-reduce:transition-none"
             />
           ) : (
             <div className="relative grid h-full place-items-center bg-gradient-card p-3 text-center">
@@ -55,7 +63,7 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
           )}
 
           {/* gradient overlay */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 group-data-[pressed=true]:opacity-100 transition-opacity duration-300 motion-reduce:transition-none" />
 
           {/* score badge */}
           <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[11px] font-semibold backdrop-blur ring-1 ring-border/40">
