@@ -313,7 +313,7 @@ export default function AddPage() {
               loading != null ||
               (type === "SERIES" ? !seriesTitle.trim() : !url.trim())
             }
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-accent px-4 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-accent px-4 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-50 appearance-none"
           >
             {loading === "parse" || loading === "save" ? (
               <>
@@ -383,8 +383,9 @@ export default function AddPage() {
                   type="button"
                   onClick={() => handleSave(m)}
                   disabled={loading === "save"}
-                  className="group flex gap-3 rounded-xl bg-gradient-card p-3 text-left ring-1 ring-border/60 hover:ring-primary/60 hover:shadow-glow transition-all disabled:opacity-50"
+                  className="group relative flex gap-3 rounded-xl bg-gradient-card p-3 text-left ring-1 ring-border/60 hover:ring-primary/60 transition-all disabled:opacity-50"
                 >
+                  <div className="pointer-events-none absolute inset-0 rounded-xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <img
                     src={m.coverImage.large ?? m.coverImage.extraLarge ?? ""}
                     alt=""
