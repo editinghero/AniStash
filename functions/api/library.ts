@@ -7,6 +7,15 @@ type Bindings = {
   DB: D1Database;
 };
 
+const httpUrl = z
+  .string()
+  .url()
+  .max(2048)
+  .refine((value) => {
+    const protocol = new URL(value).protocol;
+    return protocol === "https:" || protocol === "http:";
+  }, "URL must use HTTP or HTTPS");
+
 // Helper to hash string to a unique integer
 function hashStringToInt(str: string): number {
   let hash = 0;
@@ -95,7 +104,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         averageScore: z.number().optional().nullable(),
         ageRating: z.string().optional().nullable(),
         description: z.string().optional().nullable(),
-        sourceUrl: z.string().optional().nullable(),
+        sourceUrl: httpUrl.optional().nullable(),
         notes: z.string().optional().nullable(),
         progress: z.number().int().optional().nullable(),
         userScore: z.number().optional().nullable(),
@@ -225,7 +234,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         progress: z.number().int().optional(),
         userScore: z.number().optional(),
         notes: z.string().optional().nullable(),
-        sourceUrl: z.string().optional().nullable(),
+        sourceUrl: httpUrl.optional().nullable(),
         startedAt: z.number().optional(),
         finishedAt: z.number().optional(),
       }),

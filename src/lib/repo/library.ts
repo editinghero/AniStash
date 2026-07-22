@@ -40,6 +40,10 @@ async function refresh() {
   }
 }
 
+export async function refreshLibrary() {
+  await refresh();
+}
+
 export function listEntries(type?: MediaType): LibraryEntry[] {
   if (!loaded && typeof window !== "undefined") {
     void refresh();
