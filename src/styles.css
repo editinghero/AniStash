@@ -207,7 +207,7 @@
   }
   .stash-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: oklch(0.72 0.19 18 / 0.35) transparent;
+    scrollbar-color: oklch(0.38 0.02 270 / 0.5) transparent;
   }
   .stash-scrollbar::-webkit-scrollbar {
     width: 8px;
@@ -217,12 +217,49 @@
     background: transparent;
   }
   .stash-scrollbar::-webkit-scrollbar-thumb {
-    background-color: oklch(0.72 0.19 18 / 0.28);
+    background-color: oklch(0.38 0.02 270 / 0.5);
     border: 2px solid transparent;
     border-radius: 999px;
     background-clip: padding-box;
   }
   .stash-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: oklch(0.72 0.19 18 / 0.45);
+    background-color: oklch(0.5 0.02 270 / 0.7);
   }
 }
+
+/* ============================================================
+ * PC / Desktop Global Custom Scrollbar (Invisible track, dark grey thumb)
+ * Disabled on Android & mobile touch devices via pointer media query.
+ * ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.38 0.02 270 / 0.5) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: oklch(0.38 0.02 270 / 0.5);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background-color 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: oklch(0.52 0.02 270 / 0.8);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
