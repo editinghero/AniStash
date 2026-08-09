@@ -127,6 +127,7 @@ export function updateEntry(id: string, patch: Partial<LibraryEntry>) {
         sourceUrl: patch.sourceUrl,
         startedAt: patch.startedAt,
         finishedAt: patch.finishedAt,
+        categories: patch.categories,
       },
     })
     .then((res) => {

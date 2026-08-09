@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS user_media (
   started_at  INTEGER,
   finished_at INTEGER,
   ai_chat_history TEXT,                 -- JSON array of messages
+  categories_json TEXT,                 -- JSON array of custom category strings
   created_at  INTEGER NOT NULL,
   updated_at  INTEGER NOT NULL,
   UNIQUE (user_id, media_id)
@@ -127,6 +128,7 @@ CREATE TABLE IF NOT EXISTS user_settings (
   gemini_model     TEXT DEFAULT 'gemini-2.5-flash',
   theme            TEXT DEFAULT 'dark',
   global_chat_history TEXT,              -- JSON array of messages
+  categories_json  TEXT,                 -- JSON array of custom categories
   created_at       INTEGER NOT NULL,
   updated_at       INTEGER NOT NULL
 );

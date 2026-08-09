@@ -17,12 +17,16 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
     if (!userId) return c.json({});
 
     const db = c.env.DB;
+    try {
+      await db.prepare("ALTER TABLE user_settings ADD COLUMN categories_json TEXT").run();
+    } catch {}
+
     const row = await db
       .prepare(
-        "SELECT gemini_api_key, gemini_model FROM user_settings WHERE user_id = ?",
+        "SELECT gemini_api_key, gemini_model, categories_json FROM user_settings WHERE user_id = ?",
       )
       .bind(userId)
-      .first<{ gemini_api_key: string | null; gemini_model: string | null }>();
+      .first<{ gemini_api_key: string | null; gemini_model: string | null; categories_json: string | null }>();
 
     if (!row) return c.json({});
 
@@ -43,9 +47,17 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
       }
     }
 
+    let categories: string[] | undefined = undefined;
+    if (row.categories_json) {
+      try {
+        categories = JSON.parse(row.categories_json);
+      } catch {}
+    }
+
     return c.json({
       geminiApiKey: maskedKey || undefined,
       geminiModel: row.gemini_model || DEFAULT_GEMINI_MODEL,
+      categories,
     });
   })
   .post(
@@ -55,6 +67,7 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
       z.object({
         geminiApiKey: z.string().optional(),
         geminiModel: z.string().min(1),
+        categories: z.array(z.string()).optional(),
       }),
     ),
     async (c) => {
@@ -63,6 +76,10 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
       if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
       const db = c.env.DB;
+      try {
+        await db.prepare("ALTER TABLE user_settings ADD COLUMN categories_json TEXT").run();
+      } catch {}
+
       const now = Date.now();
       const encryptionKey =
         c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
@@ -84,6 +101,8 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
         }
       }
 
+      const categoriesJson = data.categories ? JSON.stringify(data.categories) : null;
+
       if (existing) {
         await db
           .prepare(
@@ -91,21 +110,22 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
           UPDATE user_settings SET
             gemini_api_key = ?,
             gemini_model = ?,
+            categories_json = COALESCE(?, categories_json),
             updated_at = ?
           WHERE user_id = ?
         `,
           )
-          .bind(finalEncryptedKey, data.geminiModel, now, userId)
+          .bind(finalEncryptedKey, data.geminiModel, categoriesJson, now, userId)
           .run();
       } else {
         await db
           .prepare(
             `
-          INSERT INTO user_settings (user_id, gemini_api_key, gemini_model, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?)
+          INSERT INTO user_settings (user_id, gemini_api_key, gemini_model, categories_json, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?)
         `,
           )
-          .bind(userId, finalEncryptedKey, data.geminiModel, now, now)
+          .bind(userId, finalEncryptedKey, data.geminiModel, categoriesJson, now, now)
           .run();
       }
 

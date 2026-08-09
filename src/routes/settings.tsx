@@ -8,13 +8,22 @@ import {
   Download,
   KeyRound,
   LockKeyhole,
+  Plus,
   ShieldCheck,
   Sparkles,
+  Tag,
   Upload,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { rpc } from "@/lib/rpc";
 import { refreshLibrary } from "@/lib/repo/library";
+import {
+  addCategory,
+  deleteCategory,
+  getCategories,
+  subscribeCategories,
+} from "@/lib/categories";
 import {
   clearLocalPin,
   hasLocalPinForUser,
@@ -125,6 +134,8 @@ export default function SettingsPage() {
   );
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState(DEFAULT_GEMINI_MODEL);
+  const [categories, setCategories] = useState<string[]>(() => getCategories());
+  const [newCategoryInput, setNewCategoryInput] = useState("");
   const [pendingImport, setPendingImport] = useState<TransferEntry[] | null>(
     null,
   );
@@ -140,10 +151,17 @@ export default function SettingsPage() {
   const [hasPin, setHasPin] = useState(() => hasLocalPinForUser(user.id));
 
   useEffect(() => {
+    setCategories(getCategories());
+    return subscribeCategories(() => {
+      setCategories([...getCategories()]);
+    });
+  }, []);
+
+  useEffect(() => {
     rpc.api.settings
       .$get()
       .then((res) => res.json())
-      .then((s) => {
+      .then((s: Record<string, any>) => {
         setApiKey(s.geminiApiKey ?? "");
         setModel(s.geminiModel ?? DEFAULT_GEMINI_MODEL);
       })
@@ -151,6 +169,24 @@ export default function SettingsPage() {
         toast.error("Failed to load settings");
       });
   }, []);
+
+  function handleAddCategory(e: React.FormEvent) {
+    e.preventDefault();
+    const val = newCategoryInput.trim();
+    if (!val) return;
+    if (addCategory(val)) {
+      toast.success(`Added category "${val}"`);
+      setNewCategoryInput("");
+    } else {
+      toast.error("Category already exists or invalid");
+    }
+  }
+
+  function handleDeleteCategory(cat: string) {
+    if (deleteCategory(cat)) {
+      toast.success(`Removed category "${cat}"`);
+    }
+  }
 
   async function onSave(e: React.FormEvent) {
     e.preventDefault();
@@ -398,6 +434,62 @@ export default function SettingsPage() {
           Save
         </Button>
       </form>
+
+      <section className="space-y-5 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card">
+        <div>
+          <h2 className="inline-flex items-center gap-2 font-display text-xl font-semibold">
+            <Tag className="h-5 w-5 text-primary" /> Categories & Tags
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Manage your anime & manga filter tags. Create custom categories like
+            &quot;Rom&quot;, &quot;Com&quot;, &quot;Ecchi&quot;, &quot;Fun&quot;, &quot;Calm&quot;, or add your own!
+          </p>
+        </div>
+
+        <form onSubmit={handleAddCategory} className="flex gap-2">
+          <Input
+            value={newCategoryInput}
+            onChange={(e) => setNewCategoryInput(e.target.value)}
+            placeholder="New category name (e.g. Thriller)..."
+            className="flex-1 bg-surface"
+          />
+          <Button
+            type="submit"
+            className="bg-gradient-accent text-white shrink-0"
+          >
+            <Plus className="h-4 w-4 mr-1" /> Add
+          </Button>
+        </form>
+
+        <div>
+          <Label className="text-xs uppercase tracking-wide text-muted-foreground block mb-2">
+            Your Categories ({categories.length})
+          </Label>
+          {categories.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic">No categories yet. Add one above!</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <div
+                  key={cat}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-surface/80 px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border/60"
+                >
+                  <Tag className="h-3 w-3 text-primary" />
+                  <span>{cat}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteCategory(cat)}
+                    className="ml-1 rounded-full p-0.5 text-muted-foreground hover:bg-destructive/20 hover:text-destructive transition-colors"
+                    title={`Delete category "${cat}"`}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       <section className="space-y-5 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card">
         <div>

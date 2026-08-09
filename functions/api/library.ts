@@ -31,6 +31,10 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
     if (!userId) return c.json([]);
 
     const db = c.env.DB;
+    try {
+      await db.prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT").run();
+    } catch {}
+
     const { results } = await db
       .prepare(
         `
@@ -46,6 +50,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           m.cover_image as coverImage,
           m.banner_image as bannerImage,
           m.genres_json as genresJson,
+          um.categories_json as categoriesJson,
           m.format,
           m.episodes,
           m.chapters,
@@ -73,6 +78,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
       ...row,
       anilistId: row.anilistId < 0 ? undefined : row.anilistId,
       genres: row.genresJson ? JSON.parse(row.genresJson) : [],
+      categories: row.categoriesJson ? JSON.parse(row.categoriesJson) : [],
     }));
     return c.json(mapped);
   })
@@ -98,6 +104,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         coverImage: z.string().optional().nullable(),
         bannerImage: z.string().optional().nullable(),
         genres: z.array(z.string()).optional().nullable(),
+        categories: z.array(z.string()).optional().nullable(),
         format: z.string().optional().nullable(),
         episodes: z.number().int().optional().nullable(),
         chapters: z.number().int().optional().nullable(),
@@ -118,6 +125,10 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
       if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
       const db = c.env.DB;
+      try {
+        await db.prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT").run();
+      } catch {}
+
       const now = Date.now();
       const finalAnilistId =
         data.anilistId ?? -1 * Math.abs(hashStringToInt(data.title));
@@ -175,14 +186,15 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         return c.json({ error: "Failed to insert media metadata" }, 500);
 
       const finalId = data.id ?? crypto.randomUUID();
+      const categoriesJson = data.categories ? JSON.stringify(data.categories) : null;
 
       const userMedia = await db
         .prepare(
           `
         INSERT INTO user_media (
           id, user_id, media_id, status, progress, user_score, notes, source_url,
-          started_at, finished_at, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          started_at, finished_at, categories_json, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(user_id, media_id) DO UPDATE SET
           status=excluded.status,
           progress=excluded.progress,
@@ -191,6 +203,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           source_url=excluded.source_url,
           started_at=excluded.started_at,
           finished_at=excluded.finished_at,
+          categories_json=excluded.categories_json,
           updated_at=excluded.updated_at
         RETURNING id, created_at, updated_at
       `,
@@ -206,6 +219,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           data.sourceUrl ?? null,
           data.startedAt ?? null,
           data.finishedAt ?? null,
+          categoriesJson,
           now,
           now,
         )
@@ -237,6 +251,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         sourceUrl: httpUrl.optional().nullable(),
         startedAt: z.number().optional(),
         finishedAt: z.number().optional(),
+        categories: z.array(z.string()).optional().nullable(),
       }),
     ),
     async (c) => {
@@ -245,6 +260,12 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
       if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
       const db = c.env.DB;
+      try {
+        await db.prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT").run();
+      } catch {}
+
+      const categoriesJson = data.categories !== undefined ? (data.categories ? JSON.stringify(data.categories) : null) : undefined;
+
       await db
         .prepare(
           `
@@ -256,6 +277,7 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           source_url = CASE WHEN ? THEN ? ELSE source_url END,
           started_at = COALESCE(?, started_at),
           finished_at = COALESCE(?, finished_at),
+          categories_json = CASE WHEN ? THEN ? ELSE categories_json END,
           updated_at = ?
         WHERE id = ? AND user_id = ?
       `,
@@ -270,6 +292,8 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
           data.sourceUrl !== undefined ? data.sourceUrl : null,
           data.startedAt !== undefined ? data.startedAt : null,
           data.finishedAt !== undefined ? data.finishedAt : null,
+          categoriesJson !== undefined ? 1 : 0,
+          categoriesJson !== undefined ? categoriesJson : null,
           Date.now(),
           data.id,
           userId,

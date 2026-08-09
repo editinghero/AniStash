@@ -58,6 +58,7 @@ export interface LibraryEntry {
   coverImage?: string;
   bannerImage?: string;
   genres?: string[];
+  categories?: string[];
   format?: string;
   episodes?: number;
   chapters?: number;

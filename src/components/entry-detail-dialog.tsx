@@ -24,8 +24,9 @@ import {
   type ListStatus,
 } from "@/lib/types";
 import { deleteEntry, updateEntry } from "@/lib/repo/library";
+import { addCategory, getCategories, subscribeCategories } from "@/lib/categories";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Trash2, Star, Calendar, CircleHelp } from "lucide-react";
+import { ExternalLink, Trash2, Star, Calendar, CircleHelp, Tag, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { CardAIChat } from "./card-ai-chat";
 import { MarkdownRenderer } from "./ui/markdown-renderer";
@@ -69,7 +70,17 @@ export function EntryDetailDialog({
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [startedAt, setStartedAt] = useState<string>("");
   const [finishedAt, setFinishedAt] = useState<string>("");
+  const [entryCategories, setEntryCategories] = useState<string[]>([]);
+  const [allCategories, setAllCategories] = useState<string[]>(() => getCategories());
+  const [newCatInput, setNewCatInput] = useState<string>("");
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    setAllCategories(getCategories());
+    return subscribeCategories(() => {
+      setAllCategories([...getCategories()]);
+    });
+  }, []);
 
   useEffect(() => {
     if (!entry) return;
@@ -80,6 +91,7 @@ export function EntryDetailDialog({
     setSourceUrl(entry.sourceUrl ?? "");
     setStartedAt(toDateInput(entry.startedAt));
     setFinishedAt(toDateInput(entry.finishedAt));
+    setEntryCategories(entry.categories ?? []);
     setIsEditing(false);
   }, [entry, open]);
 
@@ -92,8 +104,28 @@ export function EntryDetailDialog({
       setSourceUrl(entry.sourceUrl ?? "");
       setStartedAt(toDateInput(entry.startedAt));
       setFinishedAt(toDateInput(entry.finishedAt));
+      setEntryCategories(entry.categories ?? []);
     }
     setIsEditing(false);
+  }
+
+  function toggleCategory(cat: string) {
+    setEntryCategories((prev) => {
+      const exists = prev.some((c) => c.toLowerCase() === cat.toLowerCase());
+      if (exists) return prev.filter((c) => c.toLowerCase() !== cat.toLowerCase());
+      return [...prev, cat];
+    });
+  }
+
+  function handleQuickAddCategory(e: React.FormEvent) {
+    e.preventDefault();
+    const val = newCatInput.trim();
+    if (!val) return;
+    addCategory(val);
+    if (!entryCategories.some((c) => c.toLowerCase() === val.toLowerCase())) {
+      setEntryCategories((prev) => [...prev, val]);
+    }
+    setNewCatInput("");
   }
 
   if (!entry) return null;
@@ -124,6 +156,7 @@ export function EntryDetailDialog({
       sourceUrl: sourceUrl.trim() || null,
       startedAt: fromDateInput(startedAt),
       finishedAt: fromDateInput(finishedAt),
+      categories: entryCategories,
     });
     toast.success("Saved");
     onOpenChange(false);
@@ -210,6 +243,22 @@ export function EntryDetailDialog({
                   className="rounded-full bg-surface/80 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground ring-1 ring-border/60"
                 >
                   {g}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {entryCategories && entryCategories.length > 0 && (
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground mr-1 flex items-center gap-1">
+                <Tag className="h-3 w-3 text-primary" /> Tags:
+              </span>
+              {entryCategories.map((c) => (
+                <span
+                  key={c}
+                  className="inline-flex items-center gap-1 rounded-md bg-gradient-accent/20 px-2 py-0.5 text-[11px] font-medium text-white ring-1 ring-primary/40 shadow-sm"
+                >
+                  {c}
                 </span>
               ))}
             </div>
@@ -352,6 +401,51 @@ export function EntryDetailDialog({
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Category / Tags Selector */}
+              <div className="mt-4 rounded-xl bg-surface/40 p-3 ring-1 ring-border/60 space-y-2.5">
+                <Label className="text-[11px] uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1">
+                  <Tag className="h-3 w-3 text-primary" /> Categories / Tags
+                </Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {allCategories.map((cat) => {
+                    const isSelected = entryCategories.some(
+                      (c) => c.toLowerCase() === cat.toLowerCase(),
+                    );
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => toggleCategory(cat)}
+                        className={cn(
+                          "rounded-lg px-2.5 py-1 text-xs font-semibold ring-1 transition-all",
+                          isSelected
+                            ? "bg-gradient-accent text-white ring-primary shadow-sm"
+                            : "bg-surface/60 text-muted-foreground ring-border/60 hover:bg-surface hover:text-foreground",
+                        )}
+                      >
+                        {isSelected ? "✓ " : "+ "}
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+                <form onSubmit={handleQuickAddCategory} className="flex gap-2 pt-1">
+                  <Input
+                    value={newCatInput}
+                    onChange={(e) => setNewCatInput(e.target.value)}
+                    placeholder="Create & attach new tag..."
+                    className="h-8 text-xs bg-surface"
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    className="h-8 px-2.5 text-xs bg-gradient-accent text-white shrink-0"
+                  >
+                    <Plus className="h-3 w-3 mr-1" /> Tag
+                  </Button>
+                </form>
               </div>
 
               {/* Progress + score */}
