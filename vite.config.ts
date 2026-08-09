@@ -51,20 +51,6 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api/],
-        runtimeCaching: [
-          {
-            urlPattern: ({ request }) => request.destination === "image",
-            handler: "CacheFirst",
-            options: {
-              cacheName: "anistash-artwork",
-              expiration: {
-                maxEntries: 120,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
-              },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-        ],
       },
     }),
   ],
