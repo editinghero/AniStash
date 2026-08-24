@@ -6,29 +6,19 @@ import {
   Tv,
   Film,
   Settings,
-  LogOut,
-  User as UserIcon,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-const nav = [
-  { to: "/", icon: Library },
+const navItems = [
+  { to: "/", label: "Library", icon: Library },
   { to: "/anime", label: "Anime", icon: Tv },
   { to: "/manga", label: "Manga", icon: BookOpen },
   { to: "/series", label: "Series", icon: Film },
-  { to: "/discover", icon: Sparkles },
+  { to: "/discover", label: "Discover", icon: Sparkles },
 ];
 
 export function SiteHeader() {
@@ -47,94 +37,88 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-lg">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 sm:gap-6 px-3 sm:px-4">
+    <header className="sticky top-2 sm:top-4 z-40 px-3 sm:px-4 mb-4 sm:mb-8">
+      <nav
+        className="mx-auto flex max-w-5xl items-center justify-between rounded-full border border-[rgba(255,243,224,0.07)] bg-[rgba(34,25,26,0.85)] px-3.5 py-2 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all sm:px-5 sm:py-2.5"
+        aria-label="Main Navigation"
+      >
+        {/* Brand with app's original iconic logo */}
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#181422] shadow-glow font-display text-lg font-bold transition-transform group-hover:rotate-3">
-            <span className="bg-gradient-to-r from-[#ff604b] to-[#ff4ebb] bg-clip-text text-transparent">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-[rgba(240,120,138,0.4)] bg-[#22191a] shadow-[0_0_14px_rgba(240,120,138,0.25)] transition-transform group-hover:scale-105">
+            <span className="font-display text-sm sm:text-base font-bold text-[#f0788a]">
               愛
             </span>
-          </span>
-          <span className="font-display text-xl font-semibold tracking-tight">
-            Ani<span className="text-gradient">Stash</span>
+          </div>
+          <span className="font-display text-base sm:text-lg font-bold tracking-tight text-[#fff3e0]">
+            Ani<span className="text-[#f0788a]">Stash</span>
           </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-1">
-          {nav.map((n) => {
+
+        {/* Desktop Navigation Links (PC Only) */}
+        <div className="hidden md:flex items-center gap-1">
+          {navItems.map((item) => {
             const active =
-              n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
+              item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+            const Icon = item.icon;
+
             return (
               <Link
-                key={n.to}
-                to={n.to}
+                key={item.to}
+                to={item.to}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 hover:scale-[1.03] active:scale-95",
                   active
-                    ? "bg-surface text-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-surface/60",
+                    ? "bg-[#f0788a] text-white font-bold shadow-[0_0_16px_rgba(240,120,138,0.35)]"
+                    : "text-[#dbc9b5] hover:text-[#fff3e0] hover:bg-[rgba(255,243,224,0.06)]",
                 )}
               >
-                <n.icon className="h-4 w-4" />
-                {n.label}
+                <Icon className="h-3.5 w-3.5" />
+                <span>{item.label}</span>
               </Link>
             );
           })}
-        </nav>
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+        </div>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {user && (
-            <div className="flex items-center gap-1.5 sm:gap-3 mr-1 sm:mr-2 border-r border-border/40 pr-1.5 sm:pr-3">
-              <span className="text-xs text-muted-foreground hidden sm:inline">
-                Stashing as{" "}
-                <span className="font-semibold text-foreground">
-                  {user.displayName || user.email}
+            <div className="hidden lg:flex items-center gap-2 border-r border-[rgba(255,243,224,0.08)] pr-3 text-xs text-[#968677]">
+              <span>
+                <span className="text-[#dbc9b5] font-medium">
+                  {user.displayName || user.email?.split("@")[0]}
                 </span>
               </span>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="text-[10px] sm:text-[11px] font-medium text-muted-foreground hover:text-status-dropped transition-colors"
+                title="Log out"
+                className="rounded-full p-1 text-[#968677] hover:text-[#e02e2a] hover:bg-[rgba(224,46,42,0.1)] transition-colors"
               >
-                Log Out
+                <LogOut className="h-3.5 w-3.5" />
               </button>
             </div>
           )}
+
+          {/* Settings Button */}
           <Link
             to="/settings"
-            className="grid h-9 w-9 place-items-center rounded-lg bg-surface/60 text-muted-foreground ring-1 ring-border/60 hover:text-foreground hover:bg-surface"
+            className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[rgba(255,243,224,0.08)] text-[#dbc9b5] hover:text-[#fff3e0] hover:border-[rgba(240,120,138,0.4)] hover:bg-[rgba(255,243,224,0.06)] hover:scale-105 active:scale-95 transition-all"
+            title="Settings"
             aria-label="Settings"
           >
             <Settings className="h-4 w-4" />
           </Link>
+
+          {/* Add Button */}
           <Link
             to="/add"
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg bg-gradient-accent px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-card hover:opacity-95 transition-opacity"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#f0788a] px-3 sm:px-4 py-1.5 text-xs font-semibold text-white shadow-[0_0_18px_rgba(240,120,138,0.3)] hover:brightness-110 hover:scale-[1.03] active:scale-95 transition-all"
           >
-            <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <Plus className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Add from URL</span>
             <span className="sm:hidden">Add</span>
           </Link>
         </div>
-      </div>
-      <nav className="md:hidden flex items-center gap-1 px-3 sm:px-4 pb-3">
-        {nav.map((n) => {
-          const active =
-            n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
-          return (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-lg px-2 sm:px-3 py-2 text-xs font-medium",
-                active
-                  ? "bg-surface text-foreground"
-                  : "text-muted-foreground bg-surface/40",
-              )}
-            >
-              <n.icon className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">{n.label}</span>
-            </Link>
-          );
-        })}
       </nav>
     </header>
   );

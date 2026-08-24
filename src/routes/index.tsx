@@ -8,42 +8,44 @@ export default function Home() {
     "AniStash — Your anime & manga library",
     "Paste a bookmark URL. AniStash detects the title, fetches the cover and rating, and files it under watching, reading, or plan-to.",
   );
-  const anime = useLibrary("ANIME").slice(0, 6);
-  const manga = useLibrary("MANGA").slice(0, 6);
-  const series = useLibrary("SERIES").slice(0, 6);
+  const anime = useLibrary("ANIME").slice(0, 5);
+  const manga = useLibrary("MANGA").slice(0, 5);
+  const series = useLibrary("SERIES").slice(0, 5);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 space-y-16">
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-card p-8 md:p-14 ring-1 ring-border/60 shadow-card">
-        <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
+    <main className="mx-auto max-w-5xl px-3 sm:px-4 py-4 sm:py-8 space-y-12 sm:space-y-16 animate-page-in">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-6 sm:p-10 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(240,120,138,0.12)_0%,transparent_70%)]" />
+        
         <div className="relative max-w-2xl">
-          <span className="inline-flex items-center gap-2 rounded-full bg-surface/60 px-3 py-1 text-xs font-medium text-muted-foreground ring-1 ring-border/60">
-            <Sparkles className="h-3 w-3 text-primary" />
-            AI-powered bookmark import
-          </span>
-          <h1 className="mt-5 font-display text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
-            Stash every series{" "}
-            <span className="text-gradient">worth remembering.</span>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(240,120,138,0.25)] bg-[rgba(240,120,138,0.1)] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#f0788a]">
+            <Sparkles className="h-3.5 w-3.5 text-[#f0788a]" />
+            <span>AI-Powered Stashing</span>
+          </div>
+
+          <h1 className="mt-4 font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#fff3e0] leading-[1.1]">
+            Stash every story{" "}
+            <span className="text-coral-gradient">
+              worth remembering.
+            </span>
           </h1>
-          <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-xl">
-            Paste any URL — even a random streaming bookmark — and AniStash
-            extracts the title, pulls the cover and score from AniList, and
-            files it under <em>Watching</em>, <em>Plan to Watch</em>, or
-            whatever fits.
+
+          <p className="mt-3 text-sm sm:text-base text-[#dbc9b5] max-w-xl leading-relaxed">
+            Paste any bookmark URL — AniStash detects the title, fetches rich metadata & cover art, and files it seamlessly into your library.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
+
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/add"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-accent px-5 py-3 text-sm font-semibold text-white shadow-glow appearance-none"
+              className="inline-flex items-center gap-2 rounded-full bg-[#f0788a] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-[0_0_20px_rgba(240,120,138,0.3)] hover:brightness-110 hover:scale-[1.02] active:scale-95 transition-all"
             >
-              <Link2 className="h-4 w-4" />
+              <Link2 className="h-4 w-4 text-white" />
               Paste a bookmark
             </Link>
             <Link
               to="/anime"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface/60 px-5 py-3 text-sm font-semibold hover:bg-surface"
+              className="inline-flex items-center gap-2 rounded-full border border-[rgba(255,243,224,0.09)] bg-[rgba(255,243,224,0.04)] px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#fff3e0] hover:bg-[rgba(255,243,224,0.08)] hover:border-[rgba(240,120,138,0.4)] hover:scale-[1.02] active:scale-95 transition-all"
             >
               Browse library
               <ArrowRight className="h-4 w-4" />
@@ -52,23 +54,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Sections */}
       <Section
         title="Anime"
-        icon={<Tv className="h-5 w-5" />}
+        icon={<Tv className="h-4 w-4 text-[#f0788a]" />}
         href="/anime"
         items={anime}
         empty="No anime yet — paste a bookmark to add your first."
       />
       <Section
         title="Manga"
-        icon={<BookOpen className="h-5 w-5" />}
+        icon={<BookOpen className="h-4 w-4 text-[#f0788a]" />}
         href="/manga"
         items={manga}
         empty="No manga yet — paste a chapter URL to start tracking."
       />
       <Section
         title="Series"
-        icon={<Film className="h-5 w-5" />}
+        icon={<Film className="h-4 w-4 text-[#f0788a]" />}
         href="/series"
         items={series}
         empty="No series yet — add any web show or drama manually."
@@ -91,29 +94,29 @@ function Section({
   empty: string;
 }) {
   return (
-    <section>
-      <div className="mb-5 flex items-end justify-between">
-        <h2 className="flex items-center gap-2 font-display text-2xl font-semibold">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-surface text-primary">
-            {icon}
-          </span>
+    <section className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="flex items-center gap-2 font-display text-xl sm:text-2xl font-bold tracking-tight text-[#fff3e0]">
+          {icon}
           {title}
         </h2>
         <Link
           to={href}
-          className="text-sm font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#f0788a] hover:underline"
         >
-          View all <ArrowRight className="h-3.5 w-3.5" />
+          View all
+          <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
+
       {items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-10 text-center text-sm text-muted-foreground">
+        <div className="rounded-3xl border border-dashed border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.4)] p-8 text-center text-xs sm:text-sm text-[#968677]">
           {empty}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {items.map((e) => (
-            <MediaCard key={e.id} entry={e} />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {items.map((entry) => (
+            <MediaCard key={entry.id} entry={entry} />
           ))}
         </div>
       )}

@@ -160,6 +160,8 @@ export function deleteEntry(id: string) {
     });
 }
 
+export const removeEntry = deleteEntry;
+
 export function subscribe(cb: () => void) {
   if (typeof window === "undefined") return () => {};
   if (!loaded) void refresh();

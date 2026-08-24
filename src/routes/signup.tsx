@@ -14,7 +14,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [allowed, setAllowed] = useState<boolean>(true); // Default to true
+  const [allowed, setAllowed] = useState<boolean>(true);
 
   useEffect(() => {
     rpc.api.auth.status
@@ -25,7 +25,7 @@ export default function SignupPage() {
       })
       .catch((err) => {
         console.error("[Signup Page] Failed to get signup status:", err);
-        setAllowed(true); // fallback to enabled if fetch fails
+        setAllowed(true);
       });
   }, []);
 
@@ -75,36 +75,33 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-4 py-20">
-      <div className="space-y-6 rounded-3xl bg-gradient-card p-8 ring-1 ring-border/60 shadow-card">
-        <header className="text-center space-y-2">
-          <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-[#181422] shadow-glow font-display text-xl font-bold">
-            <span className="bg-gradient-to-r from-[#ff604b] to-[#ff4ebb] bg-clip-text text-transparent">
-              愛
-            </span>
-          </span>
-          <h1 className="font-display text-2xl font-bold tracking-tight">
+    <main className="mx-auto flex min-h-screen max-w-md items-center justify-center px-4 py-12">
+      <div className="w-full space-y-6 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-8 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+        <header className="text-center space-y-3">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(240,120,138,0.4)] bg-[#22191a] shadow-[0_0_16px_rgba(240,120,138,0.25)]">
+            <div className="h-4 w-4 rounded-full bg-[#f0788a]" />
+          </div>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-[#fff3e0]">
             Create an AniStash Account
           </h1>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-[#968677]">
             Start stashing and tracking your anime & manga lists
           </p>
         </header>
 
         {allowed === false ? (
-          <div className="rounded-xl border border-dashed border-status-dropped bg-status-dropped/15 p-5 text-center space-y-2">
-            <ShieldAlert className="h-8 w-8 text-status-dropped mx-auto" />
-            <h2 className="font-display text-sm font-semibold text-status-dropped">
+          <div className="rounded-2xl border border-dashed border-[#e02e2a]/50 bg-[#e02e2a]/10 p-5 text-center space-y-2">
+            <ShieldAlert className="h-8 w-8 text-[#e02e2a] mx-auto" />
+            <h2 className="font-display text-sm font-semibold text-[#e02e2a]">
               Signups are Closed
             </h2>
-            <p className="text-xs text-muted-foreground leading-normal">
-              New registration has been disabled on this instance by the
-              administrator.
+            <p className="text-xs text-[#968677] leading-normal">
+              New registration has been disabled on this instance by the administrator.
             </p>
             <div className="pt-2">
               <Link
                 to="/login"
-                className="text-xs text-primary hover:underline font-medium"
+                className="text-xs text-[#f0788a] hover:underline font-semibold"
               >
                 Go to login
               </Link>
@@ -115,9 +112,9 @@ export default function SignupPage() {
             <div className="space-y-1.5">
               <Label
                 htmlFor="name"
-                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]"
               >
-                <User className="h-3 w-3" /> Display Name
+                <User className="h-3 w-3 text-[#f0788a]" /> Display Name
               </Label>
               <Input
                 id="name"
@@ -126,7 +123,7 @@ export default function SignupPage() {
                 placeholder="Spike Spiegel"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="bg-surface"
+                className="rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 text-xs text-[#fff3e0] placeholder:text-[#968677] focus:border-[#f0788a] focus:bg-[rgba(255,243,224,0.08)]"
                 autoComplete="name"
               />
             </div>
@@ -134,9 +131,9 @@ export default function SignupPage() {
             <div className="space-y-1.5">
               <Label
                 htmlFor="email"
-                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]"
               >
-                <Mail className="h-3 w-3" /> Email Address
+                <Mail className="h-3 w-3 text-[#f0788a]" /> Email Address
               </Label>
               <Input
                 id="email"
@@ -145,7 +142,7 @@ export default function SignupPage() {
                 placeholder="spike@bebop.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-surface"
+                className="rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 text-xs text-[#fff3e0] placeholder:text-[#968677] focus:border-[#f0788a] focus:bg-[rgba(255,243,224,0.08)]"
                 autoComplete="email"
               />
             </div>
@@ -153,9 +150,9 @@ export default function SignupPage() {
             <div className="space-y-1.5">
               <Label
                 htmlFor="pass"
-                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]"
               >
-                <Lock className="h-3 w-3" /> Password
+                <Lock className="h-3 w-3 text-[#f0788a]" /> Password
               </Label>
               <Input
                 id="pass"
@@ -164,7 +161,7 @@ export default function SignupPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-surface"
+                className="rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 text-xs text-[#fff3e0] placeholder:text-[#968677] focus:border-[#f0788a] focus:bg-[rgba(255,243,224,0.08)]"
                 autoComplete="new-password"
               />
             </div>
@@ -172,12 +169,11 @@ export default function SignupPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 bg-gradient-accent text-white hover:opacity-95"
+              className="w-full rounded-full bg-[#f0788a] py-2.5 text-xs font-semibold text-white shadow-[0_0_20px_rgba(240,120,138,0.3)] hover:brightness-110 active:scale-95 transition-all"
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating
-                  account…
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating account…
                 </>
               ) : (
                 "Sign Up"
@@ -187,11 +183,11 @@ export default function SignupPage() {
         )}
 
         {allowed !== false && (
-          <div className="text-center text-xs text-muted-foreground pt-2 border-t border-border/40">
+          <div className="text-center text-xs text-[#968677] pt-2 border-t border-[rgba(255,243,224,0.06)]">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-primary hover:underline font-medium"
+              className="text-[#f0788a] hover:underline font-semibold"
             >
               Log in here
             </Link>

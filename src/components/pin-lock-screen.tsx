@@ -59,31 +59,30 @@ export function PinLockScreen({
   }
 
   return (
-    <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-background bg-hero px-4 py-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,hsl(var(--primary)/0.16),transparent_32rem)]" />
-      <section className="relative w-full max-w-xs rounded-[1.75rem] bg-gradient-card p-5 shadow-card ring-1 ring-border/70 sm:p-6">
+    <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-[#191213] px-4 py-8">
+      <section className="relative w-full max-w-xs rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.92)] p-6 shadow-[0_16px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl sm:p-7">
         <header className="text-center">
-          <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#181422] shadow-glow ring-1 ring-primary/20">
-            <span className="font-display text-3xl font-bold bg-gradient-to-r from-[#ff604b] to-[#ff4ebb] bg-clip-text text-transparent">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[rgba(240,120,138,0.4)] bg-[#22191a] shadow-[0_0_20px_rgba(240,120,138,0.25)]">
+            <span className="font-display text-2xl font-bold text-[#f0788a]">
               愛
             </span>
           </div>
-          <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.18em] text-primary">
+          <p className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#f0788a]">
             <LockKeyhole className="h-3.5 w-3.5" /> Local app lock
           </p>
-          <h1 className="mt-2 font-display text-3xl font-bold tracking-tight">
+          <h1 className="mt-1.5 font-display text-2xl font-bold tracking-tight text-[#fff3e0]">
             Welcome back
           </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Enter your 4-digit PIN to open AniStash.
+          <p className="mt-1 text-xs text-[#968677]">
+            Enter your 4-digit PIN to open your stash.
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <label htmlFor="app-pin" className="sr-only">
             Four-digit app PIN
           </label>
-          <div className="relative h-14 sm:h-15">
+          <div className="relative h-13 sm:h-14">
             <input
               ref={inputRef}
               id="app-pin"
@@ -102,16 +101,16 @@ export function PinLockScreen({
               aria-invalid={Boolean(error)}
             />
             <div
-              className="pointer-events-none grid h-full grid-cols-4 gap-2.5 sm:gap-3"
+              className="pointer-events-none grid h-full grid-cols-4 gap-2.5"
               aria-hidden="true"
             >
               {[0, 1, 2, 3].map((index) => (
                 <div
                   key={index}
-                  className={`grid place-items-center rounded-2xl border bg-surface/80 text-2xl font-bold transition-all duration-200 motion-reduce:transition-none ${
+                  className={`grid place-items-center rounded-2xl border text-xl font-bold transition-all duration-200 ${
                     pin[index]
-                      ? "border-primary/70 bg-primary/10 text-primary shadow-[0_0_0_3px_hsl(var(--primary)/0.08)]"
-                      : "border-border/70 text-muted-foreground"
+                      ? "border-[#f0788a] bg-[rgba(240,120,138,0.15)] text-[#f0788a] shadow-[0_0_12px_rgba(240,120,138,0.25)]"
+                      : "border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] text-[#968677]"
                   }`}
                 >
                   {pin[index] ? "•" : ""}
@@ -123,7 +122,7 @@ export function PinLockScreen({
           <p
             id="pin-error"
             role="alert"
-            className="min-h-5 text-center text-sm text-destructive"
+            className="min-h-4 text-center text-xs text-[#e02e2a]"
           >
             {error}
           </p>
@@ -131,16 +130,15 @@ export function PinLockScreen({
           <Button
             type="submit"
             disabled={isChecking || pin.length !== 4}
-            className="min-h-11 w-full bg-gradient-accent text-white shadow-glow transition-transform active:scale-[0.98] motion-reduce:transition-none"
+            className="w-full rounded-full bg-[#f0788a] py-3 text-xs sm:text-sm font-semibold text-[#191213] shadow-[0_0_20px_rgba(240,120,138,0.3)] hover:brightness-110 active:scale-95 disabled:opacity-40 transition-all"
           >
             {isChecking ? "Checking…" : "Unlock library"}
           </Button>
         </form>
 
-        <p className="mt-6 flex items-start gap-2 rounded-xl bg-surface/60 p-3 text-xs leading-5 text-muted-foreground">
-          <KeyRound className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-          After three incorrect attempts, you will be signed out and this local
-          PIN will be removed.
+        <p className="mt-5 flex items-start gap-1.5 rounded-2xl border border-[rgba(255,243,224,0.06)] bg-[rgba(255,243,224,0.02)] p-2.5 text-[11px] leading-relaxed text-[#968677]">
+          <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f0788a]" />
+          <span>After three incorrect attempts, you will be signed out automatically.</span>
         </p>
       </section>
     </main>

@@ -21,8 +21,8 @@ export default defineConfig({
         name: "AniStash — Anime & Manga Tracker",
         short_name: "AniStash",
         description: "Stash every anime, manga, and series worth remembering.",
-        theme_color: "#181422",
-        background_color: "#181422",
+        theme_color: "#191213",
+        background_color: "#191213",
         display: "standalone",
         orientation: "portrait",
         start_url: "/",
@@ -56,6 +56,13 @@ export default defineConfig({
   ],
   server: {
     host: true,
+    port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:9000",
+        changeOrigin: true,
+      },
+    },
   },
   optimizeDeps: {
     exclude: ["wrangler"],

@@ -6,6 +6,8 @@ import { rpc } from "./lib/rpc";
 import { PinLockScreen } from "./components/pin-lock-screen";
 import { clearLocalPin, hasLocalPinForUser } from "./lib/local-pin";
 
+import { MobileNav } from "./components/mobile-nav";
+
 // Import pages
 import Home from "./routes/index";
 import AddPage from "./routes/add";
@@ -177,9 +179,10 @@ export default function App() {
         invalidate: fetchSession,
       }}
     >
-      <div className="min-h-screen bg-background bg-hero">
+      <div className="min-h-screen bg-background bg-hero pb-24 md:pb-12">
         {!isAuthPage && <SiteHeader />}
         {pageComponent}
+        {!isAuthPage && <MobileNav />}
         <Toaster theme="dark" position="top-center" />
       </div>
     </RouterProvider>

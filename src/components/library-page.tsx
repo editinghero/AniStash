@@ -5,11 +5,12 @@ import { MediaCard } from "@/components/media-card";
 import { StatusTabs } from "@/components/status-tabs";
 import { ALL_STATUSES, type ListStatus, type MediaType } from "@/lib/types";
 import { getCategories, subscribeCategories } from "@/lib/categories";
-import { ArrowDownAZ, ArrowUpDown, Plus, Star, Tag } from "lucide-react";
+import { ArrowDownAZ, ArrowUpDown, Plus, Search, Star, Tag, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
@@ -119,7 +120,7 @@ export function LibraryPage({
             : null;
 
         if (aScore == null && bScore == null) return b.updatedAt - a.updatedAt;
-        if (aScore == null) return 1; // non-scored items go to bottom
+        if (aScore == null) return 1;
         if (bScore == null) return -1;
         return bScore - aScore || b.updatedAt - a.updatedAt;
       }
@@ -128,135 +129,153 @@ export function LibraryPage({
   }, [entries, status, category, query, sortMode]);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <main className="mx-auto max-w-5xl px-3 sm:px-4 py-4 sm:py-8 space-y-5 sm:space-y-7 animate-page-in">
+      {/* Header */}
+      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#f0788a] mb-1">
+            <span>AniStash Library</span>
+          </div>
+          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-[#fff3e0]">
             {title}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground max-w-xl">{intro}</p>
+          <p className="mt-1 text-xs sm:text-sm text-[#dbc9b5] max-w-xl">{intro}</p>
         </div>
         <Link
           to={addHref}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-4 py-2.5 text-sm font-semibold text-white shadow-card self-start"
+          className="inline-flex items-center gap-2 rounded-full bg-[#f0788a] px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-[0_0_18px_rgba(240,120,138,0.3)] hover:brightness-110 hover:scale-[1.02] active:scale-95 transition-all self-start"
         >
           <Plus className="h-4 w-4" /> {addLabel}
         </Link>
       </div>
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      {/* Control Bar: Categories & Search */}
+      <div className="flex flex-col gap-3.5 border-b border-[rgba(255,243,224,0.07)] pb-4 lg:flex-row lg:items-center lg:justify-between">
         <StatusTabs
           type={type}
-          value={status}
+          active={status}
           counts={counts}
           onChange={setStatus}
         />
-        <div className="flex w-full gap-2 lg:w-auto">
+        <div className="flex w-full items-center gap-2 lg:w-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                aria-label={`Sort by ${sortOptions[sortMode].label}`}
-                className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-surface/60 px-3 text-sm font-semibold text-foreground ring-1 ring-border/60 transition-colors hover:bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                className="inline-flex h-10 items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] px-3.5 text-xs font-semibold text-[#dbc9b5] shadow-sm backdrop-blur-xl hover:border-[rgba(240,120,138,0.4)] hover:text-[#fff3e0] hover:scale-[1.02] active:scale-95 transition-all"
+                title="Sort entries"
               >
-                {(() => {
-                  const Icon = sortOptions[sortMode].Icon;
-                  return <Icon className="h-4 w-4" />;
-                })()}
-                <span className="hidden sm:inline">
+                <ArrowUpDown className="h-3.5 w-3.5 text-[#f0788a]" />
+                <span className="hidden sm:inline">Sort:</span>
+                <span className="font-medium text-[#fff3e0]">
                   {sortOptions[sortMode].shortLabel}
                 </span>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="stash-scrollbar w-48 rounded-lg border-border/60 bg-popover/95 p-1.5 shadow-card backdrop-blur"
-            >
-              <DropdownMenuRadioGroup
-                value={sortMode}
-                onValueChange={(value) => setSortMode(value as SortMode)}
+            <DropdownMenuContent align="end" className="w-44 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl">
+              <DropdownMenuItem
+                onClick={() => setSortMode("updated")}
+                className={cn("rounded-xl text-xs cursor-pointer", sortMode === "updated" && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]")}
               >
-                {(
-                  Object.entries(sortOptions) as [
-                    SortMode,
-                    (typeof sortOptions)[SortMode],
-                  ][]
-                ).map(([value, option]) => (
-                  <DropdownMenuRadioItem
-                    key={value}
-                    value={value}
-                    className="cursor-pointer rounded-md py-2 text-sm text-foreground transition-colors hover:!bg-white/10 focus:!bg-white/10 focus:!text-foreground data-[highlighted]:!bg-white/10 data-[highlighted]:!text-foreground data-[state=checked]:!bg-white/10"
-                  >
-                    <option.Icon className="h-4 w-4" />
-                    {option.label}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
+                Recently updated
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setSortMode("title")}
+                className={cn("rounded-xl text-xs cursor-pointer", sortMode === "title" && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]")}
+              >
+                Alphabetical (A-Z)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setSortMode("score")}
+                className={cn("rounded-xl text-xs cursor-pointer", sortMode === "score" && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]")}
+              >
+                Highest score
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <input
-            type="search"
-            placeholder="Search your list..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="min-w-0 flex-1 rounded-lg bg-surface/60 px-4 py-2 text-sm ring-1 ring-border/60 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary sm:w-72"
-          />
+
+          <div className="relative flex-1 lg:w-64">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#968677]" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search title, genre, note…"
+              className="h-10 w-full rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] pl-9 pr-8 text-xs text-[#fff3e0] placeholder:text-[#968677] shadow-sm backdrop-blur-xl focus:border-[#f0788a] focus:outline-none transition-all"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-[#968677] hover:text-[#fff3e0]"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
+      {/* Horizontally Scrollable Tags Bar */}
       {availableCategories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-surface/40 p-2 ring-1 ring-border/60">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground px-2 flex items-center gap-1">
-            <Tag className="h-3 w-3 text-primary" /> Tags:
-          </span>
-          <button
-            type="button"
-            onClick={() => setCategory("ALL")}
-            className={cn(
-              "rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors",
-              category === "ALL"
-                ? "bg-gradient-accent text-white shadow-card"
-                : "text-muted-foreground hover:text-foreground hover:bg-surface",
-            )}
-          >
-            All Tags
-          </button>
-          {availableCategories.map((cat) => {
-            const active = category.toLowerCase() === cat.toLowerCase();
-            const count = categoryCounts[cat.toLowerCase()] || 0;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setCategory(active ? "ALL" : cat)}
-                className={cn(
-                  "rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors flex items-center gap-1",
-                  active
-                    ? "bg-gradient-accent text-white shadow-card"
-                    : "text-muted-foreground hover:text-foreground hover:bg-surface",
-                )}
-              >
-                <span>{cat}</span>
-                {count > 0 && (
-                  <span
-                    className={cn(
-                      "rounded-full px-1.5 py-0.2 text-[10px]",
-                      active ? "bg-white/20 text-white" : "bg-surface-elevated text-muted-foreground",
-                    )}
-                  >
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div className="flex items-center gap-2 rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(34,25,26,0.6)] p-2 sm:p-2.5 backdrop-blur-xl shadow-sm">
+          <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#968677] pl-1 shrink-0">
+            <Tag className="h-3 w-3 text-[#f0788a]" />
+            <span className="hidden sm:inline">Tags</span>
+          </div>
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none scroll-smooth py-0.5">
+            <button
+              type="button"
+              onClick={() => setCategory("ALL")}
+              className={cn(
+                "rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-md transition-all duration-200 shrink-0 select-none hover:scale-[1.02] active:scale-95",
+                category === "ALL"
+                  ? "border-transparent bg-[#f0788a] text-white font-bold shadow-[0_0_14px_rgba(240,120,138,0.35)]"
+                  : "border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] text-[#dbc9b5] hover:bg-[rgba(255,243,224,0.08)] hover:text-[#fff3e0] hover:border-[rgba(240,120,138,0.3)]",
+              )}
+            >
+              All
+            </button>
+            {availableCategories.map((cat) => {
+              const active = category.toLowerCase() === cat.toLowerCase();
+              const count = categoryCounts[cat.toLowerCase()] || 0;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setCategory(active ? "ALL" : cat)}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-md transition-all duration-200 flex items-center gap-1.5 shrink-0 select-none hover:scale-[1.02] active:scale-95",
+                    active
+                      ? "border-transparent bg-[#f0788a] text-white font-bold shadow-[0_0_14px_rgba(240,120,138,0.35)]"
+                      : "border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] text-[#dbc9b5] hover:bg-[rgba(255,243,224,0.08)] hover:text-[#fff3e0] hover:border-[rgba(240,120,138,0.3)]",
+                  )}
+                >
+                  <span>{cat}</span>
+                  {count > 0 && (
+                    <span
+                      className={cn(
+                        "rounded-full px-1.5 py-0.2 text-[10px] transition-colors",
+                        active
+                          ? "bg-white/25 text-white font-bold"
+                          : "bg-[rgba(255,243,224,0.08)] text-[#968677]",
+                      )}
+                    >
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
+      {/* Grid of Cards */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-16 text-center">
-          <p className="font-display text-lg">Nothing here yet</p>
-          <p className="mt-1 text-sm text-muted-foreground">
+        <div className="rounded-3xl border border-dashed border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.6)] p-12 text-center backdrop-blur-xl">
+          <p className="font-display text-lg font-semibold text-[#fff3e0]">Nothing here yet</p>
+          <p className="mt-1 text-xs sm:text-sm text-[#968677]">
             {entries.length === 0
               ? "Start by pasting a bookmark URL — we'll do the rest."
               : "Nothing matches that filter."}
@@ -264,25 +283,19 @@ export function LibraryPage({
           {entries.length === 0 && (
             <Link
               to={addHref}
-              className="mt-5 inline-flex rounded-lg bg-gradient-accent px-4 py-2 text-sm font-semibold text-white"
+              className="mt-5 inline-flex rounded-full bg-[#f0788a] px-4 py-2 text-xs font-semibold text-white shadow-[0_0_18px_rgba(240,120,138,0.3)] hover:brightness-110 active:scale-95"
             >
               Add your first
             </Link>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {filtered.map((e) => (
             <MediaCard key={e.id} entry={e} />
           ))}
         </div>
       )}
-
-      {/* hint to use status filter */}
-      <p className="text-xs text-muted-foreground pt-2">
-        Tip: click the status pill on any card to change it (
-        {ALL_STATUSES.length} states).
-      </p>
     </main>
   );
 }

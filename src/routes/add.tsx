@@ -13,7 +13,6 @@ import {
   Loader2,
   Link2,
   Search,
-  Sparkles,
   CheckCircle2,
   ArrowLeft,
   Tv,
@@ -98,36 +97,29 @@ export default function AddPage() {
           url: inputVal,
           hintType: type as "ANIME" | "MANGA",
         });
-        setType(res.type);
-        setEditedTitle(res.title);
-        setAiNotes(res.notes);
+        setEditedTitle(res.detectedTitle);
+        setAiNotes(res.aiNotes ?? "");
         setCandidates(res.candidates);
         setStep("confirm");
-        if (!res.title)
-          toast.error("Couldn't extract a title. Try editing it manually.");
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Failed to parse URL");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to parse bookmark",
+        );
       } finally {
         setLoading(null);
       }
     } else {
-      setLoading("parse");
+      setLoading("search");
       try {
-        const results = await searchAnilist(
-          inputVal,
-          type as "ANIME" | "MANGA",
-          8,
-        );
-        setType(type);
+        const items = await searchAnilist(inputVal, type as "ANIME" | "MANGA");
         setEditedTitle(inputVal);
         setAiNotes("");
-        setCandidates(results);
+        setCandidates(items);
         setStep("confirm");
-        if (results.length === 0) {
-          toast.error("No matches found on AniList. Try a different name.");
-        }
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Search failed");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to search AniList",
+        );
       } finally {
         setLoading(null);
       }
@@ -135,38 +127,34 @@ export default function AddPage() {
   }
 
   async function handleResearch() {
-    if (!editedTitle.trim() || type === "SERIES") return;
+    if (!editedTitle.trim()) return;
     setLoading("search");
     try {
-      const results = await searchAnilist(
+      const items = await searchAnilist(
         editedTitle.trim(),
         type as "ANIME" | "MANGA",
-        8,
       );
-      setCandidates(results);
+      setCandidates(items);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Search failed");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to search AniList",
+      );
     } finally {
       setLoading(null);
     }
   }
 
-  function handleSave(media: AnilistMedia) {
-    if (type === "SERIES") return;
+  async function handleSave(media: AnilistMedia) {
     setLoading("save");
     try {
       const isUrlInput =
         url.trim().startsWith("http://") || url.trim().startsWith("https://");
-      const sourceUrl = isUrlInput
-        ? url.trim()
-        : `https://anilist.co/${media.type.toLowerCase()}/${media.id}`;
-
+      const sourceUrl = isUrlInput ? url.trim() : "";
       upsertEntry({
-        type: type as "ANIME" | "MANGA",
-        status,
         anilistId: media.id,
-        malId: media.idMal ?? undefined,
-        title: media.title.romaji || media.title.english || editedTitle,
+        type: media.type === "MANGA" ? "MANGA" : "ANIME",
+        status,
+        title: media.title.userPreferred || media.title.romaji,
         englishTitle: media.title.english ?? undefined,
         nativeTitle: media.title.native ?? undefined,
         coverImage:
@@ -191,23 +179,23 @@ export default function AddPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10 space-y-6">
+    <main className="mx-auto max-w-3xl px-3 sm:px-4 py-4 sm:py-8 space-y-6 animate-page-in">
       <button
         onClick={() =>
           step === "confirm" ? setStep("input") : navigate({ to: "/" })
         }
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#dbc9b5] hover:text-[#fff3e0] transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Back
       </button>
 
       <header>
-        <h1 className="font-display text-3xl md:text-4xl font-bold">
+        <h1 className="font-display text-2xl sm:text-4xl font-bold text-[#fff3e0]">
           {step === "input" ? "Add a new entry" : "Pick the right match"}
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-1 text-xs sm:text-sm text-[#968677]">
           {step === "input"
-            ? "Anime & Manga: paste a URL, Gemini extracts the title and AniList fills in covers and scores. Series: fully manual — title, optional URL & description."
+            ? "Anime & Manga: paste a URL or title, Gemini extracts metadata and AniList fills in rich art and ratings."
             : "Edit the detected title if needed, then choose the correct entry."}
         </p>
       </header>
@@ -215,10 +203,10 @@ export default function AddPage() {
       {step === "input" && (
         <form
           onSubmit={handleParse}
-          className="space-y-4 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card"
+          className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
         >
           <Field label="Type">
-            <div className="grid grid-cols-3 gap-1.5 rounded-lg bg-surface p-1 ring-1 ring-border/60">
+            <div className="grid grid-cols-3 gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] p-1 backdrop-blur-xl">
               {(
                 [
                   { v: "ANIME", label: "Anime", Icon: Tv },
@@ -231,10 +219,10 @@ export default function AddPage() {
                   type="button"
                   onClick={() => setType(v)}
                   className={cn(
-                    "inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-md px-1.5 sm:px-3 py-2 text-xs sm:text-sm font-medium transition-colors",
+                    "inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-full px-2 sm:px-3 py-2 text-xs font-semibold transition-all active:scale-95",
                     type === v
-                      ? "bg-gradient-accent text-white"
-                      : "text-muted-foreground hover:text-foreground",
+                      ? "bg-[#f0788a] text-white font-bold shadow-[0_0_14px_rgba(240,120,138,0.35)]"
+                      : "text-[#dbc9b5] hover:text-[#fff3e0]",
                   )}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -252,18 +240,18 @@ export default function AddPage() {
                   value={seriesTitle}
                   onChange={(e) => setSeriesTitle(e.target.value)}
                   placeholder="Bocchi the Rock!, Chainsaw Man…"
-                  className="w-full rounded-lg bg-surface px-3 py-2.5 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 py-2.5 text-xs sm:text-sm text-[#fff3e0] placeholder:text-[#968677] focus:border-[#f0788a] focus:outline-none"
                 />
               </Field>
               <Field label="URL (optional)">
-                <div className="flex items-center gap-2 rounded-lg bg-surface ring-1 ring-border/60 focus-within:ring-primary px-3">
-                  <Link2 className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 focus-within:border-[#f0788a]">
+                  <Link2 className="h-4 w-4 text-[#968677]" />
                   <input
                     type="url"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="https://…"
-                    className="flex-1 bg-transparent py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none"
+                    className="flex-1 bg-transparent py-2.5 text-xs sm:text-sm text-[#fff3e0] placeholder:text-[#968677] focus:outline-none"
                   />
                 </div>
               </Field>
@@ -273,21 +261,21 @@ export default function AddPage() {
                   value={seriesDescription}
                   onChange={(e) => setSeriesDescription(e.target.value)}
                   placeholder="What is it about? Who recommended it?"
-                  className="bg-surface resize-none"
+                  className="rounded-2xl border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] p-3 text-xs sm:text-sm text-[#fff3e0] placeholder:text-[#968677] focus:border-[#f0788a] resize-none"
                 />
               </Field>
             </>
           ) : (
             <Field label="Bookmark URL or Name">
-              <div className="flex items-center gap-2 rounded-lg bg-surface ring-1 ring-border/60 focus-within:ring-primary px-3">
-                <Link2 className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 focus-within:border-[#f0788a]">
+                <Link2 className="h-4 w-4 text-[#968677]" />
                 <input
                   type="text"
                   required
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Paste a bookmark URL or search anime/manga name..."
-                  className="flex-1 bg-transparent py-3 text-sm placeholder:text-muted-foreground focus:outline-none"
+                  placeholder="Paste a bookmark URL or search title..."
+                  className="flex-1 bg-transparent py-2.5 sm:py-3 text-xs sm:text-sm text-[#fff3e0] placeholder:text-[#968677] focus:outline-none"
                 />
               </div>
             </Field>
@@ -297,7 +285,7 @@ export default function AddPage() {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as ListStatus)}
-              className="w-full rounded-lg bg-surface px-3 py-2 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-full border border-[rgba(255,243,224,0.08)] bg-[#22191a] px-4 py-2.5 text-xs sm:text-sm text-[#fff3e0] focus:border-[#f0788a] focus:outline-none"
             >
               {ALL_STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -313,7 +301,7 @@ export default function AddPage() {
               loading != null ||
               (type === "SERIES" ? !seriesTitle.trim() : !url.trim())
             }
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-accent px-4 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-50 appearance-none"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#f0788a] px-4 py-3 text-xs sm:text-sm font-semibold text-white shadow-[0_0_20px_rgba(240,120,138,0.3)] hover:brightness-110 active:scale-95 disabled:opacity-50 transition-all"
           >
             {loading === "parse" || loading === "save" ? (
               <>
@@ -343,16 +331,16 @@ export default function AddPage() {
 
       {step === "confirm" && type !== "SERIES" && (
         <div className="space-y-5">
-          <div className="rounded-2xl bg-gradient-card p-5 ring-1 ring-border/60 shadow-card space-y-3">
+          <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl space-y-3">
             <Field label="Detected title (edit if needed)">
               <input
                 value={editedTitle}
                 onChange={(e) => setEditedTitle(e.target.value)}
-                className="w-full rounded-lg bg-surface px-3 py-2.5 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 py-2.5 text-xs sm:text-sm text-[#fff3e0] focus:border-[#f0788a] focus:outline-none"
               />
             </Field>
             {aiNotes && (
-              <p className="text-xs text-muted-foreground italic">
+              <p className="text-xs text-[#968677] italic">
                 AI note: {aiNotes}
               </p>
             )}
@@ -360,7 +348,7 @@ export default function AddPage() {
               type="button"
               onClick={handleResearch}
               disabled={loading === "search"}
-              className="inline-flex items-center gap-2 rounded-lg bg-surface px-3 py-2 text-sm font-medium ring-1 ring-border/60 hover:bg-surface-elevated disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-4 py-2 text-xs font-semibold text-[#fff3e0] hover:bg-[rgba(255,243,224,0.08)] disabled:opacity-50 active:scale-95 transition-all"
             >
               {loading === "search" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -372,7 +360,7 @@ export default function AddPage() {
           </div>
 
           {candidates.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            <div className="rounded-3xl border border-dashed border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.5)] p-10 text-center text-xs sm:text-sm text-[#968677]">
               No matches. Edit the title above and try again.
             </div>
           ) : (
@@ -383,24 +371,23 @@ export default function AddPage() {
                   type="button"
                   onClick={() => handleSave(m)}
                   disabled={loading === "save"}
-                  className="group relative flex gap-3 rounded-xl bg-gradient-card p-3 text-left ring-1 ring-border/60 hover:ring-primary/60 transition-all disabled:opacity-50"
+                  className="group relative flex gap-3 rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-xl hover:border-[rgba(240,120,138,0.4)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.6)] transition-all active:scale-[0.98] disabled:opacity-50"
                 >
-                  <div className="pointer-events-none absolute inset-0 rounded-xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <img
                     src={m.coverImage.large ?? m.coverImage.extraLarge ?? ""}
                     alt=""
-                    className="h-28 w-20 flex-none rounded-md object-cover bg-surface"
+                    className="h-28 w-20 flex-none rounded-xl object-cover bg-[#191213]"
                   />
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-display font-semibold text-sm line-clamp-2">
+                    <h3 className="font-display font-semibold text-xs sm:text-sm line-clamp-2 text-[#fff3e0] group-hover:text-[#f0788a] transition-colors">
                       {m.title.english || m.title.romaji}
                     </h3>
                     {m.title.romaji && m.title.english && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
+                      <p className="text-[11px] text-[#968677] line-clamp-1">
                         {m.title.romaji}
                       </p>
                     )}
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-1 text-[11px] text-[#968677]">
                       {[
                         m.format,
                         m.startDate?.year,
@@ -411,17 +398,17 @@ export default function AddPage() {
                         .join(" · ")}
                     </p>
                     {m.averageScore != null && (
-                      <p className="mt-1 text-xs font-medium text-status-completed">
+                      <p className="mt-1 text-xs font-semibold text-[#00a240]">
                         ★ {(m.averageScore / 10).toFixed(1)} · AniList
                       </p>
                     )}
-                    {m.genres?.length > 0 && (
-                      <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">
+                    {m.genres && m.genres.length > 0 && (
+                      <p className="mt-1 line-clamp-1 text-[10px] text-[#968677]">
                         {m.genres.slice(0, 3).join(" · ")}
                       </p>
                     )}
                   </div>
-                  <CheckCircle2 className="h-5 w-5 flex-none text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CheckCircle2 className="h-5 w-5 flex-none text-[#f0788a] opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
               ))}
             </div>
@@ -441,10 +428,10 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <label className="text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]">
         {label}
       </label>
-      <div className="mt-2">{children}</div>
+      <div className="mt-1.5">{children}</div>
     </div>
   );
 }

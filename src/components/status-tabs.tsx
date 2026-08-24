@@ -6,43 +6,61 @@ import {
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-interface Props {
+type StatusTabsProps = {
   type: MediaType;
-  value: ListStatus | "ALL";
+  active: ListStatus | "ALL";
   counts: Record<ListStatus | "ALL", number>;
-  onChange: (s: ListStatus | "ALL") => void;
-}
+  onChange: (status: ListStatus | "ALL") => void;
+};
 
-export function StatusTabs({ type, value, counts, onChange }: Props) {
+export function StatusTabs({
+  type,
+  active,
+  counts,
+  onChange,
+}: StatusTabsProps) {
   const labels = statusLabels(type);
-  const tabs: Array<{ key: ListStatus | "ALL"; label: string }> = [
-    { key: "ALL", label: "All" },
-    ...ALL_STATUSES.map((s) => ({ key: s, label: labels[s] })),
-  ];
+  const total = counts.ALL ?? ALL_STATUSES.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
+
+  const tabs: Array<{ id: ListStatus | "ALL"; label: string; count: number }> =
+    [
+      { id: "ALL", label: "All", count: total },
+      ...ALL_STATUSES.map((s) => ({
+        id: s,
+        label: labels[s],
+        count: counts[s] ?? 0,
+      })),
+    ];
+
   return (
-    <div className="flex flex-wrap gap-1.5 rounded-xl bg-surface/60 p-1.5 ring-1 ring-border/60">
-      {tabs.map((t) => {
-        const active = value === t.key;
+    <div
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl max-w-full"
+    >
+      {tabs.map((tab) => {
+        const isSelected = active === tab.id;
         return (
           <button
-            key={t.key}
+            key={tab.id}
             type="button"
-            onClick={() => onChange(t.key)}
+            onClick={() => onChange(tab.id)}
             className={cn(
-              "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
-              active
-                ? "bg-gradient-accent text-white shadow-card"
-                : "text-muted-foreground hover:text-foreground hover:bg-surface",
+              "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 sm:px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 active:scale-95",
+              isSelected
+                ? "bg-[#f0788a] text-white font-bold shadow-[0_0_16px_rgba(240,120,138,0.35)]"
+                : "text-[#dbc9b5] hover:text-[#fff3e0] hover:bg-[rgba(255,243,224,0.05)]",
             )}
           >
-            {t.label}
+            <span>{tab.label}</span>
             <span
               className={cn(
-                "ml-2 text-xs",
-                active ? "opacity-80" : "opacity-60",
+                "rounded-full px-1.5 py-0.5 text-[10px] tabular-nums transition-colors",
+                isSelected
+                  ? "bg-white/25 text-white font-bold"
+                  : "bg-[rgba(255,243,224,0.08)] text-[#968677]",
               )}
             >
-              {counts[t.key] ?? 0}
+              {tab.count}
             </span>
           </button>
         );

@@ -4,20 +4,21 @@ import { statusLabels, type LibraryEntry, type ListStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { EntryDetailDialog } from "@/components/entry-detail-dialog";
 
-const statusColor: Record<ListStatus, string> = {
+const statusBadgeClasses: Record<ListStatus, string> = {
   WATCHING:
-    "bg-status-watching/15 text-status-watching ring-status-watching/30",
+    "bg-[rgba(240,120,138,0.22)] text-[#f0788a] border-[rgba(240,120,138,0.4)]",
   COMPLETED:
-    "bg-status-completed/15 text-status-completed ring-status-completed/30",
+    "bg-[rgba(0,162,64,0.22)] text-[#00a240] border-[rgba(0,162,64,0.4)]",
   PLANNING:
-    "bg-status-planning/15 text-status-planning ring-status-planning/30",
-  ON_HOLD: "bg-status-hold/15 text-status-hold ring-status-hold/30",
-  DROPPED: "bg-status-dropped/15 text-status-dropped ring-status-dropped/30",
+    "bg-[rgba(240,120,138,0.15)] text-[#dbc9b5] border-[rgba(255,243,224,0.2)]",
+  ON_HOLD:
+    "bg-[rgba(229,169,59,0.22)] text-[#e5a93b] border-[rgba(229,169,59,0.4)]",
+  DROPPED:
+    "bg-[rgba(224,46,42,0.22)] text-[#e02e2a] border-[rgba(224,46,42,0.4)]",
 };
 
 export function MediaCard({ entry }: { entry: LibraryEntry }) {
   const [open, setOpen] = useState(false);
-  const [isPressing, setIsPressing] = useState(false);
   const labels = statusLabels(entry.type);
   const score = entry.userScore != null ? entry.userScore.toFixed(1) : "-";
   const total =
@@ -32,84 +33,93 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        onPointerDown={(event) => {
-          if (event.pointerType !== "mouse") setIsPressing(true);
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(true);
         }}
-        onPointerUp={() => setIsPressing(false)}
-        onPointerCancel={() => setIsPressing(false)}
-        onPointerLeave={() => setIsPressing(false)}
-        data-pressed={isPressing}
-        className="group relative w-full touch-manipulation rounded-2xl bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 data-[pressed=true]:-translate-y-1 data-[pressed=true]:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary appearance-none motion-reduce:transition-none"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen(true);
+          }
+        }}
+        className="group relative w-full cursor-pointer touch-manipulation overflow-hidden rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[#22191a] text-left shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1.5 hover:border-[rgba(240,120,138,0.4)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_20px_rgba(240,120,138,0.18)] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f0788a]"
       >
-        <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 group-data-[pressed=true]:opacity-100 motion-reduce:transition-none" />
-        <div className="relative aspect-[2/3] overflow-hidden rounded-t-2xl bg-surface">
+        {/* Top glowing pink accent line on hover */}
+        <div className="pointer-events-none absolute top-0 inset-x-0 h-[2px] bg-[#f0788a] shadow-[0_0_12px_#f0788a] opacity-0 transition-opacity duration-200 group-hover:opacity-100 z-10" />
+
+        <div className="relative aspect-[2/3] overflow-hidden rounded-t-2xl bg-[#191213]">
           {entry.coverImage ? (
             <img
               src={entry.coverImage}
               alt={entry.title}
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 group-data-[pressed=true]:scale-105 motion-reduce:transition-none"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="relative grid h-full place-items-center bg-gradient-card p-3 text-center">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
-              <span className="relative line-clamp-5 font-display text-sm font-semibold leading-snug text-foreground/90">
+            <div className="relative grid h-full place-items-center bg-[#22191a] p-3 text-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#f0788a]/15 to-transparent" />
+              <span className="relative line-clamp-5 font-display text-sm font-semibold leading-snug text-[#fff3e0]">
                 {entry.englishTitle || entry.title}
               </span>
             </div>
           )}
 
-          {/* gradient overlay */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 group-data-[pressed=true]:opacity-100 transition-opacity duration-300 motion-reduce:transition-none" />
+          {/* Vignette gradient overlay */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#191213]/90 via-[#191213]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
 
-          {/* score badge */}
-          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[11px] font-semibold backdrop-blur ring-1 ring-border/40">
-            <Star className="h-3 w-3 fill-status-planning text-status-planning" />
+          {/* Score badge */}
+          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full border border-[rgba(255,243,224,0.12)] bg-[rgba(25,18,19,0.92)] px-2 py-0.5 text-[11px] font-semibold text-[#fff3e0]">
+            <Star className="h-3 w-3 fill-[#e5a93b] text-[#e5a93b]" />
             {score}
           </div>
 
-          {/* status pill on cover */}
+          {/* Status pill on cover */}
           <div
             className={cn(
-              "absolute left-2 top-2 truncate rounded-md px-1.5 py-0.5 text-[10px] font-semibold ring-1 backdrop-blur-sm",
-              statusColor[entry.status],
+              "absolute left-2 top-2 truncate rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+              statusBadgeClasses[entry.status],
             )}
           >
             {labels[entry.status]}
           </div>
 
-          {/* progress bar */}
+          {/* Progress bar */}
           {progressPct > 0 && (
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-black/40">
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-black/50">
               <div
-                className="h-full bg-gradient-accent"
+                className="h-full bg-[#f0788a] shadow-[0_0_8px_rgba(240,120,138,0.5)]"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
           )}
         </div>
 
-        <div className="p-2.5 sm:p-3 space-y-1">
-          <h3 className="line-clamp-2 font-display text-[13px] sm:text-sm font-semibold leading-snug min-h-[2.4em]">
+        <div className="p-3 space-y-1">
+          <h3 className="line-clamp-2 font-display text-[13px] sm:text-sm font-semibold leading-snug text-[#fff3e0] group-hover:text-[#f0788a] transition-colors">
             {entry.englishTitle || entry.title}
           </h3>
-          <p className="line-clamp-1 text-[10px] sm:text-[11px] text-muted-foreground">
+          <p className="line-clamp-1 text-[11px] text-[#968677]">
             {entry.genres && entry.genres.length > 0
               ? entry.genres.slice(0, 2).join(" · ")
               : (entry.format ?? "")}
             {total != null && (
-              <span className="ml-1 opacity-70">
+              <span className="ml-1 text-[#dbc9b5]/70">
                 · {progress}/{total}
               </span>
             )}
           </p>
         </div>
-      </button>
+      </div>
 
-      <EntryDetailDialog entry={entry} open={open} onOpenChange={setOpen} />
+      {open && (
+        <EntryDetailDialog entry={entry} open={open} onOpenChange={setOpen} />
+      )}
     </>
   );
 }

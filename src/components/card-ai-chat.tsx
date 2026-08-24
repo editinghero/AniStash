@@ -23,7 +23,10 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    fetchHistory();
+    const timer = setTimeout(() => {
+      fetchHistory();
+    }, 120);
+    return () => clearTimeout(timer);
   }, [entry.id]);
 
   useEffect(() => {
@@ -105,16 +108,16 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-surface/30 rounded-xl border border-border/60 overflow-hidden mt-6">
-      <div className="bg-gradient-accent/10 px-4 py-2 border-b border-border/60 flex items-center justify-between">
+    <div className="flex flex-col h-full bg-[rgba(34,25,26,0.65)] rounded-2xl border border-[rgba(255,243,224,0.08)] overflow-hidden mt-5 shadow-lg backdrop-blur-xl">
+      <div className="bg-[rgba(255,243,224,0.03)] px-3.5 py-2.5 border-b border-[rgba(255,243,224,0.08)] flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-status-planning" />
-          <span className="text-xs font-semibold">AI Assistant</span>
+          <Sparkles className="h-3.5 w-3.5 text-[#f0788a]" />
+          <span className="text-xs font-bold uppercase tracking-wider text-[#fff3e0]">AI Assistant</span>
         </div>
         {messages.length > 0 && (
           <button
             onClick={handleClear}
-            className="text-muted-foreground hover:text-destructive p-1 rounded transition-colors"
+            className="text-[#968677] hover:text-[#e02e2a] p-1 rounded-full hover:bg-[rgba(224,46,42,0.1)] transition-colors"
             title="Clear Chat"
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -123,25 +126,29 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
       </div>
       <div
         ref={scrollRef}
-        className="stash-scrollbar flex-1 overflow-y-auto p-4 space-y-4 max-h-[350px] min-h-[200px]"
+        className="stash-scrollbar flex-1 overflow-y-auto p-3.5 space-y-3.5 max-h-[350px] min-h-[180px]"
       >
         {isInitializing ? (
           <div className="flex h-full items-center justify-center">
-            <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#f0788a] border-t-transparent" />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground p-4">
-            <Bot className="h-8 w-8 mb-2 opacity-50" />
+          <div className="flex h-full flex-col items-center justify-center text-center text-[#968677] p-4">
+            <Bot className="h-7 w-7 mb-2 text-[#f0788a] opacity-80" />
             <p className="text-xs">Ask me anything about {entry.title}!</p>
           </div>
         ) : (
           messages.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+              className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
             >
               <div
-                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full ${msg.role === "user" ? "bg-surface ring-1 ring-border" : "bg-gradient-accent text-white"}`}
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
+                  msg.role === "user"
+                    ? "border border-[rgba(255,243,224,0.1)] bg-[rgba(255,243,224,0.05)] text-[#dbc9b5]"
+                    : "border border-[rgba(240,120,138,0.4)] bg-[#22191a] text-[#f0788a] shadow-[0_0_10px_rgba(240,120,138,0.2)]"
+                }`}
               >
                 {msg.role === "user" ? (
                   <User className="h-3 w-3" />
@@ -150,7 +157,11 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
                 )}
               </div>
               <div
-                className={`rounded-xl px-3 py-2 text-[13px] leading-relaxed max-w-[85%] ${msg.role === "user" ? "bg-surface text-foreground whitespace-pre-wrap" : "bg-background text-foreground/90 shadow-sm"}`}
+                className={`rounded-2xl px-3 py-2 text-xs leading-relaxed max-w-[85%] ${
+                  msg.role === "user"
+                    ? "border border-[rgba(240,120,138,0.3)] bg-[rgba(240,120,138,0.15)] text-[#fff3e0] whitespace-pre-wrap"
+                    : "border border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.85)] text-[#dbc9b5]"
+                }`}
               >
                 {msg.role === "model" && msg.thought && (
                   <ThinkingProcess thought={msg.thought} />
@@ -165,32 +176,32 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
           ))
         )}
         {isLoading && (
-          <div className="flex gap-3 flex-row">
-            <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gradient-accent text-white">
+          <div className="flex gap-2.5 flex-row">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[rgba(240,120,138,0.4)] bg-[#22191a] text-[#f0788a]">
               <Bot className="h-3 w-3" />
             </div>
-            <div className="rounded-xl bg-background px-3 py-2 flex items-center gap-1 shadow-sm">
-              <span className="w-1 h-1 bg-foreground/40 rounded-full animate-bounce" />
-              <span className="w-1 h-1 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.2s]" />
-              <span className="w-1 h-1 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.4s]" />
+            <div className="rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.85)] px-3 py-2 flex items-center gap-1">
+              <span className="w-1 h-1 bg-[#f0788a] rounded-full animate-bounce" />
+              <span className="w-1 h-1 bg-[#f0788a] rounded-full animate-bounce [animation-delay:0.2s]" />
+              <span className="w-1 h-1 bg-[#f0788a] rounded-full animate-bounce [animation-delay:0.4s]" />
             </div>
           </div>
         )}
       </div>
-      <div className="p-3 bg-background/50 border-t border-border/60">
+      <div className="p-2.5 bg-[rgba(25,18,19,0.7)] border-t border-[rgba(255,243,224,0.08)]">
         <form onSubmit={handleSend} className="relative flex items-center">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask AI..."
-            className="pr-10 bg-surface/50 h-9 text-sm rounded-lg"
+            className="pr-10 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] h-9 text-xs text-[#fff3e0] placeholder:text-[#968677] focus:border-[#f0788a]"
             disabled={isLoading || isInitializing}
           />
           <Button
             type="submit"
             size="icon"
             disabled={!input.trim() || isLoading || isInitializing}
-            className="absolute right-1 h-7 w-7 rounded-md bg-gradient-accent text-white"
+            className="absolute right-1 h-7 w-7 rounded-full bg-[#f0788a] text-[#191213] shadow-[0_0_10px_rgba(240,120,138,0.25)] hover:brightness-110 active:scale-95 disabled:opacity-40 transition-all"
           >
             <Send className="h-3 w-3" />
           </Button>
