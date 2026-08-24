@@ -80,7 +80,7 @@ export default function SignupPage() {
         <header className="text-center space-y-3">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[rgba(240,120,138,0.35)] bg-[#191213] p-2.5 shadow-[0_0_24px_rgba(240,120,138,0.25)]">
             <img
-              src="/splash-logo-square.png"
+              src="/icon-512.png"
               alt="AniStash"
               className="h-full w-full object-contain rounded-lg"
             />
