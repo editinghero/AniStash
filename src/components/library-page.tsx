@@ -42,7 +42,9 @@ export function LibraryPage({
   const entries = useLibrary(type);
   const [status, setStatus] = useState<ListStatus | "ALL">("ALL");
   const [category, setCategory] = useState<string>("ALL");
-  const [availableCategories, setAvailableCategories] = useState<string[]>(() => getCategories());
+  const [availableCategories, setAvailableCategories] = useState<string[]>(() =>
+    getCategories(),
+  );
   const [query, setQuery] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("updated");
   const addHref = `/add?type=${type}`;
@@ -138,7 +140,7 @@ export function LibraryPage({
         </div>
         <Link
           to={addHref}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-accent px-4 py-2.5 text-sm font-semibold text-white shadow-card self-start"
+          className="inline-flex items-center gap-2 rounded-full bg-gradient-accent px-5 py-3 text-sm font-semibold text-white shadow-card self-start"
         >
           <Plus className="h-4 w-4" /> {addLabel}
         </Link>
@@ -157,7 +159,7 @@ export function LibraryPage({
               <button
                 type="button"
                 aria-label={`Sort by ${sortOptions[sortMode].label}`}
-                className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-surface/60 px-3 text-sm font-semibold text-foreground ring-1 ring-border/60 transition-colors hover:bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-surface/70 px-4 text-sm font-semibold text-foreground ring-1 ring-border/60 transition-colors hover:bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {(() => {
                   const Icon = sortOptions[sortMode].Icon;
@@ -170,7 +172,7 @@ export function LibraryPage({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="stash-scrollbar w-48 rounded-lg border-border/60 bg-popover/95 p-1.5 shadow-card backdrop-blur"
+              className="stash-scrollbar w-48 rounded-3xl border-border/60 bg-popover/95 p-1.5 shadow-card backdrop-blur"
             >
               <DropdownMenuRadioGroup
                 value={sortMode}
@@ -199,13 +201,13 @@ export function LibraryPage({
             placeholder="Search your list..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="min-w-0 flex-1 rounded-lg bg-surface/60 px-4 py-2 text-sm ring-1 ring-border/60 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary sm:w-72"
+            className="min-w-0 flex-1 rounded-full bg-surface/70 px-4 py-2.5 text-sm ring-1 ring-border/60 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary sm:w-72"
           />
         </div>
       </div>
 
       {availableCategories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-surface/40 p-2 ring-1 ring-border/60">
+        <div className="flex flex-wrap items-center gap-1.5 rounded-[1.75rem] bg-surface/45 p-2 ring-1 ring-border/60">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground px-2 flex items-center gap-1">
             <Tag className="h-3 w-3 text-primary" /> Tags:
           </span>
@@ -213,7 +215,7 @@ export function LibraryPage({
             type="button"
             onClick={() => setCategory("ALL")}
             className={cn(
-              "rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors",
+              "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
               category === "ALL"
                 ? "bg-gradient-accent text-white shadow-card"
                 : "text-muted-foreground hover:text-foreground hover:bg-surface",
@@ -230,7 +232,7 @@ export function LibraryPage({
                 type="button"
                 onClick={() => setCategory(active ? "ALL" : cat)}
                 className={cn(
-                  "rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors flex items-center gap-1",
+                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors flex items-center gap-1",
                   active
                     ? "bg-gradient-accent text-white shadow-card"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface",
@@ -241,7 +243,9 @@ export function LibraryPage({
                   <span
                     className={cn(
                       "rounded-full px-1.5 py-0.2 text-[10px]",
-                      active ? "bg-white/20 text-white" : "bg-surface-elevated text-muted-foreground",
+                      active
+                        ? "bg-white/20 text-white"
+                        : "bg-surface-elevated text-muted-foreground",
                     )}
                   >
                     {count}
@@ -254,7 +258,7 @@ export function LibraryPage({
       )}
 
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-16 text-center">
+        <div className="rounded-[2rem] border border-dashed border-border bg-surface/35 p-16 text-center">
           <p className="font-display text-lg">Nothing here yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {entries.length === 0
@@ -264,7 +268,7 @@ export function LibraryPage({
           {entries.length === 0 && (
             <Link
               to={addHref}
-              className="mt-5 inline-flex rounded-lg bg-gradient-accent px-4 py-2 text-sm font-semibold text-white"
+              className="mt-5 inline-flex rounded-full bg-gradient-accent px-5 py-2.5 text-sm font-semibold text-white"
             >
               Add your first
             </Link>

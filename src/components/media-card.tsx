@@ -42,10 +42,10 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
         onPointerCancel={() => setIsPressing(false)}
         onPointerLeave={() => setIsPressing(false)}
         data-pressed={isPressing}
-        className="group relative w-full touch-manipulation rounded-2xl bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 data-[pressed=true]:-translate-y-1 data-[pressed=true]:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary appearance-none motion-reduce:transition-none"
+        className="group relative w-full touch-manipulation rounded-[1.75rem] bg-gradient-card text-left shadow-card ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:ring-primary/50 data-[pressed=true]:-translate-y-1 data-[pressed=true]:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary appearance-none motion-reduce:transition-none"
       >
-        <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 group-data-[pressed=true]:opacity-100 motion-reduce:transition-none" />
-        <div className="relative aspect-[2/3] overflow-hidden rounded-t-2xl bg-surface">
+        <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 group-data-[pressed=true]:opacity-100 motion-reduce:transition-none" />
+        <div className="relative aspect-[2/3] overflow-hidden rounded-t-[1.75rem] bg-surface">
           {entry.coverImage ? (
             <img
               src={entry.coverImage}
@@ -74,7 +74,7 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
           {/* status pill on cover */}
           <div
             className={cn(
-              "absolute left-2 top-2 truncate rounded-md px-1.5 py-0.5 text-[10px] font-semibold ring-1 backdrop-blur-sm",
+              "absolute left-2 top-2 truncate rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 backdrop-blur-sm",
               statusColor[entry.status],
             )}
           >
@@ -92,7 +92,7 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
           )}
         </div>
 
-        <div className="p-2.5 sm:p-3 space-y-1">
+        <div className="space-y-1 p-3 sm:p-3.5">
           <h3 className="line-clamp-2 font-display text-[13px] sm:text-sm font-semibold leading-snug min-h-[2.4em]">
             {entry.englishTitle || entry.title}
           </h3>

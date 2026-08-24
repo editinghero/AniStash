@@ -215,10 +215,10 @@ export default function AddPage() {
       {step === "input" && (
         <form
           onSubmit={handleParse}
-          className="space-y-4 rounded-2xl bg-gradient-card p-6 ring-1 ring-border/60 shadow-card"
+          className="space-y-4 material-container p-6 ring-1 ring-border/60 shadow-card"
         >
           <Field label="Type">
-            <div className="grid grid-cols-3 gap-1.5 rounded-lg bg-surface p-1 ring-1 ring-border/60">
+            <div className="grid grid-cols-3 gap-1.5 rounded-full bg-surface/70 p-1 ring-1 ring-border/60">
               {(
                 [
                   { v: "ANIME", label: "Anime", Icon: Tv },
@@ -231,7 +231,7 @@ export default function AddPage() {
                   type="button"
                   onClick={() => setType(v)}
                   className={cn(
-                    "inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-md px-1.5 sm:px-3 py-2 text-xs sm:text-sm font-medium transition-colors",
+                    "inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-full px-2 py-2 sm:px-3 text-xs sm:text-sm font-medium transition-colors",
                     type === v
                       ? "bg-gradient-accent text-white"
                       : "text-muted-foreground hover:text-foreground",
@@ -252,11 +252,11 @@ export default function AddPage() {
                   value={seriesTitle}
                   onChange={(e) => setSeriesTitle(e.target.value)}
                   placeholder="Bocchi the Rock!, Chainsaw Man…"
-                  className="w-full rounded-lg bg-surface px-3 py-2.5 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-2xl bg-surface/80 px-4 py-3 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </Field>
               <Field label="URL (optional)">
-                <div className="flex items-center gap-2 rounded-lg bg-surface ring-1 ring-border/60 focus-within:ring-primary px-3">
+                <div className="flex items-center gap-2 rounded-2xl bg-surface/80 ring-1 ring-border/60 focus-within:ring-primary px-3">
                   <Link2 className="h-4 w-4 text-muted-foreground" />
                   <input
                     type="url"
@@ -279,7 +279,7 @@ export default function AddPage() {
             </>
           ) : (
             <Field label="Bookmark URL or Name">
-              <div className="flex items-center gap-2 rounded-lg bg-surface ring-1 ring-border/60 focus-within:ring-primary px-3">
+              <div className="flex items-center gap-2 rounded-2xl bg-surface/80 ring-1 ring-border/60 focus-within:ring-primary px-3">
                 <Link2 className="h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
@@ -313,7 +313,7 @@ export default function AddPage() {
               loading != null ||
               (type === "SERIES" ? !seriesTitle.trim() : !url.trim())
             }
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-accent px-4 py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-50 appearance-none"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-accent px-5 py-3.5 text-sm font-semibold text-white shadow-glow disabled:opacity-50 appearance-none"
           >
             {loading === "parse" || loading === "save" ? (
               <>
@@ -343,12 +343,12 @@ export default function AddPage() {
 
       {step === "confirm" && type !== "SERIES" && (
         <div className="space-y-5">
-          <div className="rounded-2xl bg-gradient-card p-5 ring-1 ring-border/60 shadow-card space-y-3">
+          <div className="material-container p-5 ring-1 ring-border/60 shadow-card space-y-3">
             <Field label="Detected title (edit if needed)">
               <input
                 value={editedTitle}
                 onChange={(e) => setEditedTitle(e.target.value)}
-                className="w-full rounded-lg bg-surface px-3 py-2.5 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-2xl bg-surface/80 px-4 py-3 text-sm ring-1 ring-border/60 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </Field>
             {aiNotes && (
@@ -383,7 +383,7 @@ export default function AddPage() {
                   type="button"
                   onClick={() => handleSave(m)}
                   disabled={loading === "save"}
-                  className="group relative flex gap-3 rounded-xl bg-gradient-card p-3 text-left ring-1 ring-border/60 hover:ring-primary/60 transition-all disabled:opacity-50"
+                  className="group relative flex gap-3 rounded-[1.5rem] bg-gradient-card p-3 text-left ring-1 ring-border/60 hover:ring-primary/60 transition-all disabled:opacity-50"
                 >
                   <div className="pointer-events-none absolute inset-0 rounded-xl shadow-glow opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <img

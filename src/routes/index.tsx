@@ -13,17 +13,17 @@ export default function Home() {
   const series = useLibrary("SERIES").slice(0, 6);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 space-y-16">
+    <main className="mx-auto max-w-6xl px-4 py-10 space-y-14">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-card p-8 md:p-14 ring-1 ring-border/60 shadow-card">
-        <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
+      <section className="material-container relative overflow-hidden p-8 md:p-14">
+        <div className="absolute -right-16 -top-20 h-80 w-80 rounded-full bg-secondary/25 blur-3xl" />
+        <div className="absolute -bottom-24 -left-10 h-80 w-80 rounded-full bg-primary/25 blur-3xl" />
         <div className="relative max-w-2xl">
-          <span className="inline-flex items-center gap-2 rounded-full bg-surface/60 px-3 py-1 text-xs font-medium text-muted-foreground ring-1 ring-border/60">
+          <span className="inline-flex items-center gap-2 material-pill px-4 py-2 text-xs font-medium text-muted-foreground ring-1 ring-border/60">
             <Sparkles className="h-3 w-3 text-primary" />
             AI-powered bookmark import
           </span>
-          <h1 className="mt-5 font-display text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
+          <h1 className="mt-5 font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight">
             Stash every series{" "}
             <span className="text-gradient">worth remembering.</span>
           </h1>
@@ -36,14 +36,14 @@ export default function Home() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to="/add"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-accent px-5 py-3 text-sm font-semibold text-white shadow-glow appearance-none"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-accent px-6 py-3.5 text-sm font-semibold text-white shadow-glow appearance-none"
             >
               <Link2 className="h-4 w-4" />
               Paste a bookmark
             </Link>
             <Link
               to="/anime"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface/60 px-5 py-3 text-sm font-semibold hover:bg-surface"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-surface/70 px-6 py-3.5 text-sm font-semibold hover:bg-surface"
             >
               Browse library
               <ArrowRight className="h-4 w-4" />
@@ -94,7 +94,7 @@ function Section({
     <section>
       <div className="mb-5 flex items-end justify-between">
         <h2 className="flex items-center gap-2 font-display text-2xl font-semibold">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-surface text-primary">
+          <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-tonal text-secondary ring-1 ring-white/10">
             {icon}
           </span>
           {title}
@@ -107,7 +107,7 @@ function Section({
         </Link>
       </div>
       {items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-10 text-center text-sm text-muted-foreground">
+        <div className="rounded-[2rem] border border-dashed border-border bg-surface/35 p-10 text-center text-sm text-muted-foreground">
           {empty}
         </div>
       ) : (

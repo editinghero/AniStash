@@ -20,7 +20,7 @@ export function StatusTabs({ type, value, counts, onChange }: Props) {
     ...ALL_STATUSES.map((s) => ({ key: s, label: labels[s] })),
   ];
   return (
-    <div className="flex flex-wrap gap-1.5 rounded-xl bg-surface/60 p-1.5 ring-1 ring-border/60">
+    <div className="flex flex-wrap gap-1.5 rounded-full bg-surface/60 p-1.5 ring-1 ring-border/60">
       {tabs.map((t) => {
         const active = value === t.key;
         return (
@@ -29,7 +29,7 @@ export function StatusTabs({ type, value, counts, onChange }: Props) {
             type="button"
             onClick={() => onChange(t.key)}
             className={cn(
-              "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
               active
                 ? "bg-gradient-accent text-white shadow-card"
                 : "text-muted-foreground hover:text-foreground hover:bg-surface",

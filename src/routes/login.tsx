@@ -62,10 +62,10 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-4 py-20">
-      <div className="space-y-6 rounded-3xl bg-gradient-card p-8 ring-1 ring-border/60 shadow-card">
+    <main className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-md place-items-center px-4 py-12">
+      <div className="material-container w-full space-y-6 p-8">
         <header className="text-center space-y-2">
-          <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-[#181422] shadow-glow font-display text-xl font-bold">
+          <span className="inline-grid h-12 w-12 place-items-center rounded-[1.45rem] bg-gradient-tonal shadow-glow font-display text-xl font-bold">
             <span className="bg-gradient-to-r from-[#ff604b] to-[#ff4ebb] bg-clip-text text-transparent">
               愛
             </span>
@@ -93,7 +93,7 @@ export default function LoginPage() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-surface"
+              className="bg-surface/80 rounded-2xl"
               autoComplete="email"
             />
           </div>
@@ -112,7 +112,7 @@ export default function LoginPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-surface"
+              className="bg-surface/80 rounded-2xl"
               autoComplete="current-password"
             />
           </div>
@@ -120,7 +120,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 bg-gradient-accent text-white hover:opacity-95"
+            className="w-full mt-2 rounded-full bg-gradient-accent text-white shadow-glow hover:opacity-95"
           >
             {loading ? (
               <>
