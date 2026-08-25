@@ -75,8 +75,8 @@ export function MarkdownRenderer({
             href={safeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-secondary no-underline decoration-transparent transition-colors hover:text-primary hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-          >
+            className="font-medium text-primary underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary/80 hover:decoration-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+            >
             {parseInline(label)}
           </a>,
         );
