@@ -52,13 +52,16 @@ export function SeasonalDiscoverTab() {
   const [error, setError] = useState<string | null>(null);
 
   // Modal Detail State
-  const [selectedMedia, setSelectedMedia] = useState<DiscoverMediaItem | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<DiscoverMediaItem | null>(
+    null,
+  );
   const [detailOpen, setDetailOpen] = useState<boolean>(false);
 
   // AI Briefing State
   const [briefingText, setBriefingText] = useState<string>("");
   const [briefingThought, setBriefingThought] = useState<string>("");
-  const [isGeneratingBriefing, setIsGeneratingBriefing] = useState<boolean>(false);
+  const [isGeneratingBriefing, setIsGeneratingBriefing] =
+    useState<boolean>(false);
 
   const library = useLibrary();
   const inLibrarySet = new Set(
@@ -128,7 +131,8 @@ export function SeasonalDiscoverTab() {
       title: media.title.romaji || title,
       englishTitle: media.title.english ?? undefined,
       nativeTitle: media.title.native ?? undefined,
-      coverImage: media.coverImage.extraLarge || media.coverImage.large || undefined,
+      coverImage:
+        media.coverImage.extraLarge || media.coverImage.large || undefined,
       bannerImage: media.bannerImage ?? undefined,
       genres: media.genres || [],
       format: media.format ?? undefined,
@@ -149,7 +153,9 @@ export function SeasonalDiscoverTab() {
     setBriefingThought("");
 
     try {
-      const titles = items.map((m) => m.title.english || m.title.romaji || "").filter(Boolean);
+      const titles = items
+        .map((m) => m.title.english || m.title.romaji || "")
+        .filter(Boolean);
       const res = await fetch("/api/ai/briefing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -177,7 +183,8 @@ export function SeasonalDiscoverTab() {
     }
   };
 
-  const currentSortObj = DISCOVER_SORTS.find((s) => s.value === sort) || DISCOVER_SORTS[0];
+  const currentSortObj =
+    DISCOVER_SORTS.find((s) => s.value === sort) || DISCOVER_SORTS[0];
 
   return (
     <div className="space-y-6 animate-page-in">
@@ -228,7 +235,8 @@ export function SeasonalDiscoverTab() {
               </button>
 
               <span className="rounded-full bg-[rgba(255,243,224,0.06)] px-2.5 sm:px-3 py-1 text-xs font-bold text-[#fff3e0] tabular-nums">
-                <span className="hidden sm:inline">Page </span>{page}
+                <span className="hidden sm:inline">Page </span>
+                {page}
               </span>
 
               <button
@@ -257,14 +265,18 @@ export function SeasonalDiscoverTab() {
                   </span>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl">
+              <DropdownMenuContent
+                align="end"
+                className="w-40 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl"
+              >
                 {DISCOVER_SORTS.map((s) => (
                   <DropdownMenuItem
                     key={s.value}
                     onClick={() => setSort(s.value)}
                     className={cn(
                       "rounded-xl text-xs cursor-pointer py-1.5 px-2.5",
-                      sort === s.value && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]"
+                      sort === s.value &&
+                        "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]",
                     )}
                   >
                     {s.label}
@@ -308,14 +320,21 @@ export function SeasonalDiscoverTab() {
                     <span>{year}</span>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-32 max-h-60 overflow-y-auto stash-scrollbar rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl">
-                  {Array.from({ length: 14 }, (_, i) => initial.year + 1 - i).map((y) => (
+                <DropdownMenuContent
+                  align="start"
+                  className="w-32 max-h-60 overflow-y-auto stash-scrollbar rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl"
+                >
+                  {Array.from(
+                    { length: 14 },
+                    (_, i) => initial.year + 1 - i,
+                  ).map((y) => (
                     <DropdownMenuItem
                       key={y}
                       onClick={() => setYear(y)}
                       className={cn(
                         "rounded-xl text-xs cursor-pointer py-1.5 px-2.5",
-                        year === y && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]"
+                        year === y &&
+                          "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]",
                       )}
                     >
                       {y}
@@ -370,7 +389,9 @@ export function SeasonalDiscoverTab() {
       ) : error ? (
         <div className="rounded-3xl border border-[rgba(224,46,42,0.3)] bg-[rgba(224,46,42,0.06)] p-8 text-center space-y-2">
           <p className="text-sm font-semibold text-[#e02e2a]">{error}</p>
-          <p className="text-xs text-[#968677]">Please check your network connection and retry.</p>
+          <p className="text-xs text-[#968677]">
+            Please check your network connection and retry.
+          </p>
         </div>
       ) : items.length === 0 ? (
         <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.6)] p-12 text-center text-[#968677] space-y-2">
@@ -382,7 +403,8 @@ export function SeasonalDiscoverTab() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
             {items.map((media) => {
               const inLibrary = inLibrarySet.has(media.id);
-              const title = media.title.english || media.title.romaji || "Untitled";
+              const title =
+                media.title.english || media.title.romaji || "Untitled";
               const score = media.averageScore;
 
               return (
@@ -395,7 +417,11 @@ export function SeasonalDiscoverTab() {
                   <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-[rgba(25,18,19,0.8)]">
                     {media.coverImage?.extraLarge || media.coverImage?.large ? (
                       <img
-                        src={media.coverImage.extraLarge || media.coverImage.large || ""}
+                        src={
+                          media.coverImage.extraLarge ||
+                          media.coverImage.large ||
+                          ""
+                        }
                         alt={title}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -483,7 +509,8 @@ export function SeasonalDiscoverTab() {
             </button>
 
             <span className="rounded-full bg-[rgba(255,243,224,0.08)] px-4 py-2 text-xs font-bold text-[#fff3e0] tabular-nums">
-              <span className="hidden sm:inline">Page </span>{page}
+              <span className="hidden sm:inline">Page </span>
+              {page}
             </span>
 
             <button
@@ -514,7 +541,8 @@ export function SeasonalDiscoverTab() {
                 : `${selectedGenre === "ALL" ? "Trending" : selectedGenre} Manga Briefing`}
             </h2>
             <p className="text-xs text-[#968677]">
-              Spoiler-free executive breakdown of standout premises, studio highlights, and themes.
+              Spoiler-free executive breakdown of standout premises, studio
+              highlights, and themes.
             </p>
           </div>
 

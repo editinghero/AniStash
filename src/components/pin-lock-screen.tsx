@@ -138,7 +138,10 @@ export function PinLockScreen({
 
         <p className="mt-5 flex items-start gap-1.5 rounded-2xl border border-[rgba(255,243,224,0.06)] bg-[rgba(255,243,224,0.02)] p-2.5 text-[11px] leading-relaxed text-[#968677]">
           <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f0788a]" />
-          <span>After three incorrect attempts, you will be signed out automatically.</span>
+          <span>
+            After three incorrect attempts, you will be signed out
+            automatically.
+          </span>
         </p>
       </section>
     </main>

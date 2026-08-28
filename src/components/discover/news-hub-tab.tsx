@@ -11,7 +11,12 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { NEWS_SOURCES, DEFAULT_SOURCE_IDS, type NewsArticle, type NewsFetchResponse } from "@/lib/news-sources";
+import {
+  NEWS_SOURCES,
+  DEFAULT_SOURCE_IDS,
+  type NewsArticle,
+  type NewsFetchResponse,
+} from "@/lib/news-sources";
 import { useLibrary } from "@/lib/use-library";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { ThinkingProcess } from "@/components/ui/thinking-process";
@@ -44,7 +49,8 @@ export function NewsHubTab() {
   const library = useLibrary();
 
   // RSS News Feed State
-  const [selectedSources, setSelectedSources] = useState<string[]>(DEFAULT_SOURCE_IDS);
+  const [selectedSources, setSelectedSources] =
+    useState<string[]>(DEFAULT_SOURCE_IDS);
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [visibleCount, setVisibleCount] = useState<number>(12);
   const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
@@ -59,33 +65,36 @@ export function NewsHubTab() {
   const [digestThought, setDigestThought] = useState<string>("");
   const [isGeneratingDigest, setIsGeneratingDigest] = useState<boolean>(false);
 
-  const fetchLiveNews = useCallback(async (sources = selectedSources) => {
-    if (sources.length === 0) return;
-    setIsRefreshingNews(true);
+  const fetchLiveNews = useCallback(
+    async (sources = selectedSources) => {
+      if (sources.length === 0) return;
+      setIsRefreshingNews(true);
 
-    try {
-      const res = await fetch("/api/news/feed", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sourceIds: sources }),
-      });
+      try {
+        const res = await fetch("/api/news/feed", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sourceIds: sources }),
+        });
 
-      const data = (await res.json()) as NewsFetchResponse;
-      if (res.ok) {
-        setArticles(data.articles || []);
-        setFailedSources(data.failedSources || []);
-        setVisibleCount(12);
-      } else {
-        toast.error("Could not refresh news feeds");
+        const data = (await res.json()) as NewsFetchResponse;
+        if (res.ok) {
+          setArticles(data.articles || []);
+          setFailedSources(data.failedSources || []);
+          setVisibleCount(12);
+        } else {
+          toast.error("Could not refresh news feeds");
+        }
+      } catch (e) {
+        console.error("Failed to load news feeds", e);
+        toast.error("Network error while loading news");
+      } finally {
+        setIsRefreshingNews(false);
+        setIsLoadingNews(false);
       }
-    } catch (e) {
-      console.error("Failed to load news feeds", e);
-      toast.error("Network error while loading news");
-    } finally {
-      setIsRefreshingNews(false);
-      setIsLoadingNews(false);
-    }
-  }, [selectedSources]);
+    },
+    [selectedSources],
+  );
 
   useEffect(() => {
     fetchLiveNews();
@@ -115,7 +124,11 @@ export function NewsHubTab() {
     setDigestText("");
     setDigestThought("");
 
-    let payload: { topic?: string; customShows?: string[]; allowSpoilers: boolean } = {
+    const payload: {
+      topic?: string;
+      customShows?: string[];
+      allowSpoilers: boolean;
+    } = {
       allowSpoilers: false,
     };
 
@@ -126,7 +139,9 @@ export function NewsHubTab() {
         .slice(0, 15);
 
       if (watchingTitles.length === 0) {
-        toast.info("No watching titles in your stash. Generating industry digest instead.");
+        toast.info(
+          "No watching titles in your stash. Generating industry digest instead.",
+        );
       } else {
         payload.customShows = watchingTitles;
       }
@@ -182,7 +197,8 @@ export function NewsHubTab() {
               AI Anime News Digest
             </h2>
             <p className="text-xs text-[#968677]">
-              Get real-time news briefs summarizing recent anime, manga, and adaptation updates with exact dates.
+              Get real-time news briefs summarizing recent anime, manga, and
+              adaptation updates with exact dates.
             </p>
           </div>
         </div>
@@ -266,7 +282,8 @@ export function NewsHubTab() {
               )}
             </div>
             <p className="text-xs text-[#968677]">
-              Aggregated directly from major anime news networks with 14-day freshness.
+              Aggregated directly from major anime news networks with 14-day
+              freshness.
             </p>
           </div>
 
@@ -301,7 +318,9 @@ export function NewsHubTab() {
         {showSourceSelector && (
           <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 shadow-lg space-y-2 backdrop-blur-xl">
             <div className="flex items-center justify-between text-xs text-[#968677] pb-1">
-              <span className="font-semibold text-[#fff3e0]">Select Networks:</span>
+              <span className="font-semibold text-[#fff3e0]">
+                Select Networks:
+              </span>
               <div className="flex items-center gap-2 text-[11px]">
                 <button
                   type="button"
@@ -343,7 +362,8 @@ export function NewsHubTab() {
 
             {failedSources.length > 0 && (
               <p className="text-[11px] text-[#e02e2a] pt-1">
-                Note: {failedSources.length} source(s) were temporarily unreachable on last check.
+                Note: {failedSources.length} source(s) were temporarily
+                unreachable on last check.
               </p>
             )}
           </div>
@@ -377,7 +397,9 @@ export function NewsHubTab() {
         ) : visibleArticles.length === 0 ? (
           <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.6)] p-12 text-center text-[#968677] space-y-2">
             <p className="text-sm font-medium text-[#fff3e0]">No news found</p>
-            <p className="text-xs">Try selecting more sources or clearing your search filter.</p>
+            <p className="text-xs">
+              Try selecting more sources or clearing your search filter.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -399,7 +421,8 @@ export function NewsHubTab() {
                           loading="lazy"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           onError={(e) => {
-                            (e.currentTarget as HTMLElement).style.display = "none";
+                            (e.currentTarget as HTMLElement).style.display =
+                              "none";
                           }}
                         />
                       </div>
@@ -407,7 +430,9 @@ export function NewsHubTab() {
 
                     {/* Metadata */}
                     <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-[#968677]">
-                      <span className="font-bold text-[#f0788a]">{article.sourceName}</span>
+                      <span className="font-bold text-[#f0788a]">
+                        {article.sourceName}
+                      </span>
                       {timeAgo && (
                         <>
                           <span>·</span>

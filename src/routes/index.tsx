@@ -17,7 +17,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-6 sm:p-10 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all">
         <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(240,120,138,0.12)_0%,transparent_70%)]" />
-        
+
         <div className="relative max-w-2xl">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(240,120,138,0.25)] bg-[rgba(240,120,138,0.1)] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#f0788a]">
             <Sparkles className="h-3.5 w-3.5 text-[#f0788a]" />
@@ -26,13 +26,12 @@ export default function Home() {
 
           <h1 className="mt-4 font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#fff3e0] leading-[1.1]">
             Stash every story{" "}
-            <span className="text-coral-gradient">
-              worth remembering.
-            </span>
+            <span className="text-coral-gradient">worth remembering.</span>
           </h1>
 
           <p className="mt-3 text-sm sm:text-base text-[#dbc9b5] max-w-xl leading-relaxed">
-            Paste any bookmark URL — AniStash detects the title, fetches rich metadata & cover art, and files it seamlessly into your library.
+            Paste any bookmark URL — AniStash detects the title, fetches rich
+            metadata & cover art, and files it seamlessly into your library.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">

@@ -199,7 +199,9 @@ export function DiscoverMediaDialog({
                 {media.type === "MANGA" ? "Chapters" : "Episodes"}
               </span>
               <span className="font-semibold text-[#fff3e0]">
-                {media.type === "MANGA" ? media.chapters ?? "—" : media.episodes ?? "—"}
+                {media.type === "MANGA"
+                  ? (media.chapters ?? "—")
+                  : (media.episodes ?? "—")}
               </span>
             </div>
             <div>
@@ -246,7 +248,8 @@ export function DiscoverMediaDialog({
                         key={item.status}
                         style={{
                           width: `${pct}%`,
-                          backgroundColor: statusColors[item.status] || "#968677",
+                          backgroundColor:
+                            statusColors[item.status] || "#968677",
                         }}
                         title={`${item.status}: ${item.amount.toLocaleString()} (${pct.toFixed(1)}%)`}
                       />
@@ -266,7 +269,8 @@ export function DiscoverMediaDialog({
                       <span
                         className="h-2 w-2 rounded-full"
                         style={{
-                          backgroundColor: statusColors[item.status] || "#968677",
+                          backgroundColor:
+                            statusColors[item.status] || "#968677",
                         }}
                       />
                       <span className="text-[11px] font-medium capitalize text-[#dbc9b5]">
@@ -299,7 +303,8 @@ export function DiscoverMediaDialog({
                       #{r.rank}
                     </span>
                     <span className="text-[#dbc9b5] truncate">
-                      {r.context} {r.season ? `${r.season} ` : ""}{r.year ? r.year : ""}
+                      {r.context} {r.season ? `${r.season} ` : ""}
+                      {r.year ? r.year : ""}
                     </span>
                   </div>
                 ))}
@@ -333,9 +338,13 @@ export function DiscoverMediaDialog({
             </span>
             <div className="stash-scrollbar max-h-56 overflow-y-auto pr-2 text-xs sm:text-sm text-[#dbc9b5] leading-relaxed whitespace-pre-wrap rounded-2xl border border-[rgba(255,243,224,0.1)] bg-[rgba(34,25,26,0.8)] p-4 backdrop-blur-2xl">
               {media.description ? (
-                media.description.replace(/<br\s*[\/]?>/gi, "\n").replace(/<[^>]+>/g, "")
+                media.description
+                  .replace(/<br\s*\/?>/gi, "\n")
+                  .replace(/<[^>]+>/g, "")
               ) : (
-                <span className="text-[#968677]">No description available.</span>
+                <span className="text-[#968677]">
+                  No description available.
+                </span>
               )}
             </div>
           </div>

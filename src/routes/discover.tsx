@@ -28,7 +28,8 @@ export default function DiscoverPage() {
             Discover & Explore
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-[#968677]">
-            Seasonal charts, Google-grounded AI deep-dive chats, and live anime news feeds.
+            Seasonal charts, Google-grounded AI deep-dive chats, and live anime
+            news feeds.
           </p>
         </div>
 

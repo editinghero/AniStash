@@ -20,7 +20,8 @@ export function StatusTabs({
   onChange,
 }: StatusTabsProps) {
   const labels = statusLabels(type);
-  const total = counts.ALL ?? ALL_STATUSES.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
+  const total =
+    counts.ALL ?? ALL_STATUSES.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
 
   const tabs: Array<{ id: ListStatus | "ALL"; label: string; count: number }> =
     [

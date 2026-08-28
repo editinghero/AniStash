@@ -81,10 +81,17 @@ function normalizeTransferEntry(raw: any): TransferEntry | null {
   if (!raw || typeof raw !== "object") return null;
 
   const rawType = String(raw.type || "ANIME").toUpperCase();
-  const type: MediaType = rawType === "MANGA" || rawType === "SERIES" ? rawType : "ANIME";
+  const type: MediaType =
+    rawType === "MANGA" || rawType === "SERIES" ? rawType : "ANIME";
 
   const rawStatus = String(raw.status || "PLANNING").toUpperCase();
-  const validStatuses: ListStatus[] = ["WATCHING", "COMPLETED", "PLANNING", "ON_HOLD", "DROPPED"];
+  const validStatuses: ListStatus[] = [
+    "WATCHING",
+    "COMPLETED",
+    "PLANNING",
+    "ON_HOLD",
+    "DROPPED",
+  ];
   const status: ListStatus = validStatuses.includes(rawStatus as ListStatus)
     ? (rawStatus as ListStatus)
     : "PLANNING";
@@ -263,9 +270,7 @@ export default function SettingsPage() {
       }
       const entries = (await res.json()) as LibraryEntry[];
       if (entries.length === 0) {
-        toast.info(
-          "There are no library entries in this database to export.",
-        );
+        toast.info("There are no library entries in this database to export.");
         return;
       }
       const backup: LibraryBackup = {
@@ -308,7 +313,9 @@ export default function SettingsPage() {
       } else if (isRecord(parsed) && Array.isArray((parsed as any).entries)) {
         rawEntriesList = (parsed as any).entries;
       } else {
-        throw new Error("Invalid JSON structure: expected array or { entries: [...] }");
+        throw new Error(
+          "Invalid JSON structure: expected array or { entries: [...] }",
+        );
       }
 
       if (rawEntriesList.length === 0) {
@@ -344,9 +351,7 @@ export default function SettingsPage() {
       }
 
       if (uniqueEntries.length === 0) {
-        toast.info(
-          "All entries in this file are already in your library",
-        );
+        toast.info("All entries in this file are already in your library");
         return;
       }
 
@@ -495,7 +500,9 @@ export default function SettingsPage() {
             Your Categories ({categories.length})
           </Label>
           {categories.length === 0 ? (
-            <p className="text-xs text-[#968677] italic">No categories yet. Add one above!</p>
+            <p className="text-xs text-[#968677] italic">
+              No categories yet. Add one above!
+            </p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
@@ -526,14 +533,20 @@ export default function SettingsPage() {
             <LockKeyhole className="h-4 w-4 text-[#f0788a]" /> Local app PIN
           </h2>
           <p className="mt-1 text-xs sm:text-sm leading-relaxed text-[#968677]">
-            Add a 4-digit PIN for this browser. Three incorrect attempts sign you out automatically.
+            Add a 4-digit PIN for this browser. Three incorrect attempts sign
+            you out automatically.
           </p>
         </div>
 
         <form onSubmit={saveLocalPin} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <Label htmlFor="local-pin" className="text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]">New 4-digit PIN</Label>
+              <Label
+                htmlFor="local-pin"
+                className="text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]"
+              >
+                New 4-digit PIN
+              </Label>
               <Input
                 id="local-pin"
                 type="password"
@@ -550,7 +563,12 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <Label htmlFor="confirm-local-pin" className="text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]">Confirm PIN</Label>
+              <Label
+                htmlFor="confirm-local-pin"
+                className="text-[11px] font-semibold uppercase tracking-wider text-[#dbc9b5]"
+              >
+                Confirm PIN
+              </Label>
               <Input
                 id="confirm-local-pin"
                 type="password"
@@ -640,7 +658,9 @@ export default function SettingsPage() {
       >
         <AlertDialogContent className="rounded-3xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-display text-lg font-bold text-[#fff3e0]">Import library backup?</AlertDialogTitle>
+            <AlertDialogTitle className="font-display text-lg font-bold text-[#fff3e0]">
+              Import library backup?
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-xs text-[#968677]">
               {pendingImport?.length ?? 0} new entries will be added.
               {skippedEntries > 0
@@ -649,8 +669,17 @@ export default function SettingsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isImporting} className="rounded-full border-[rgba(255,243,224,0.08)] text-xs text-[#dbc9b5]">Cancel</AlertDialogCancel>
-            <AlertDialogAction disabled={isImporting} onClick={importLibrary} className="rounded-full bg-[#f0788a] text-xs font-semibold text-white shadow-[0_0_12px_rgba(240,120,138,0.3)]">
+            <AlertDialogCancel
+              disabled={isImporting}
+              className="rounded-full border-[rgba(255,243,224,0.08)] text-xs text-[#dbc9b5]"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isImporting}
+              onClick={importLibrary}
+              className="rounded-full bg-[#f0788a] text-xs font-semibold text-white shadow-[0_0_12px_rgba(240,120,138,0.3)]"
+            >
               {isImporting ? "Importing…" : "Import safely"}
             </AlertDialogAction>
           </AlertDialogFooter>

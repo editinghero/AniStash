@@ -100,7 +100,8 @@ export default function SignupPage() {
               Signups are Closed
             </h2>
             <p className="text-xs text-[#968677] leading-normal">
-              New registration has been disabled on this instance by the administrator.
+              New registration has been disabled on this instance by the
+              administrator.
             </p>
             <div className="pt-2">
               <Link
@@ -177,7 +178,8 @@ export default function SignupPage() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating account…
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating
+                  account…
                 </>
               ) : (
                 "Sign Up"

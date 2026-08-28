@@ -21,7 +21,6 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchHistory();
@@ -112,7 +111,9 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
       <div className="bg-[rgba(255,243,224,0.03)] px-3.5 py-2.5 border-b border-[rgba(255,243,224,0.08)] flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-[#f0788a]" />
-          <span className="text-xs font-bold uppercase tracking-wider text-[#fff3e0]">AI Assistant</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#fff3e0]">
+            AI Assistant
+          </span>
         </div>
         {messages.length > 0 && (
           <button

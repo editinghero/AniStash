@@ -59,7 +59,12 @@ interface HistorySection {
   messages: ChatMessage[];
 }
 
-type ActionMode = "direct-chat" | "where-was-i" | "plot-summary" | "similar-titles" | "latest-news";
+type ActionMode =
+  | "direct-chat"
+  | "where-was-i"
+  | "plot-summary"
+  | "similar-titles"
+  | "latest-news";
 
 export function AiAssistantTab() {
   const library = useLibrary();
@@ -71,7 +76,9 @@ export function AiAssistantTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  const [collapsedSections, setCollapsedSections] = useState<
+    Record<string, boolean>
+  >({});
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Settings & Toggles
@@ -172,7 +179,8 @@ export function AiAssistantTab() {
   };
 
   const handleClearHistory = async () => {
-    if (!confirm("Are you sure you want to clear your AI chat history?")) return;
+    if (!confirm("Are you sure you want to clear your AI chat history?"))
+      return;
     try {
       await fetch("/api/ai/clear-chat", {
         method: "DELETE",
@@ -222,7 +230,10 @@ export function AiAssistantTab() {
         message: overrideMsg || input.trim(),
         allowSpoilers,
         includeNotes: Boolean(selectedSeries?.isFromLibrary && includeNotes),
-        userNotes: selectedSeries?.isFromLibrary && includeNotes ? selectedSeries.notes : undefined,
+        userNotes:
+          selectedSeries?.isFromLibrary && includeNotes
+            ? selectedSeries.notes
+            : undefined,
       };
 
       const res = await fetch("/api/ai/deep-dive", {
@@ -322,7 +333,9 @@ export function AiAssistantTab() {
         const pair = aMsg ? [uMsg, aMsg] : [uMsg];
 
         // Check if message mentions a series tag like [Regarding "Title"]: or "Title"
-        const match = uMsg.text.match(/\[Regarding "([^"]+)"\]/) || uMsg.text.match(/in "([^"]+)"/);
+        const match =
+          uMsg.text.match(/\[Regarding "([^"]+)"\]/) ||
+          uMsg.text.match(/in "([^"]+)"/);
         if (match && match[1]) {
           const sTitle = match[1];
           if (!seriesBuckets[sTitle]) seriesBuckets[sTitle] = [];
@@ -379,7 +392,8 @@ export function AiAssistantTab() {
       const libEntry = library.find(
         (e) =>
           e.title.toLowerCase() === sec.seriesTitle!.toLowerCase() ||
-          (e.englishTitle && e.englishTitle.toLowerCase() === sec.seriesTitle!.toLowerCase()),
+          (e.englishTitle &&
+            e.englishTitle.toLowerCase() === sec.seriesTitle!.toLowerCase()),
       );
       if (libEntry) {
         setSelectedSeries({
@@ -426,7 +440,9 @@ export function AiAssistantTab() {
                       {selectedSeries.title}
                     </p>
                     <p className="text-[10px] text-[#968677]">
-                      {selectedSeries.isFromLibrary ? "From Stash" : "Custom/AniList"}
+                      {selectedSeries.isFromLibrary
+                        ? "From Stash"
+                        : "Custom/AniList"}
                     </p>
                   </div>
                 </div>
@@ -435,7 +451,9 @@ export function AiAssistantTab() {
                   {selectedSeries.isFromLibrary && (
                     <div className="flex items-center gap-1.5 rounded-full bg-[rgba(25,18,19,0.8)] px-3 py-1 border border-[rgba(255,243,224,0.08)]">
                       <FileText className="h-3 w-3 text-[#f0788a]" />
-                      <span className="text-[10px] font-semibold text-[#dbc9b5]">Notes</span>
+                      <span className="text-[10px] font-semibold text-[#dbc9b5]">
+                        Notes
+                      </span>
                       <Switch
                         checked={includeNotes}
                         onCheckedChange={setIncludeNotes}
@@ -498,7 +516,9 @@ export function AiAssistantTab() {
                               <span className="rounded-full bg-[rgba(240,120,138,0.2)] px-2 py-0.5 text-[10px] font-bold text-[#f0788a]">
                                 {entry.type}
                               </span>
-                              <span className="truncate">{entry.englishTitle || entry.title}</span>
+                              <span className="truncate">
+                                {entry.englishTitle || entry.title}
+                              </span>
                             </div>
                             {entry.notes && (
                               <FileText className="h-3 w-3 text-[#968677] shrink-0 ml-1" />
@@ -678,7 +698,11 @@ export function AiAssistantTab() {
                       : "border border-[rgba(240,120,138,0.4)] bg-[#22191a] text-[#f0788a] shadow-[0_0_10px_rgba(240,120,138,0.25)]"
                   }`}
                 >
-                  {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
+                  {msg.role === "user" ? (
+                    <User className="h-3.5 w-3.5" />
+                  ) : (
+                    <Bot className="h-3.5 w-3.5" />
+                  )}
                 </div>
                 <div
                   className={`rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed max-w-[88%] sm:max-w-[80%] min-w-0 break-words overflow-x-auto ${
@@ -717,7 +741,10 @@ export function AiAssistantTab() {
 
         {/* Input Bar */}
         <div className="border-t border-[rgba(255,243,224,0.07)] bg-[rgba(25,18,19,0.8)] p-3 backdrop-blur-md">
-          <form onSubmit={handleSendChat} className="relative flex items-center">
+          <form
+            onSubmit={handleSendChat}
+            className="relative flex items-center"
+          >
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -749,7 +776,9 @@ export function AiAssistantTab() {
               Where was I?
             </DialogTitle>
             <DialogDescription className="text-xs text-[#968677]">
-              Enter the exact season and episode/chapter you stopped at. The AI will strictly recap events up to that point without future spoilers.
+              Enter the exact season and episode/chapter you stopped at. The AI
+              will strictly recap events up to that point without future
+              spoilers.
             </DialogDescription>
           </DialogHeader>
 
@@ -829,7 +858,8 @@ export function AiAssistantTab() {
               )}
             </div>
             <DialogDescription className="text-xs text-[#968677]">
-              Organized by series and topics. Click Restore to continue any conversation.
+              Organized by series and topics. Click Restore to continue any
+              conversation.
             </DialogDescription>
           </DialogHeader>
 

@@ -32,7 +32,9 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
 
     const db = c.env.DB;
     try {
-      await db.prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT").run();
+      await db
+        .prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT")
+        .run();
     } catch {}
 
     const { results } = await db
@@ -126,7 +128,9 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
 
       const db = c.env.DB;
       try {
-        await db.prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT").run();
+        await db
+          .prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT")
+          .run();
       } catch {}
 
       const now = Date.now();
@@ -186,7 +190,9 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
         return c.json({ error: "Failed to insert media metadata" }, 500);
 
       const finalId = data.id ?? crypto.randomUUID();
-      const categoriesJson = data.categories ? JSON.stringify(data.categories) : null;
+      const categoriesJson = data.categories
+        ? JSON.stringify(data.categories)
+        : null;
 
       const userMedia = await db
         .prepare(
@@ -261,10 +267,17 @@ export const libraryRouter = new Hono<{ Bindings: Bindings }>()
 
       const db = c.env.DB;
       try {
-        await db.prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT").run();
+        await db
+          .prepare("ALTER TABLE user_media ADD COLUMN categories_json TEXT")
+          .run();
       } catch {}
 
-      const categoriesJson = data.categories !== undefined ? (data.categories ? JSON.stringify(data.categories) : null) : undefined;
+      const categoriesJson =
+        data.categories !== undefined
+          ? data.categories
+            ? JSON.stringify(data.categories)
+            : null
+          : undefined;
 
       await db
         .prepare(

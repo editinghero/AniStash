@@ -5,7 +5,15 @@ import { MediaCard } from "@/components/media-card";
 import { StatusTabs } from "@/components/status-tabs";
 import { ALL_STATUSES, type ListStatus, type MediaType } from "@/lib/types";
 import { getCategories, subscribeCategories } from "@/lib/categories";
-import { ArrowDownAZ, ArrowUpDown, Plus, Search, Star, Tag, X } from "lucide-react";
+import {
+  ArrowDownAZ,
+  ArrowUpDown,
+  Plus,
+  Search,
+  Star,
+  Tag,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -43,7 +51,9 @@ export function LibraryPage({
   const entries = useLibrary(type);
   const [status, setStatus] = useState<ListStatus | "ALL">("ALL");
   const [category, setCategory] = useState<string>("ALL");
-  const [availableCategories, setAvailableCategories] = useState<string[]>(() => getCategories());
+  const [availableCategories, setAvailableCategories] = useState<string[]>(() =>
+    getCategories(),
+  );
   const [query, setQuery] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("updated");
   const addHref = `/add?type=${type}`;
@@ -139,7 +149,9 @@ export function LibraryPage({
           <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-[#fff3e0]">
             {title}
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-[#dbc9b5] max-w-xl">{intro}</p>
+          <p className="mt-1 text-xs sm:text-sm text-[#dbc9b5] max-w-xl">
+            {intro}
+          </p>
         </div>
         <Link
           to={addHref}
@@ -172,22 +184,37 @@ export function LibraryPage({
                 </span>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-44 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl">
+            <DropdownMenuContent
+              align="end"
+              className="w-44 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl"
+            >
               <DropdownMenuItem
                 onClick={() => setSortMode("updated")}
-                className={cn("rounded-xl text-xs cursor-pointer", sortMode === "updated" && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]")}
+                className={cn(
+                  "rounded-xl text-xs cursor-pointer",
+                  sortMode === "updated" &&
+                    "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]",
+                )}
               >
                 Recently updated
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setSortMode("title")}
-                className={cn("rounded-xl text-xs cursor-pointer", sortMode === "title" && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]")}
+                className={cn(
+                  "rounded-xl text-xs cursor-pointer",
+                  sortMode === "title" &&
+                    "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]",
+                )}
               >
                 Alphabetical (A-Z)
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setSortMode("score")}
-                className={cn("rounded-xl text-xs cursor-pointer", sortMode === "score" && "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]")}
+                className={cn(
+                  "rounded-xl text-xs cursor-pointer",
+                  sortMode === "score" &&
+                    "text-[#f0788a] font-semibold bg-[rgba(240,120,138,0.12)]",
+                )}
               >
                 Highest score
               </DropdownMenuItem>
@@ -274,7 +301,9 @@ export function LibraryPage({
       {/* Grid of Cards */}
       {filtered.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.6)] p-12 text-center backdrop-blur-xl">
-          <p className="font-display text-lg font-semibold text-[#fff3e0]">Nothing here yet</p>
+          <p className="font-display text-lg font-semibold text-[#fff3e0]">
+            Nothing here yet
+          </p>
           <p className="mt-1 text-xs sm:text-sm text-[#968677]">
             {entries.length === 0
               ? "Start by pasting a bookmark URL — we'll do the rest."

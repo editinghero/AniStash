@@ -234,9 +234,11 @@ You have active Google Search grounding tools; use them actively to search the w
       if (data.mode === "where-was-i") {
         const ep = data.episodeNum?.trim() || "1";
         const season = data.seasonNum?.trim() ? `Season ${data.seasonNum}` : "";
-        const targetPoint = season ? `${season} Episode ${ep}` : `Episode/Chapter ${ep}`;
+        const targetPoint = season
+          ? `${season} Episode ${ep}`
+          : `Episode/Chapter ${ep}`;
         userDisplayMessage = `Where was I in "${title}" up to ${targetPoint}?`;
-        
+
         let notesContext = "";
         if (data.includeNotes && data.userNotes?.trim()) {
           notesContext = `\nUser's Personal Notes & Impressions:\n"${data.userNotes.trim()}"\nUse these notes to reference what the user noted, but the recap must strictly NOT exceed ${targetPoint}.`;
@@ -265,13 +267,19 @@ Keep each recommendation spoiler-free. Use Google Search grounding to find the m
         promptText = `Search the web using Google Search grounding for the latest official news, updates, announcements, release dates, upcoming seasons/movies, or adaptation news regarding "${title}".
 Provide a concise, bulleted summary of recent updates with approximate dates. If there are no recent updates in the last few months, state the current status of the franchise.`;
       } else {
-        const customMsg = data.message?.trim() || (title ? `Tell me about "${title}"` : "Hello!");
-        userDisplayMessage = title ? `[Regarding "${title}"]: ${customMsg}` : customMsg;
+        const customMsg =
+          data.message?.trim() ||
+          (title ? `Tell me about "${title}"` : "Hello!");
+        userDisplayMessage = title
+          ? `[Regarding "${title}"]: ${customMsg}`
+          : customMsg;
         let notesContext = "";
         if (data.includeNotes && data.userNotes?.trim()) {
           notesContext = `\nUser's Personal Notes on this title: "${data.userNotes.trim()}".`;
         }
-        promptText = title ? `Regarding the title "${title}":\n${customMsg}${notesContext}` : customMsg;
+        promptText = title
+          ? `Regarding the title "${title}":\n${customMsg}${notesContext}`
+          : customMsg;
       }
 
       // Fetch user's entire library context so deep-dive also knows all user notes & stash items
@@ -448,7 +456,10 @@ Titles: ${titleList}`;
 
         return c.json({ text: aiText, thought: aiThought });
       } catch (e: any) {
-        return c.json({ error: e.message || "Failed to generate briefing." }, 500);
+        return c.json(
+          { error: e.message || "Failed to generate briefing." },
+          500,
+        );
       }
     },
   )
@@ -501,7 +512,9 @@ Titles: ${titleList}`;
       if (data.customShows && data.customShows.length > 0) {
         prompt = `Search the web using Google Search grounding and generate a concise markdown anime news digest of verified news from the last 14-30 days specifically for these shows: ${data.customShows
           .slice(0, 15)
-          .join(", ")}. Group by show title with bullet points. Include dates and announcements.`;
+          .join(
+            ", ",
+          )}. Group by show title with bullet points. Include dates and announcements.`;
       } else if (data.topic?.trim()) {
         prompt = `Search the web using Google Search grounding for verified news, developments, announcements, release dates, and updates from the past 1 to 4 weeks regarding "${data.topic.trim()}".
 Provide a clear chronological or bulleted summary with dates. If no news occurred in the last month, state the latest known official status.`;
@@ -535,7 +548,10 @@ Provide a clear chronological or bulleted summary with dates. If no news occurre
 
         return c.json({ text: aiText, thought: aiThought });
       } catch (e: any) {
-        return c.json({ error: e.message || "Failed to generate news digest." }, 500);
+        return c.json(
+          { error: e.message || "Failed to generate news digest." },
+          500,
+        );
       }
     },
   )

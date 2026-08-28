@@ -18,7 +18,9 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
 
     const db = c.env.DB;
     try {
-      await db.prepare("ALTER TABLE user_settings ADD COLUMN categories_json TEXT").run();
+      await db
+        .prepare("ALTER TABLE user_settings ADD COLUMN categories_json TEXT")
+        .run();
     } catch {}
 
     const row = await db
@@ -26,7 +28,11 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
         "SELECT gemini_api_key, gemini_model, categories_json FROM user_settings WHERE user_id = ?",
       )
       .bind(userId)
-      .first<{ gemini_api_key: string | null; gemini_model: string | null; categories_json: string | null }>();
+      .first<{
+        gemini_api_key: string | null;
+        gemini_model: string | null;
+        categories_json: string | null;
+      }>();
 
     if (!row) return c.json({});
 
@@ -77,7 +83,9 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
 
       const db = c.env.DB;
       try {
-        await db.prepare("ALTER TABLE user_settings ADD COLUMN categories_json TEXT").run();
+        await db
+          .prepare("ALTER TABLE user_settings ADD COLUMN categories_json TEXT")
+          .run();
       } catch {}
 
       const now = Date.now();
@@ -101,7 +109,9 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
         }
       }
 
-      const categoriesJson = data.categories ? JSON.stringify(data.categories) : null;
+      const categoriesJson = data.categories
+        ? JSON.stringify(data.categories)
+        : null;
 
       if (existing) {
         await db
@@ -115,7 +125,13 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
           WHERE user_id = ?
         `,
           )
-          .bind(finalEncryptedKey, data.geminiModel, categoriesJson, now, userId)
+          .bind(
+            finalEncryptedKey,
+            data.geminiModel,
+            categoriesJson,
+            now,
+            userId,
+          )
           .run();
       } else {
         await db
@@ -125,7 +141,14 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
           VALUES (?, ?, ?, ?, ?, ?)
         `,
           )
-          .bind(userId, finalEncryptedKey, data.geminiModel, categoriesJson, now, now)
+          .bind(
+            userId,
+            finalEncryptedKey,
+            data.geminiModel,
+            categoriesJson,
+            now,
+            now,
+          )
           .run();
       }
 

@@ -42,7 +42,12 @@ export function MobileNav() {
                   : "text-[#968677] hover:text-[#fff3e0] hover:bg-[rgba(255,243,224,0.06)]",
               )}
             >
-              <Icon className={cn("h-4 w-4 transition-transform", isActive ? "scale-110 text-white" : "")} />
+              <Icon
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  isActive ? "scale-110 text-white" : "",
+                )}
+              />
               <span className="leading-tight tracking-tight text-[10px]">
                 {item.label}
               </span>

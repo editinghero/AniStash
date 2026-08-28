@@ -1,6 +1,12 @@
 import { rpc } from "./rpc";
 
-export const DEFAULT_CATEGORIES: string[] = ["Rom", "Com", "Ecchi", "Fun", "Calm"];
+export const DEFAULT_CATEGORIES: string[] = [
+  "Rom",
+  "Com",
+  "Ecchi",
+  "Fun",
+  "Calm",
+];
 
 const STORAGE_KEY = "anistash:custom-categories";
 let loadedServer = false;
@@ -41,7 +47,11 @@ export async function fetchServerCategories(): Promise<string[]> {
     const res = await rpc.api.settings.$get();
     if (res.ok) {
       const data = (await res.json()) as { categories?: string[] };
-      if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+      if (
+        data.categories &&
+        Array.isArray(data.categories) &&
+        data.categories.length > 0
+      ) {
         saveLocal(data.categories);
       }
     }
@@ -82,7 +92,9 @@ export function addCategory(categoryName: string): boolean {
 
 export function deleteCategory(categoryName: string): boolean {
   const current = getCategories();
-  const updated = current.filter((c) => c.toLowerCase() !== categoryName.trim().toLowerCase());
+  const updated = current.filter(
+    (c) => c.toLowerCase() !== categoryName.trim().toLowerCase(),
+  );
   if (updated.length === current.length) return false;
 
   saveCategories(updated);

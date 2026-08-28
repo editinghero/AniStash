@@ -48,7 +48,10 @@ export function currentSeason(): { season: MediaSeason; year: number } {
   return { season: "FALL", year };
 }
 
-export function prevSeason(season: MediaSeason, year: number): { season: MediaSeason; year: number } {
+export function prevSeason(
+  season: MediaSeason,
+  year: number,
+): { season: MediaSeason; year: number } {
   const idx = SEASONS.indexOf(season);
   if (idx === 0) {
     return { season: "FALL", year: year - 1 };
@@ -56,7 +59,10 @@ export function prevSeason(season: MediaSeason, year: number): { season: MediaSe
   return { season: SEASONS[idx - 1], year };
 }
 
-export function nextSeason(season: MediaSeason, year: number): { season: MediaSeason; year: number } {
+export function nextSeason(
+  season: MediaSeason,
+  year: number,
+): { season: MediaSeason; year: number } {
   const idx = SEASONS.indexOf(season);
   if (idx === 3) {
     return { season: "WINTER", year: year + 1 };

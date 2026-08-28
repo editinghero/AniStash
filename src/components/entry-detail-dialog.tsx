@@ -1,11 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import {
-  Star,
-  ExternalLink,
-  Trash2,
-  Tag,
-  Plus,
-} from "lucide-react";
+import { Star, ExternalLink, Trash2, Tag, Plus } from "lucide-react";
 import {
   ALL_STATUSES,
   statusLabels,
@@ -40,8 +34,7 @@ const statusRing: Record<ListStatus, string> = {
     "border-transparent bg-[rgba(240,120,138,0.2)] text-[#f0788a] shadow-[0_0_12px_rgba(240,120,138,0.25)]",
   COMPLETED:
     "border-transparent bg-[rgba(0,162,64,0.2)] text-[#00a240] shadow-[0_0_12px_rgba(0,162,64,0.25)]",
-  PLANNING:
-    "border-transparent bg-[rgba(240,120,138,0.12)] text-[#dbc9b5]",
+  PLANNING: "border-transparent bg-[rgba(240,120,138,0.12)] text-[#dbc9b5]",
   ON_HOLD:
     "border-transparent bg-[rgba(229,169,59,0.2)] text-[#e5a93b] shadow-[0_0_12px_rgba(229,169,59,0.25)]",
   DROPPED:
@@ -165,7 +158,10 @@ export function EntryDetailDialog({
       toast.error("Progress must be a positive number");
       return;
     }
-    if (scoreNum !== undefined && (isNaN(scoreNum) || scoreNum < 0 || scoreNum > 10)) {
+    if (
+      scoreNum !== undefined &&
+      (isNaN(scoreNum) || scoreNum < 0 || scoreNum > 10)
+    ) {
       toast.error("Score must be between 0 and 10");
       return;
     }
@@ -281,7 +277,9 @@ export function EntryDetailDialog({
                   )}
               </DialogHeader>
               <div className="mt-1.5 flex flex-wrap gap-1.5 sm:gap-2 text-[12px] sm:text-sm text-[#dbc9b5]">
-                {entry.format && <span className="font-medium">{entry.format}</span>}
+                {entry.format && (
+                  <span className="font-medium">{entry.format}</span>
+                )}
                 {total != null && (
                   <span>
                     · {total} {unit}
@@ -468,7 +466,8 @@ export function EntryDetailDialog({
               {/* Category / Tags Selector */}
               <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-3 sm:p-3.5 space-y-2 backdrop-blur-md">
                 <Label className="text-[12px] sm:text-xs font-semibold uppercase tracking-wider text-[#dbc9b5] inline-flex items-center gap-1">
-                  <Tag className="h-3.5 w-3.5 text-[#f0788a]" /> Categories / Tags
+                  <Tag className="h-3.5 w-3.5 text-[#f0788a]" /> Categories /
+                  Tags
                 </Label>
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {allCategories.map((cat) => {
@@ -493,7 +492,10 @@ export function EntryDetailDialog({
                     );
                   })}
                 </div>
-                <form onSubmit={handleQuickAddCategory} className="flex gap-2 pt-1">
+                <form
+                  onSubmit={handleQuickAddCategory}
+                  className="flex gap-2 pt-1"
+                >
                   <Input
                     value={newCatInput}
                     onChange={(e) => setNewCatInput(e.target.value)}
