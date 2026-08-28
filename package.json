@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler pages dev --ip=192.168.1.2 --port=9000 -- vite dev",
+    "dev": "wrangler pages dev --proxy=5173 --port=9000 -- vite dev",
     "dev:vite": "vite dev",
     "d1": "wrangler d1 execute anistash --local --file=./schema.d1.sql",
     "build": "vite build",

@@ -47,7 +47,7 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
             setOpen(true);
           }
         }}
-        className="group relative w-full cursor-pointer touch-manipulation overflow-hidden rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[#22191a] text-left shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1.5 hover:border-[rgba(240,120,138,0.4)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_20px_rgba(240,120,138,0.18)] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f0788a]"
+        className="group relative w-full cursor-pointer touch-manipulation overflow-hidden rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-300 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f0788a]"
       >
         {/* Top glowing pink accent line on hover */}
         <div className="pointer-events-none absolute top-0 inset-x-0 h-[2px] bg-[#f0788a] shadow-[0_0_12px_#f0788a] opacity-0 transition-opacity duration-200 group-hover:opacity-100 z-10" />

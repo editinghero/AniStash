@@ -218,6 +218,7 @@
   }
   .bg-hero {
     background: var(--gradient-hero);
+    background-attachment: fixed;
   }
   .bg-gradient-accent {
     background: var(--gradient-accent);
