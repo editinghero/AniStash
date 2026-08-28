@@ -371,7 +371,7 @@ export function SeasonalDiscoverTab() {
         </div>
       </div>
 
-      {/* Grid of Media Cards */}
+      {/* Grid of Media Cards (GPU accelerated touch-manipulation) */}
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -400,7 +400,7 @@ export function SeasonalDiscoverTab() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4 transform-gpu">
             {items.map((media) => {
               const inLibrary = inLibrarySet.has(media.id);
               const title =
@@ -410,9 +410,20 @@ export function SeasonalDiscoverTab() {
               return (
                 <div
                   key={media.id}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => handleCardClick(media)}
-                  className="group relative flex flex-col justify-between rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-3 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-300 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.02] cursor-pointer overflow-hidden"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleCardClick(media);
+                    }
+                  }}
+                  className="group relative flex flex-col justify-between w-full cursor-pointer touch-manipulation select-none overflow-hidden rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-200 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.02] active:scale-[0.98] active:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f0788a]"
                 >
+                  {/* Top glowing pink accent line on hover/active */}
+                  <div className="pointer-events-none absolute top-0 inset-x-0 h-[2px] bg-[#f0788a] shadow-[0_0_12px_#f0788a] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-active:opacity-100 z-10" />
+
                   {/* Media Image */}
                   <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-[rgba(25,18,19,0.8)]">
                     {media.coverImage?.extraLarge || media.coverImage?.large ? (
@@ -431,6 +442,9 @@ export function SeasonalDiscoverTab() {
                         No Image
                       </div>
                     )}
+
+                    {/* Vignette gradient overlay on hover */}
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#191213]/90 via-[#191213]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
 
                     {/* Score badge */}
                     {score != null && (
@@ -475,7 +489,7 @@ export function SeasonalDiscoverTab() {
                       <button
                         type="button"
                         onClick={(e) => handleQuickAdd(e, media)}
-                        className="inline-flex items-center justify-center gap-1 h-8 flex-1 rounded-full border border-[rgba(240,120,138,0.3)] bg-[rgba(240,120,138,0.08)] text-[11px] font-semibold text-[#f0788a] hover:scale-[1.02] active:scale-95 transition-all duration-200"
+                        className="inline-flex items-center justify-center gap-1 h-8 flex-1 rounded-full border border-[rgba(240,120,138,0.3)] bg-[rgba(240,120,138,0.08)] text-[11px] font-semibold text-[#f0788a] hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         <span>Plan</span>
@@ -483,8 +497,11 @@ export function SeasonalDiscoverTab() {
                     )}
                     <button
                       type="button"
-                      onClick={() => handleCardClick(media)}
-                      className="h-8 w-8 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] text-[#968677] hover:text-[#fff3e0] hover:scale-[1.08] active:scale-95 flex items-center justify-center transition-all duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCardClick(media);
+                      }}
+                      className="h-8 w-8 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] text-[#968677] hover:text-[#fff3e0] hover:scale-[1.08] active:scale-95 flex items-center justify-center transition-all duration-200 cursor-pointer"
                       title="View Details"
                     >
                       <Info className="h-3.5 w-3.5" />

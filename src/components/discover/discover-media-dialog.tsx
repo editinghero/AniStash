@@ -85,7 +85,7 @@ export function DiscoverMediaDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[94vw] sm:max-w-3xl lg:max-w-4xl max-h-[85vh] sm:max-h-[88vh] p-0 overflow-hidden gap-0 border border-[rgba(255,243,224,0.12)] bg-[#22191a] shadow-[0_24px_80px_rgba(0,0,0,0.85)] rounded-2xl sm:rounded-3xl flex flex-col my-auto text-[#fff3e0]">
+      <DialogContent className="w-[94vw] sm:max-w-3xl lg:max-w-4xl max-h-[85vh] sm:max-h-[88vh] p-0 overflow-hidden gap-0 border border-[rgba(255,243,224,0.12)] bg-[#22191a] shadow-[0_24px_80px_rgba(0,0,0,0.85)] rounded-2xl sm:rounded-3xl flex flex-col my-auto text-[#fff3e0] transform-gpu">
         {/* Banner with fixed Parallax Vignette Header */}
         <div className="relative h-28 sm:h-44 md:h-48 w-full overflow-hidden bg-[#191213] shrink-0">
           {bannerUrl ? (
@@ -102,7 +102,7 @@ export function DiscoverMediaDialog({
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#22191a] via-[#22191a]/45 to-transparent" />
         </div>
 
-        {/* Scrollable Content Body with enhanced backdrop blur */}
+        {/* Scrollable Content Body with true glassmorphic blur */}
         <div className="stash-scrollbar relative -mt-12 sm:-mt-18 px-4 sm:px-8 pb-6 flex-1 overflow-y-auto min-h-0 space-y-4 sm:space-y-6">
           {/* Header Row: Cover & Details */}
           <div className="flex gap-3.5 sm:gap-6 items-start">
@@ -186,16 +186,16 @@ export function DiscoverMediaDialog({
             </div>
           </div>
 
-          {/* Quick Info Grid (Enhanced Blur) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 rounded-2xl border border-[rgba(255,243,224,0.1)] bg-[rgba(34,25,26,0.8)] p-3.5 sm:p-4 text-xs backdrop-blur-2xl shadow-sm">
+          {/* Quick Info Grid (True Glassmorphic Blur) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] p-3 sm:p-4 text-xs backdrop-blur-xl shadow-sm">
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-[#968677] block">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                 Type
               </span>
               <span className="font-semibold text-[#fff3e0]">{media.type}</span>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-[#968677] block">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                 {media.type === "MANGA" ? "Chapters" : "Episodes"}
               </span>
               <span className="font-semibold text-[#fff3e0]">
@@ -205,7 +205,7 @@ export function DiscoverMediaDialog({
               </span>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-[#968677] block">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                 Season / Year
               </span>
               <span className="font-semibold text-[#fff3e0]">
@@ -214,7 +214,7 @@ export function DiscoverMediaDialog({
               </span>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-[#968677] block">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                 Mean Score
               </span>
               <span className="font-semibold text-[#fff3e0]">
@@ -223,9 +223,9 @@ export function DiscoverMediaDialog({
             </div>
           </div>
 
-          {/* Box 1: Status Distribution (Enhanced Blur) */}
+          {/* Box 1: Status Distribution (True Glassmorphic Blur) */}
           {statusDistribution.length > 0 && (
-            <div className="rounded-2xl border border-[rgba(255,243,224,0.1)] bg-[rgba(34,25,26,0.8)] p-4 shadow-sm backdrop-blur-2xl space-y-3">
+            <div className="rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] p-4 shadow-sm backdrop-blur-xl space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#fff3e0]">
                   <BarChart3 className="h-3.5 w-3.5 text-[#f0788a]" />
@@ -263,7 +263,7 @@ export function DiscoverMediaDialog({
                 {statusDistribution.map((item) => (
                   <div
                     key={item.status}
-                    className="flex items-center justify-between rounded-xl bg-[rgba(255,243,224,0.04)] px-2.5 py-1.5 border border-[rgba(255,243,224,0.06)]"
+                    className="flex items-center justify-between rounded-xl bg-[rgba(255,243,224,0.03)] px-2.5 py-1.5 border border-[rgba(255,243,224,0.06)]"
                   >
                     <div className="flex items-center gap-1.5">
                       <span
@@ -286,9 +286,9 @@ export function DiscoverMediaDialog({
             </div>
           )}
 
-          {/* Box 2: Rankings (Enhanced Blur) */}
+          {/* Box 2: Rankings (True Glassmorphic Blur) */}
           {rankings.length > 0 && (
-            <div className="rounded-2xl border border-[rgba(255,243,224,0.1)] bg-[rgba(34,25,26,0.8)] p-4 shadow-sm backdrop-blur-2xl space-y-2.5">
+            <div className="rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] p-4 shadow-sm backdrop-blur-xl space-y-2.5">
               <div className="flex items-center gap-1.5 text-xs font-bold text-[#fff3e0]">
                 <Trophy className="h-3.5 w-3.5 text-[#e5a93b]" />
                 <span>Rankings & Achievements</span>
@@ -297,7 +297,7 @@ export function DiscoverMediaDialog({
                 {rankings.slice(0, 4).map((r) => (
                   <div
                     key={r.id}
-                    className="flex items-center gap-2 rounded-xl bg-[rgba(255,243,224,0.04)] px-3 py-2 border border-[rgba(255,243,224,0.06)] text-xs"
+                    className="flex items-center gap-2 rounded-xl bg-[rgba(255,243,224,0.03)] px-3 py-2 border border-[rgba(255,243,224,0.06)] text-xs"
                   >
                     <span className="font-bold text-[#f0788a] tabular-nums shrink-0">
                       #{r.rank}
@@ -331,12 +331,12 @@ export function DiscoverMediaDialog({
             </div>
           )}
 
-          {/* Synopsis (Enhanced Blur) */}
+          {/* Synopsis (True Glassmorphic Blur) */}
           <div className="space-y-1.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#968677]">
               Synopsis
             </span>
-            <div className="stash-scrollbar max-h-56 overflow-y-auto pr-2 text-xs sm:text-sm text-[#dbc9b5] leading-relaxed whitespace-pre-wrap rounded-2xl border border-[rgba(255,243,224,0.1)] bg-[rgba(34,25,26,0.8)] p-4 backdrop-blur-2xl">
+            <div className="stash-scrollbar max-h-56 overflow-y-auto pr-2 text-xs sm:text-sm text-[#dbc9b5] leading-relaxed whitespace-pre-wrap rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] p-4 backdrop-blur-xl">
               {media.description ? (
                 media.description
                   .replace(/<br\s*\/?>/gi, "\n")
