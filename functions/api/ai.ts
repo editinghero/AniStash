@@ -55,11 +55,19 @@ export const aiRouter = new Hono<{ Bindings: Bindings }>()
         );
       }
 
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
+      if (!c.env.ENCRYPTION_KEY) {
+        return c.json(
+          { error: "ENCRYPTION_KEY is not configured on the server." },
+          500,
+        );
+      }
+
       let apiKey = "";
       try {
-        apiKey = await decryptApiKey(settings.gemini_api_key, encryptionKey);
+        apiKey = await decryptApiKey(
+          settings.gemini_api_key,
+          c.env.ENCRYPTION_KEY,
+        );
       } catch (e) {
         return c.json({ error: "Failed to decrypt API key." }, 500);
       }
@@ -211,11 +219,19 @@ You have active Google Search grounding tools; use them actively to search the w
         );
       }
 
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
+      if (!c.env.ENCRYPTION_KEY) {
+        return c.json(
+          { error: "ENCRYPTION_KEY is not configured on the server." },
+          500,
+        );
+      }
+
       let apiKey = "";
       try {
-        apiKey = await decryptApiKey(settings.gemini_api_key, encryptionKey);
+        apiKey = await decryptApiKey(
+          settings.gemini_api_key,
+          c.env.ENCRYPTION_KEY,
+        );
       } catch (e) {
         return c.json({ error: "Failed to decrypt API key." }, 500);
       }
@@ -409,11 +425,19 @@ Format your responses in markdown.`;
         );
       }
 
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
+      if (!c.env.ENCRYPTION_KEY) {
+        return c.json(
+          { error: "ENCRYPTION_KEY is not configured on the server." },
+          500,
+        );
+      }
+
       let apiKey = "";
       try {
-        apiKey = await decryptApiKey(settings.gemini_api_key, encryptionKey);
+        apiKey = await decryptApiKey(
+          settings.gemini_api_key,
+          c.env.ENCRYPTION_KEY,
+        );
       } catch (e) {
         return c.json({ error: "Failed to decrypt API key." }, 500);
       }
@@ -496,11 +520,19 @@ Titles: ${titleList}`;
         );
       }
 
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
+      if (!c.env.ENCRYPTION_KEY) {
+        return c.json(
+          { error: "ENCRYPTION_KEY is not configured on the server." },
+          500,
+        );
+      }
+
       let apiKey = "";
       try {
-        apiKey = await decryptApiKey(settings.gemini_api_key, encryptionKey);
+        apiKey = await decryptApiKey(
+          settings.gemini_api_key,
+          c.env.ENCRYPTION_KEY,
+        );
       } catch (e) {
         return c.json({ error: "Failed to decrypt API key." }, 500);
       }
@@ -588,12 +620,22 @@ Provide a clear chronological or bulleted summary with dates. If no news occurre
         );
       }
 
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
-      const apiKey = await decryptApiKey(
-        settings.gemini_api_key,
-        encryptionKey,
-      );
+      if (!c.env.ENCRYPTION_KEY) {
+        return c.json(
+          { error: "ENCRYPTION_KEY is not configured on the server." },
+          500,
+        );
+      }
+
+      let apiKey = "";
+      try {
+        apiKey = await decryptApiKey(
+          settings.gemini_api_key,
+          c.env.ENCRYPTION_KEY,
+        );
+      } catch (e) {
+        return c.json({ error: "Failed to decrypt API key." }, 500);
+      }
 
       const entry = await db
         .prepare(

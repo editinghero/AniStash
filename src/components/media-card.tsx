@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Star } from "lucide-react";
 import { statusLabels, type LibraryEntry, type ListStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -17,7 +17,11 @@ const statusBadgeClasses: Record<ListStatus, string> = {
     "bg-[rgba(224,46,42,0.22)] text-[#e02e2a] border-[rgba(224,46,42,0.4)]",
 };
 
-export function MediaCard({ entry }: { entry: LibraryEntry }) {
+export const MediaCard = memo(function MediaCard({
+  entry,
+}: {
+  entry: LibraryEntry;
+}) {
   const [open, setOpen] = useState(false);
   const labels = statusLabels(entry.type);
   const score = entry.userScore != null ? entry.userScore.toFixed(1) : "-";
@@ -122,4 +126,4 @@ export function MediaCard({ entry }: { entry: LibraryEntry }) {
       )}
     </>
   );
-}
+});

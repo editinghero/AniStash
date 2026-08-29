@@ -38,18 +38,20 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
 
     let maskedKey = "";
     if (row.gemini_api_key) {
-      try {
-        const encryptionKey =
-          c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
-        const decrypted = await decryptApiKey(
-          row.gemini_api_key,
-          encryptionKey,
-        );
-        maskedKey =
-          decrypted.length > 4 ? `••••••••${decrypted.slice(-4)}` : decrypted;
-      } catch (err) {
-        console.error("Failed to decrypt Gemini API key", err);
-        maskedKey = "••••••••error";
+      if (!c.env.ENCRYPTION_KEY) {
+        maskedKey = "••••••••unconfigured";
+      } else {
+        try {
+          const decrypted = await decryptApiKey(
+            row.gemini_api_key,
+            c.env.ENCRYPTION_KEY,
+          );
+          maskedKey =
+            decrypted.length > 4 ? `••••••••${decrypted.slice(-4)}` : decrypted;
+        } catch (err) {
+          console.error("Failed to decrypt Gemini API key", err);
+          maskedKey = "••••••••error";
+        }
       }
     }
 
@@ -89,8 +91,6 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
       } catch {}
 
       const now = Date.now();
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
 
       const existing = await db
         .prepare("SELECT gemini_api_key FROM user_settings WHERE user_id = ?")
@@ -102,9 +102,15 @@ export const settingsRouter = new Hono<{ Bindings: Bindings }>()
         if (data.geminiApiKey.startsWith("••••")) {
           finalEncryptedKey = existing?.gemini_api_key ?? null;
         } else {
+          if (!c.env.ENCRYPTION_KEY) {
+            return c.json(
+              { error: "ENCRYPTION_KEY is not configured on the server." },
+              500,
+            );
+          }
           finalEncryptedKey = await encryptApiKey(
             data.geminiApiKey,
-            encryptionKey,
+            c.env.ENCRYPTION_KEY,
           );
         }
       }

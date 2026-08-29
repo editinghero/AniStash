@@ -86,7 +86,51 @@ async function callGemini(
   return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
 }
 
+function isSafeUrl(urlString: string): boolean {
+  try {
+    const parsed = new URL(urlString);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return false;
+    }
+    const hostname = parsed.hostname.toLowerCase();
+    if (
+      hostname === "localhost" ||
+      hostname.endsWith(".localhost") ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1" ||
+      hostname === "0.0.0.0"
+    ) {
+      return false;
+    }
+    const ipv4Regex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+    const match = hostname.match(ipv4Regex);
+    if (match) {
+      const b0 = Number(match[1]);
+      const b1 = Number(match[2]);
+      if (b0 === 10) return false;
+      if (b0 === 127) return false;
+      if (b0 === 169 && b1 === 254) return false;
+      if (b0 === 172 && b1 >= 16 && b1 <= 31) return false;
+      if (b0 === 192 && b1 === 168) return false;
+      if (b0 === 0) return false;
+    }
+    if (
+      hostname === "metadata.google.internal" ||
+      hostname.endsWith(".internal") ||
+      hostname.endsWith(".local")
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function fetchPageContext(url: string): Promise<string> {
+  if (!isSafeUrl(url)) {
+    return "";
+  }
   try {
     const res = await fetch(url, {
       headers: {
@@ -190,12 +234,22 @@ export const anilistRouter = new Hono<{ Bindings: Bindings }>()
         );
       }
 
-      const encryptionKey =
-        c.env.ENCRYPTION_KEY ?? "fallback-encryption-key-for-local-dev-123";
-      const decryptedKey = await decryptApiKey(
-        settings.gemini_api_key,
-        encryptionKey,
-      );
+      if (!c.env.ENCRYPTION_KEY) {
+        return c.json(
+          { error: "ENCRYPTION_KEY is not configured on the server." },
+          500,
+        );
+      }
+
+      let decryptedKey: string;
+      try {
+        decryptedKey = await decryptApiKey(
+          settings.gemini_api_key,
+          c.env.ENCRYPTION_KEY,
+        );
+      } catch {
+        return c.json({ error: "Failed to decrypt API key." }, 500);
+      }
       const geminiModel = settings.gemini_model || "gemini-2.5-flash";
 
       const pageContext = await fetchPageContext(data.url);
