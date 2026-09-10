@@ -92,7 +92,7 @@ function sha256Fallback(ascii: string): Uint8Array {
   words[words[lengthProperty]] = (asciiBitLength / maxWord) | 0;
   words[words[lengthProperty]] = asciiBitLength;
 
-  for (j = 0; j < words[lengthProperty]; ) {
+  for (j = 0; j < words[lengthProperty];) {
     const w = words.slice(j, (j += 16));
     const oldHash = hash;
     hash = hash.slice(0, 8);
