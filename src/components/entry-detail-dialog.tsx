@@ -552,6 +552,40 @@ export function EntryDetailDialog({
                 </div>
               </div>
 
+              {/* Timeline (Started / Finished dates) */}
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+                <div>
+                  <Label
+                    htmlFor="startedAt"
+                    className="text-[12px] sm:text-xs font-semibold uppercase tracking-wider text-[#dbc9b5]"
+                  >
+                    Started
+                  </Label>
+                  <Input
+                    id="startedAt"
+                    type="date"
+                    value={startedAt || ""}
+                    onChange={(e) => setStartedAt(e.target.value)}
+                    className="mt-1 rounded-full border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-3.5 text-[13px] sm:text-sm text-[#fff3e0] focus:border-[#f0788a]"
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="finishedAt"
+                    className="text-[12px] sm:text-xs font-semibold uppercase tracking-wider text-[#dbc9b5]"
+                  >
+                    Finished
+                  </Label>
+                  <Input
+                    id="finishedAt"
+                    type="date"
+                    value={finishedAt || ""}
+                    onChange={(e) => setFinishedAt(e.target.value)}
+                    className="mt-1 rounded-full border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-3.5 text-[13px] sm:text-sm text-[#fff3e0] focus:border-[#f0788a]"
+                  />
+                </div>
+              </div>
+
               {/* Expandable Big Personal Notes Section */}
               <div>
                 <Label
