@@ -54,7 +54,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^\/api\//,
-            handler: "NetworkFirst",
+            handler: "StaleWhileRevalidate",
             options: {
               cacheName: "api-cache",
               expiration: {
@@ -65,6 +65,10 @@ export default defineConfig({
                 statuses: [0, 200],
               },
             },
+          },
+          {
+            urlPattern: /^https?:\/\/.*\.(?:png|jpg|jpeg|webp|svg)(\?.*)?$/i,
+            handler: "NetworkOnly",
           },
         ],
       },
