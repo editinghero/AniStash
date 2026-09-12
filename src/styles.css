@@ -267,6 +267,8 @@
   }
   .bg-card-glass {
     background: var(--bg-card);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
   }
   .scrollbar-none {
     scrollbar-width: none;

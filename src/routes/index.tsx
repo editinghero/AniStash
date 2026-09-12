@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <main className="mx-auto max-w-5xl px-3 sm:px-4 py-4 sm:py-8 space-y-12 sm:space-y-16 animate-page-in">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-6 sm:p-10 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all">
+      <section className="relative overflow-hidden rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-6 sm:p-10 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all">
         <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(240,120,138,0.12)_0%,transparent_70%)]" />
 
         <div className="relative max-w-2xl">

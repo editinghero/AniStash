@@ -60,7 +60,7 @@ export function PinLockScreen({
 
   return (
     <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-[#191213] px-4 py-8">
-      <section className="relative w-full max-w-xs rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.92)] p-6 shadow-[0_16px_50px_rgba(0,0,0,0.7)] sm:p-7">
+      <section className="relative w-full max-w-xs rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.92)] p-6 shadow-[0_16px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl sm:p-7">
         <header className="text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[rgba(240,120,138,0.4)] bg-[#22191a] shadow-[0_0_20px_rgba(240,120,138,0.25)]">
             <span className="font-display text-2xl font-bold text-[#f0788a]">

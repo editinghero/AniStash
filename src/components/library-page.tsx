@@ -174,7 +174,7 @@ export function LibraryPage({
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="inline-flex h-10 items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] px-3.5 text-xs font-semibold text-[#dbc9b5] shadow-sm hover:border-[rgba(240,120,138,0.4)] hover:text-[#fff3e0] hover:scale-[1.02] active:scale-95 transition-all"
+                className="inline-flex h-10 items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] px-3.5 text-xs font-semibold text-[#dbc9b5] shadow-sm backdrop-blur-xl hover:border-[rgba(240,120,138,0.4)] hover:text-[#fff3e0] hover:scale-[1.02] active:scale-95 transition-all"
                 title="Sort entries"
               >
                 <ArrowUpDown className="h-3.5 w-3.5 text-[#f0788a]" />
@@ -186,7 +186,7 @@ export function LibraryPage({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-44 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] p-1 shadow-2xl"
+              className="w-44 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl"
             >
               <DropdownMenuItem
                 onClick={() => setSortMode("updated")}
@@ -228,7 +228,7 @@ export function LibraryPage({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search title, genre, note…"
-              className="h-10 w-full rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] pl-9 pr-8 text-xs text-[#fff3e0] placeholder:text-[#968677] shadow-sm focus:border-[#f0788a] focus:outline-none transition-all"
+              className="h-10 w-full rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] pl-9 pr-8 text-xs text-[#fff3e0] placeholder:text-[#968677] shadow-sm backdrop-blur-xl focus:border-[#f0788a] focus:outline-none transition-all"
             />
             {query && (
               <button
@@ -245,7 +245,7 @@ export function LibraryPage({
 
       {/* Horizontally Scrollable Tags Bar */}
       {availableCategories.length > 0 && (
-        <div className="flex items-center gap-2 rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(34,25,26,0.6)] p-2 sm:p-2.5 shadow-sm">
+        <div className="flex items-center gap-2 rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(34,25,26,0.6)] p-2 sm:p-2.5 backdrop-blur-xl shadow-sm">
           <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#968677] pl-1 shrink-0">
             <Tag className="h-3 w-3 text-[#f0788a]" />
             <span className="hidden sm:inline">Tags</span>
@@ -255,7 +255,7 @@ export function LibraryPage({
               type="button"
               onClick={() => setCategory("ALL")}
               className={cn(
-                "rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200 shrink-0 select-none hover:scale-[1.02] active:scale-95",
+                "rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-md transition-all duration-200 shrink-0 select-none hover:scale-[1.02] active:scale-95",
                 category === "ALL"
                   ? "border-transparent bg-[#f0788a] text-white font-bold shadow-[0_0_14px_rgba(240,120,138,0.35)]"
                   : "border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] text-[#dbc9b5] hover:bg-[rgba(255,243,224,0.08)] hover:text-[#fff3e0] hover:border-[rgba(240,120,138,0.3)]",
@@ -272,7 +272,7 @@ export function LibraryPage({
                   type="button"
                   onClick={() => setCategory(active ? "ALL" : cat)}
                   className={cn(
-                    "rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200 flex items-center gap-1.5 shrink-0 select-none hover:scale-[1.02] active:scale-95",
+                    "rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-md transition-all duration-200 flex items-center gap-1.5 shrink-0 select-none hover:scale-[1.02] active:scale-95",
                     active
                       ? "border-transparent bg-[#f0788a] text-white font-bold shadow-[0_0_14px_rgba(240,120,138,0.35)]"
                       : "border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] text-[#dbc9b5] hover:bg-[rgba(255,243,224,0.08)] hover:text-[#fff3e0] hover:border-[rgba(240,120,138,0.3)]",
@@ -300,7 +300,7 @@ export function LibraryPage({
 
       {/* Grid of Cards */}
       {filtered.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.6)] p-12 text-center ">
+        <div className="rounded-3xl border border-dashed border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.6)] p-12 text-center backdrop-blur-xl">
           <p className="font-display text-lg font-semibold text-[#fff3e0]">
             Nothing here yet
           </p>

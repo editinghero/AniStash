@@ -203,10 +203,10 @@ export default function AddPage() {
       {step === "input" && (
         <form
           onSubmit={handleParse}
-          className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] "
+          className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
         >
           <Field label="Type">
-            <div className="grid grid-cols-3 gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] p-1 ">
+            <div className="grid grid-cols-3 gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.03)] p-1 backdrop-blur-xl">
               {(
                 [
                   { v: "ANIME", label: "Anime", Icon: Tv },
@@ -331,7 +331,7 @@ export default function AddPage() {
 
       {step === "confirm" && type !== "SERIES" && (
         <div className="space-y-5">
-          <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] space-y-3">
+          <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl space-y-3">
             <Field label="Detected title (edit if needed)">
               <input
                 value={editedTitle}
@@ -371,7 +371,7 @@ export default function AddPage() {
                   type="button"
                   onClick={() => handleSave(m)}
                   disabled={loading === "save"}
-                  className="group relative flex gap-3 rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.4)] hover:border-[rgba(240,120,138,0.4)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.6)] transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="group relative flex gap-3 rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.75)] p-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-xl hover:border-[rgba(240,120,138,0.4)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.6)] transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                   <img
                     src={m.coverImage.large ?? m.coverImage.extraLarge ?? ""}

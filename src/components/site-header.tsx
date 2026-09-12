@@ -39,7 +39,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-2 sm:top-4 z-40 px-3 sm:px-4 mb-4 sm:mb-8">
       <nav
-        className="mx-auto flex max-w-5xl items-center justify-between rounded-full border border-[rgba(255,243,224,0.07)] bg-[rgba(34,25,26,0.85)] px-3.5 py-2 shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all sm:px-5 sm:py-2.5"
+        className="mx-auto flex max-w-5xl items-center justify-between rounded-full border border-[rgba(255,243,224,0.07)] bg-[rgba(34,25,26,0.85)] px-3.5 py-2 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all sm:px-5 sm:py-2.5"
         aria-label="Main Navigation"
       >
         {/* Brand with app's original iconic logo */}

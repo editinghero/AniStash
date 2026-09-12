@@ -189,7 +189,7 @@ export function SeasonalDiscoverTab() {
   return (
     <div className="space-y-6 animate-page-in">
       {/* Top Filter Bar */}
-      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.4)] space-y-4">
+      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.4)] backdrop-blur-2xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Media Type Switch (Fully Rounded Pill) */}
           <div className="flex items-center gap-1 rounded-full bg-[rgba(255,243,224,0.04)] p-1 border border-[rgba(255,243,224,0.08)] self-start">
@@ -256,7 +256,7 @@ export function SeasonalDiscoverTab() {
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] px-3 text-xs font-semibold text-[#dbc9b5] shadow-sm hover:border-[rgba(240,120,138,0.4)] hover:text-[#fff3e0] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] px-3 text-xs font-semibold text-[#dbc9b5] shadow-sm backdrop-blur-xl hover:border-[rgba(240,120,138,0.4)] hover:text-[#fff3e0] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                   title="Sort"
                 >
                   <SlidersHorizontal className="h-3 w-3 text-[#f0788a]" />
@@ -267,7 +267,7 @@ export function SeasonalDiscoverTab() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-40 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] p-1 shadow-2xl"
+                className="w-40 rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl"
               >
                 {DISCOVER_SORTS.map((s) => (
                   <DropdownMenuItem
@@ -322,7 +322,7 @@ export function SeasonalDiscoverTab() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
-                  className="w-32 max-h-60 overflow-y-auto stash-scrollbar rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] p-1 shadow-2xl"
+                  className="w-32 max-h-60 overflow-y-auto stash-scrollbar rounded-2xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl p-1 shadow-2xl"
                 >
                   {Array.from(
                     { length: 14 },
@@ -419,7 +419,7 @@ export function SeasonalDiscoverTab() {
                       handleCardClick(media);
                     }
                   }}
-                  className="group relative flex flex-col justify-between w-full cursor-pointer touch-manipulation select-none overflow-hidden rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-200 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.02] active:scale-[0.98] active:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f0788a]"
+                  className="group relative flex flex-col justify-between w-full cursor-pointer touch-manipulation select-none overflow-hidden rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-200 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.02] active:scale-[0.98] active:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f0788a]"
                 >
                   {/* Top glowing pink accent line on hover/active */}
                   <div className="pointer-events-none absolute top-0 inset-x-0 h-[2px] bg-[#f0788a] shadow-[0_0_12px_#f0788a] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-active:opacity-100 z-10" />
@@ -448,7 +448,7 @@ export function SeasonalDiscoverTab() {
 
                     {/* Score badge */}
                     {score != null && (
-                      <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full border border-[rgba(255,243,224,0.15)] bg-[rgba(25,18,19,0.85)] px-2 py-0.5 text-[11px] font-bold text-[#fff3e0] shadow-md ">
+                      <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full border border-[rgba(255,243,224,0.15)] bg-[rgba(25,18,19,0.85)] px-2 py-0.5 text-[11px] font-bold text-[#fff3e0] shadow-md backdrop-blur-md">
                         <Star className="h-3 w-3 text-[#f0788a] fill-[#f0788a]" />
                         <span>{score}%</span>
                       </div>
@@ -456,7 +456,7 @@ export function SeasonalDiscoverTab() {
 
                     {/* Format tag */}
                     {media.format && (
-                      <div className="absolute bottom-2 left-2 rounded-md bg-[rgba(25,18,19,0.85)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#dbc9b5] border border-[rgba(255,243,224,0.1)]">
+                      <div className="absolute bottom-2 left-2 rounded-md bg-[rgba(25,18,19,0.85)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#dbc9b5] backdrop-blur-md border border-[rgba(255,243,224,0.1)]">
                         {media.format}
                       </div>
                     )}
@@ -545,7 +545,7 @@ export function SeasonalDiscoverTab() {
       )}
 
       {/* AI Briefing Section */}
-      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)] space-y-4">
+      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#f0788a] mb-1">

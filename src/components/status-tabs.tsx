@@ -36,7 +36,7 @@ export function StatusTabs({
   return (
     <div
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] max-w-full"
+      className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl max-w-full"
     >
       {tabs.map((tab) => {
         const isSelected = active === tab.id;
