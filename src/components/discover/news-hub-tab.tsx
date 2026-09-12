@@ -186,7 +186,7 @@ export function NewsHubTab() {
   return (
     <div className="space-y-6 animate-page-in">
       {/* 1. AI News Digest Section */}
-      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl space-y-4">
+      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#f0788a] mb-1">
@@ -316,7 +316,7 @@ export function NewsHubTab() {
 
         {/* Source Selector Pill Bar */}
         {showSourceSelector && (
-          <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 shadow-lg space-y-2 backdrop-blur-xl">
+          <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 shadow-lg space-y-2 ">
             <div className="flex items-center justify-between text-xs text-[#968677] pb-1">
               <span className="font-semibold text-[#fff3e0]">
                 Select Networks:
@@ -409,7 +409,7 @@ export function NewsHubTab() {
               return (
                 <article
                   key={article.id}
-                  className="group flex flex-col justify-between rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-300 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.01] overflow-hidden"
+                  className="group flex flex-col justify-between rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#f0788a]/50 hover:shadow-[0_12px_32px_rgba(240,120,138,0.15)] hover:scale-[1.01] overflow-hidden"
                 >
                   <div className="space-y-3">
                     {/* Thumbnail if available */}

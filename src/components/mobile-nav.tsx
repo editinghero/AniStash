@@ -19,13 +19,7 @@ export function MobileNav() {
       aria-label="Mobile Navigation"
       className="fixed bottom-3 inset-x-3 z-50 md:hidden flex justify-center pointer-events-none"
     >
-      <div
-        style={{
-          backdropFilter: "blur(24px) saturate(180%)",
-          WebkitBackdropFilter: "blur(24px) saturate(180%)",
-        }}
-        className="pointer-events-auto flex w-full max-w-md items-center justify-between rounded-full border border-[rgba(255,243,224,0.12)] bg-[rgba(26,18,19,0.75)] p-1.5 shadow-[0_16px_50px_rgba(0,0,0,0.85)] transition-all"
-      >
+      <div className="pointer-events-auto flex w-full max-w-md items-center justify-between rounded-full border border-[rgba(255,243,224,0.12)] bg-[rgba(26,18,19,0.75)] p-1.5 shadow-[0_16px_50px_rgba(0,0,0,0.85)] transition-all">
         {mobileNavItems.map((item) => {
           const isActive =
             item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);

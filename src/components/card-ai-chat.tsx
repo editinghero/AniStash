@@ -107,7 +107,7 @@ export function CardAIChat({ entry }: { entry: LibraryEntry }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[rgba(34,25,26,0.65)] rounded-2xl border border-[rgba(255,243,224,0.08)] overflow-hidden mt-5 shadow-lg backdrop-blur-xl">
+    <div className="flex flex-col h-full bg-[rgba(34,25,26,0.65)] rounded-2xl border border-[rgba(255,243,224,0.08)] overflow-hidden mt-5 shadow-lg ">
       <div className="bg-[rgba(255,243,224,0.03)] px-3.5 py-2.5 border-b border-[rgba(255,243,224,0.08)] flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-[#f0788a]" />

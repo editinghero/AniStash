@@ -411,7 +411,7 @@ export default function SettingsPage() {
 
       <form
         onSubmit={onSave}
-        className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
+        className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] "
       >
         <div>
           <Label
@@ -470,7 +470,7 @@ export default function SettingsPage() {
         </Button>
       </form>
 
-      <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+      <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] ">
         <div>
           <h2 className="inline-flex items-center gap-2 font-display text-lg sm:text-xl font-bold text-[#fff3e0]">
             <Tag className="h-4 w-4 text-[#f0788a]" /> Categories & Tags
@@ -508,7 +508,7 @@ export default function SettingsPage() {
               {categories.map((cat) => (
                 <div
                   key={cat}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-3 py-1.5 text-xs font-medium text-[#fff3e0] backdrop-blur-md"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(255,243,224,0.04)] px-3 py-1.5 text-xs font-medium text-[#fff3e0] "
                 >
                   <Tag className="h-3 w-3 text-[#f0788a]" />
                   <span>{cat}</span>
@@ -527,7 +527,7 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+      <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] ">
         <div>
           <h2 className="inline-flex items-center gap-2 font-display text-lg sm:text-xl font-bold text-[#fff3e0]">
             <LockKeyhole className="h-4 w-4 text-[#f0788a]" /> Local app PIN
@@ -613,7 +613,7 @@ export default function SettingsPage() {
         </form>
       </section>
 
-      <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+      <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] ">
         <div>
           <h2 className="inline-flex items-center gap-2 font-display text-lg sm:text-xl font-bold text-[#fff3e0]">
             <ShieldCheck className="h-4 w-4 text-[#f0788a]" /> Library backup
@@ -656,7 +656,7 @@ export default function SettingsPage() {
           if (!open && !isImporting) setPendingImport(null);
         }}
       >
-        <AlertDialogContent className="rounded-3xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] backdrop-blur-2xl">
+        <AlertDialogContent className="rounded-3xl border border-[rgba(255,243,224,0.09)] bg-[rgba(34,25,26,0.95)] ">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display text-lg font-bold text-[#fff3e0]">
               Import library backup?

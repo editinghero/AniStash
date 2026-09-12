@@ -76,7 +76,7 @@ export default function SignupPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md items-center justify-center px-4 py-12">
-      <div className="w-full space-y-6 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-8 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+      <div className="w-full space-y-6 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-8 shadow-[0_12px_40px_rgba(0,0,0,0.6)] ">
         <header className="text-center space-y-3">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[rgba(240,120,138,0.35)] bg-[#191213] p-2.5 shadow-[0_0_24px_rgba(240,120,138,0.25)]">
             <img

@@ -36,7 +36,7 @@ export default function DiscoverPage() {
         {/* 3 Sub-Tabs Switcher (Pill Bar matching StatusTabs) */}
         <div
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          className="flex items-center gap-1 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl self-start md:self-auto max-w-full overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          className="flex items-center gap-1 rounded-full border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] self-start md:self-auto max-w-full overflow-x-auto [&::-webkit-scrollbar]:hidden"
         >
           <button
             type="button"

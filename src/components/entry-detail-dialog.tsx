@@ -334,7 +334,7 @@ export function EntryDetailDialog({
             <div className="space-y-3.5 sm:space-y-5">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 {/* Status */}
-                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 backdrop-blur-md">
+                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 ">
                   <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                     Status
                   </span>
@@ -349,7 +349,7 @@ export function EntryDetailDialog({
                 </div>
 
                 {/* Progress */}
-                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 backdrop-blur-md">
+                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 ">
                   <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                     Progress
                   </span>
@@ -359,7 +359,7 @@ export function EntryDetailDialog({
                 </div>
 
                 {/* Score */}
-                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 backdrop-blur-md">
+                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 ">
                   <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                     Your Score
                   </span>
@@ -378,7 +378,7 @@ export function EntryDetailDialog({
                 </div>
 
                 {/* Timeline */}
-                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 backdrop-blur-md col-span-2 sm:col-span-1">
+                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-2.5 sm:p-3.5 col-span-2 sm:col-span-1">
                   <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wider text-[#968677] block mb-0.5">
                     Timeline
                   </span>
@@ -412,7 +412,7 @@ export function EntryDetailDialog({
 
               {/* Notes */}
               {notes && (
-                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.02)] p-3 sm:p-4 backdrop-blur-md space-y-1.5">
+                <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.02)] p-3 sm:p-4 space-y-1.5">
                   <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wider text-[#968677] block">
                     Personal Notes
                   </span>
@@ -464,7 +464,7 @@ export function EntryDetailDialog({
               </div>
 
               {/* Category / Tags Selector */}
-              <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-3 sm:p-3.5 space-y-2 backdrop-blur-md">
+              <div className="rounded-2xl border border-[rgba(255,243,224,0.07)] bg-[rgba(255,243,224,0.03)] p-3 sm:p-3.5 space-y-2 ">
                 <Label className="text-[12px] sm:text-xs font-semibold uppercase tracking-wider text-[#dbc9b5] inline-flex items-center gap-1">
                   <Tag className="h-3.5 w-3.5 text-[#f0788a]" /> Categories /
                   Tags
@@ -626,7 +626,7 @@ export function EntryDetailDialog({
         </div>
 
         {/* Pinned Sticky Footer */}
-        <DialogFooter className="px-4 sm:px-8 py-2.5 sm:py-3 border-t border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.98)] backdrop-blur-md flex flex-row items-center justify-between gap-2.5 w-full shrink-0 z-30">
+        <DialogFooter className="px-4 sm:px-8 py-2.5 sm:py-3 border-t border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.98)] flex flex-row items-center justify-between gap-2.5 w-full shrink-0 z-30">
           {!isEditing ? (
             <div className="flex items-center justify-end gap-2.5 sm:gap-3 w-full">
               <Button

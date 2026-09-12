@@ -418,7 +418,7 @@ export function AiAssistantTab() {
   return (
     <div className="space-y-4 animate-page-in">
       {/* Top Configuration & Series Context Bar */}
-      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.4)] backdrop-blur-2xl space-y-3 relative z-30">
+      <div className="rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.4)] space-y-3 relative z-30">
         {/* Header row: Context selector + Toggles */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           {/* Series Context Selector Box */}
@@ -465,7 +465,7 @@ export function AiAssistantTab() {
                   <button
                     type="button"
                     onClick={handleClearContext}
-                    className="h-7 w-7 rounded-full border border-[rgba(255,243,224,0.12)] bg-[rgba(34,25,26,0.7)] text-[#968677] hover:text-[#fff3e0] hover:bg-[rgba(240,120,138,0.15)] hover:border-[rgba(240,120,138,0.4)] backdrop-blur-xl shadow-xs hover:scale-105 active:scale-90 flex items-center justify-center transition-all cursor-pointer"
+                    className="h-7 w-7 rounded-full border border-[rgba(255,243,224,0.12)] bg-[rgba(34,25,26,0.7)] text-[#968677] hover:text-[#fff3e0] hover:bg-[rgba(240,120,138,0.15)] hover:border-[rgba(240,120,138,0.4)] shadow-xs hover:scale-105 active:scale-90 flex items-center justify-center transition-all cursor-pointer"
                     title="Clear series context (Switch to general chat)"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -488,7 +488,7 @@ export function AiAssistantTab() {
 
                 {/* Dropdown Results */}
                 {isDropdownOpen && searchQuery.trim() && (
-                  <div className="absolute left-0 right-0 top-11 z-50 rounded-2xl border border-[rgba(255,243,224,0.12)] bg-[#22191a] p-2 shadow-[0_16px_36px_rgba(0,0,0,0.9)] backdrop-blur-2xl max-h-64 overflow-y-auto stash-scrollbar space-y-2">
+                  <div className="absolute left-0 right-0 top-11 z-50 rounded-2xl border border-[rgba(255,243,224,0.12)] bg-[#22191a] p-2 shadow-[0_16px_36px_rgba(0,0,0,0.9)] max-h-64 overflow-y-auto stash-scrollbar space-y-2">
                     {/* Custom Title Option */}
                     <button
                       type="button"
@@ -656,7 +656,7 @@ export function AiAssistantTab() {
 
       {/* Main Chat Stream Box */}
       <div
-        className={`flex flex-col rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden transition-all duration-300 ${
+        className={`flex flex-col rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden transition-all duration-300 ${
           messages.length > 0
             ? "h-[50vh] min-h-[380px] max-h-[65vh]"
             : "h-[260px]"
@@ -708,7 +708,7 @@ export function AiAssistantTab() {
                   className={`rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed max-w-[88%] sm:max-w-[80%] min-w-0 break-words overflow-x-auto ${
                     msg.role === "user"
                       ? "border border-[rgba(240,120,138,0.3)] bg-[rgba(240,120,138,0.12)] text-[#fff3e0] whitespace-pre-wrap"
-                      : "border border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.8)] text-[#dbc9b5] shadow-sm backdrop-blur-md"
+                      : "border border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.8)] text-[#dbc9b5] shadow-sm "
                   }`}
                 >
                   {msg.role === "model" && msg.thought && (
@@ -729,7 +729,7 @@ export function AiAssistantTab() {
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[rgba(240,120,138,0.4)] bg-[#22191a] text-[#f0788a] shadow-[0_0_10px_rgba(240,120,138,0.25)]">
                 <Bot className="h-3.5 w-3.5" />
               </div>
-              <div className="rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.8)] px-4 py-3 text-xs max-w-[90%] sm:max-w-[80%] flex items-center gap-1.5 backdrop-blur-md">
+              <div className="rounded-2xl border border-[rgba(255,243,224,0.08)] bg-[rgba(25,18,19,0.8)] px-4 py-3 text-xs max-w-[90%] sm:max-w-[80%] flex items-center gap-1.5 ">
                 <span className="w-1.5 h-1.5 bg-[#f0788a] rounded-full animate-bounce" />
                 <span className="w-1.5 h-1.5 bg-[#f0788a] rounded-full animate-bounce [animation-delay:0.2s]" />
                 <span className="w-1.5 h-1.5 bg-[#f0788a] rounded-full animate-bounce [animation-delay:0.4s]" />
@@ -740,7 +740,7 @@ export function AiAssistantTab() {
         </div>
 
         {/* Input Bar */}
-        <div className="border-t border-[rgba(255,243,224,0.07)] bg-[rgba(25,18,19,0.8)] p-3 backdrop-blur-md">
+        <div className="border-t border-[rgba(255,243,224,0.07)] bg-[rgba(25,18,19,0.8)] p-3 ">
           <form
             onSubmit={handleSendChat}
             className="relative flex items-center"
@@ -769,7 +769,7 @@ export function AiAssistantTab() {
 
       {/* "Where was I?" Modal Dialog */}
       <Dialog open={whereWasIOpen} onOpenChange={setWhereWasIOpen}>
-        <DialogContent className="rounded-3xl border border-[rgba(255,243,224,0.12)] bg-[#22191a] p-6 shadow-2xl text-[#fff3e0] sm:max-w-md backdrop-blur-2xl">
+        <DialogContent className="rounded-3xl border border-[rgba(255,243,224,0.12)] bg-[#22191a] p-6 shadow-2xl text-[#fff3e0] sm:max-w-md ">
           <DialogHeader>
             <DialogTitle className="font-display text-lg font-bold text-[#fff3e0] flex items-center gap-2">
               <Clock className="h-5 w-5 text-[#f0788a]" />
@@ -839,7 +839,7 @@ export function AiAssistantTab() {
 
       {/* Grouped & Collapsible History Dialog with Restore Action */}
       <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
-        <DialogContent className="rounded-3xl border border-[rgba(255,243,224,0.12)] bg-[#22191a] p-6 shadow-2xl text-[#fff3e0] sm:max-w-xl backdrop-blur-2xl">
+        <DialogContent className="rounded-3xl border border-[rgba(255,243,224,0.12)] bg-[#22191a] p-6 shadow-2xl text-[#fff3e0] sm:max-w-xl ">
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="font-display text-lg font-bold text-[#fff3e0] flex items-center gap-2">
