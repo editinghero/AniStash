@@ -1,5 +1,3 @@
-import { rpc } from "./rpc";
-
 export const DEFAULT_CATEGORIES: string[] = [
   "Rom",
   "Com",
@@ -9,7 +7,6 @@ export const DEFAULT_CATEGORIES: string[] = [
 ];
 
 const STORAGE_KEY = "anistash:custom-categories";
-let loadedServer = false;
 
 function loadLocal(): string[] {
   if (typeof window === "undefined") return DEFAULT_CATEGORIES;
@@ -36,45 +33,11 @@ function saveLocal(categories: string[]) {
 }
 
 export function getCategories(): string[] {
-  if (!loadedServer && typeof window !== "undefined") {
-    void fetchServerCategories();
-  }
-  return categoriesCache;
-}
-
-export async function fetchServerCategories(): Promise<string[]> {
-  try {
-    const res = await rpc.api.settings.$get();
-    if (res.ok) {
-      const data = (await res.json()) as { categories?: string[] };
-      if (
-        data.categories &&
-        Array.isArray(data.categories) &&
-        data.categories.length > 0
-      ) {
-        saveLocal(data.categories);
-      }
-    }
-  } catch (err) {
-    console.error("Failed to fetch categories from server", err);
-  } finally {
-    loadedServer = true;
-  }
   return categoriesCache;
 }
 
 export function saveCategories(categories: string[]) {
   saveLocal(categories);
-  void rpc.api.settings
-    .$post({
-      json: {
-        geminiModel: "gemini-2.5-flash",
-        categories,
-      },
-    })
-    .catch((err) => {
-      console.error("Failed to save categories to server", err);
-    });
 }
 
 export function addCategory(categoryName: string): boolean {
@@ -103,7 +66,6 @@ export function deleteCategory(categoryName: string): boolean {
 
 export function subscribeCategories(cb: () => void): () => void {
   if (typeof window === "undefined") return () => {};
-  if (!loadedServer) void fetchServerCategories();
 
   const handler = () => cb();
   window.addEventListener("otaku:categories-changed", handler);

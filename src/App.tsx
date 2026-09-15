@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { RouterProvider } from "./lib/router";
 import { SiteHeader } from "./components/site-header";
 import { Toaster } from "@/components/ui/sonner";
-import { rpc } from "./lib/rpc";
 import { PinLockScreen } from "./components/pin-lock-screen";
 import { clearLocalPin, hasLocalPinForUser } from "./lib/local-pin";
 
@@ -15,14 +14,15 @@ import { AnimePage } from "./routes/anime";
 import { MangaPage } from "./routes/manga";
 import { SeriesPage } from "./routes/series";
 import SettingsPage from "./routes/settings";
-import LoginPage from "./routes/login";
-import SignupPage from "./routes/signup";
 import DiscoverPage from "./routes/discover";
 
+// Stable local user — no server auth needed (archived, localStorage mode)
+const LOCAL_USER = { id: "local", displayName: "You", email: "local@anistash" };
+
 export default function App() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [pinRequired, setPinRequired] = useState(false);
+  const [pinRequired, setPinRequired] = useState(
+    () => hasLocalPinForUser(LOCAL_USER.id),
+  );
   const [pinUnlocked, setPinUnlocked] = useState(false);
   const [location, setLocation] = useState(() => ({
     pathname: window.location.pathname,
@@ -30,33 +30,7 @@ export default function App() {
   }));
   const { pathname } = location;
 
-  const fetchSession = async () => {
-    try {
-      const res = await rpc.api.auth.me.$get();
-      const ct = res.headers.get("content-type") || "";
-      if (res.ok && ct.includes("application/json")) {
-        const data = await res.json();
-        setUser(data);
-        setPinRequired(Boolean(data && hasLocalPinForUser(data.id)));
-        setPinUnlocked(false);
-      } else {
-        setUser(null);
-        setPinRequired(false);
-        setPinUnlocked(false);
-      }
-    } catch (e) {
-      console.error("Failed to fetch user session", e);
-      setUser(null);
-      setPinRequired(false);
-      setPinUnlocked(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchSession();
-
     const handlePopState = () => {
       setLocation({
         pathname: window.location.pathname,
@@ -74,54 +48,24 @@ export default function App() {
   };
 
   const handlePinLockout = async (): Promise<boolean> => {
-    try {
-      const res = await rpc.api.auth.logout.$post();
-      if (!res.ok) throw new Error("Failed to log out");
-      clearLocalPin(user.id);
-      setPinRequired(false);
-      setPinUnlocked(false);
-      setUser(null);
-      window.history.replaceState({}, "", "/login");
-      setLocation({ pathname: "/login", search: "" });
-      return true;
-    } catch (error) {
-      console.error("Failed to log out after PIN lockout", error);
-      return false;
-    }
+    clearLocalPin(LOCAL_USER.id);
+    setPinRequired(false);
+    setPinUnlocked(false);
+    return true;
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-foreground bg-hero">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading AniStash...</p>
-        </div>
-      </div>
-    );
-  }
-
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
-
-  if (user && pinRequired && !pinUnlocked) {
+  if (pinRequired && !pinUnlocked) {
     return (
       <PinLockScreen
-        userId={user.id}
+        userId={LOCAL_USER.id}
         onUnlocked={() => setPinUnlocked(true)}
         onLockout={handlePinLockout}
       />
     );
   }
 
-  // Navigation Guards
-  if (!user && !isAuthPage) {
-    window.history.replaceState({}, "", "/login");
-    // Directly set pathname to trigger render of LoginPage
-    setLocation({ pathname: "/login", search: "" });
-    return null;
-  }
-
-  if (user && isAuthPage) {
+  // Redirect /login and /signup to home
+  if (pathname === "/login" || pathname === "/signup") {
     window.history.replaceState({}, "", "/");
     setLocation({ pathname: "/", search: "" });
     return null;
@@ -140,14 +84,9 @@ export default function App() {
     pageComponent = <AddPage />;
   } else if (pathname === "/settings") {
     pageComponent = <SettingsPage />;
-  } else if (pathname === "/login") {
-    pageComponent = <LoginPage />;
-  } else if (pathname === "/signup") {
-    pageComponent = <SignupPage />;
   } else if (pathname === "/discover") {
     pageComponent = <DiscoverPage />;
   } else {
-    // 404 Page
     pageComponent = (
       <div className="flex min-h-screen items-center justify-center bg-hero px-4">
         <div className="max-w-md text-center">
@@ -174,15 +113,15 @@ export default function App() {
       value={{
         pathname,
         search: location.search,
-        user,
+        user: LOCAL_USER,
         navigate,
-        invalidate: fetchSession,
+        invalidate: () => {},
       }}
     >
       <div className="min-h-screen bg-background bg-hero pb-24 md:pb-12">
-        {!isAuthPage && <SiteHeader />}
+        <SiteHeader />
         {pageComponent}
-        {!isAuthPage && <MobileNav />}
+        <MobileNav />
         <Toaster theme="dark" position="top-center" />
       </div>
     </RouterProvider>

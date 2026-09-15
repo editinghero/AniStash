@@ -1,10 +1,31 @@
+Well, I am archiving this project. 
+---
+Though I worked hard on this, but it's being replaced by [Koka](https://GitHub.com/editinghero/koka) Because Koka uses TentaStack and it's way more responsive than this one. I have added more features and it's a completely new app built from scratch.
+
+Though I was working on both the apps side by side and I was keeping up to date, but I think that Koka has more features. I like the UI of this app. I made the color selection, so I have implemented the same color in Koka. And beyond that, there are many various themes in Koka we can select.
+
+The biggest reason to switch to Koka was the AnyList sync. Here we have to manually add every little entry. In Koka, we can simply sync from AnyList. Though I could add in this app, but I think Koka has AI features more integrated.
+
+I am copying some design ideas like the theme, the font, and the logo I am implementing in Koka. But in Koka, you can change the font and theme also.
+
+There are few things in this site which is way better like the blur implementation (best one i did was frosted coloumns in the entries), the the prallax effect, the glow hover smoothness but this all lead to lag and also this does not use server side rendering soo. 
+
+*So before archiving, I will convert this app to local storage instead of using the D1 database*
+
+---
+
+
+
+
+
+
 # AniStash - Your Personal Anime & Manga Library
 
 A modern, privacy-focused anime and manga tracking application built on Cloudflare's edge platform. Track your watchlist, reading list, and discover new series with AI-powered bookmark import.
 
 Live Site - https://anistash.pages.dev
 
-`Maybe disabled registration if DB is abused `
+~~`Maybe disabled registration if DB is abused `~~
 
 ##  Features
 

@@ -1,4 +1,4 @@
-import { Link, useDocumentMetadata, useRouteContext } from "@/lib/router";
+import { Link, useDocumentMetadata } from "@/lib/router";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,8 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { rpc } from "@/lib/rpc";
-import { refreshLibrary } from "@/lib/repo/library";
+import { refreshLibrary, upsertEntry, listEntries } from "@/lib/repo/library";
 import {
   addCategory,
   deleteCategory,
@@ -43,7 +42,8 @@ import {
 
 const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 const MAX_IMPORT_BYTES = 5 * 1024 * 1024;
-const MAX_IMPORT_ENTRIES = 200;
+const SETTINGS_KEY = "anistash:settings";
+const LOCAL_USER_ID = "local";
 
 type TransferEntry = Omit<LibraryEntry, "id" | "createdAt" | "updatedAt">;
 
@@ -53,6 +53,20 @@ type LibraryBackup = {
   exportedAt: string;
   entries: TransferEntry[];
 };
+
+function loadSettings(): { geminiApiKey: string; geminiModel: string } {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return { geminiApiKey: "", geminiModel: DEFAULT_GEMINI_MODEL };
+}
+
+function saveSettings(data: { geminiApiKey: string; geminiModel: string }) {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
+  } catch {}
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -153,8 +167,9 @@ export default function SettingsPage() {
     "Settings — AniStash",
     "Configure your Gemini API key and model.",
   );
-  const [apiKey, setApiKey] = useState("");
-  const [model, setModel] = useState(DEFAULT_GEMINI_MODEL);
+  const saved = loadSettings();
+  const [apiKey, setApiKey] = useState(saved.geminiApiKey ?? "");
+  const [model, setModel] = useState(saved.geminiModel ?? DEFAULT_GEMINI_MODEL);
   const [categories, setCategories] = useState<string[]>(() => getCategories());
   const [newCategoryInput, setNewCategoryInput] = useState("");
   const [pendingImport, setPendingImport] = useState<TransferEntry[] | null>(
@@ -163,32 +178,16 @@ export default function SettingsPage() {
   const [skippedEntries, setSkippedEntries] = useState(0);
   const [isImporting, setIsImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user } = useRouteContext({ from: "__root__" }) as {
-    user: { id: string };
-  };
   const [newPin, setNewPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [isSavingPin, setIsSavingPin] = useState(false);
-  const [hasPin, setHasPin] = useState(() => hasLocalPinForUser(user.id));
+  const [hasPin, setHasPin] = useState(() => hasLocalPinForUser(LOCAL_USER_ID));
 
   useEffect(() => {
     setCategories(getCategories());
     return subscribeCategories(() => {
       setCategories([...getCategories()]);
     });
-  }, []);
-
-  useEffect(() => {
-    rpc.api.settings
-      .$get()
-      .then((res) => res.json())
-      .then((s: Record<string, any>) => {
-        setApiKey(s.geminiApiKey ?? "");
-        setModel(s.geminiModel ?? DEFAULT_GEMINI_MODEL);
-      })
-      .catch(() => {
-        toast.error("Failed to load settings");
-      });
   }, []);
 
   function handleAddCategory(e: React.FormEvent) {
@@ -212,14 +211,11 @@ export default function SettingsPage() {
   async function onSave(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const res = await rpc.api.settings.$post({
-        json: {
-          geminiApiKey: apiKey.trim() || undefined,
-          geminiModel: model.trim() || undefined,
-        },
+      saveSettings({
+        geminiApiKey: apiKey.trim(),
+        geminiModel: model.trim() || DEFAULT_GEMINI_MODEL,
       });
-      if (!res.ok) throw new Error("Failed to save settings");
-      toast.success("Settings saved to database");
+      toast.success("Settings saved locally");
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Failed to save settings",
@@ -240,7 +236,7 @@ export default function SettingsPage() {
 
     setIsSavingPin(true);
     try {
-      await setLocalPin(user.id, newPin);
+      await setLocalPin(LOCAL_USER_ID, newPin);
       setNewPin("");
       setConfirmPin("");
       setHasPin(true);
@@ -255,7 +251,7 @@ export default function SettingsPage() {
   }
 
   function removeLocalPin() {
-    clearLocalPin(user.id);
+    clearLocalPin(LOCAL_USER_ID);
     setHasPin(false);
     setNewPin("");
     setConfirmPin("");
@@ -264,13 +260,9 @@ export default function SettingsPage() {
 
   async function exportLibrary() {
     try {
-      const res = await rpc.api.library.$get();
-      if (!res.ok) {
-        throw new Error("Please sign in before exporting your library");
-      }
-      const entries = (await res.json()) as LibraryEntry[];
+      const entries = listEntries();
       if (entries.length === 0) {
-        toast.info("There are no library entries in this database to export.");
+        toast.info("There are no library entries to export.");
         return;
       }
       const backup: LibraryBackup = {
@@ -333,9 +325,7 @@ export default function SettingsPage() {
         throw new Error("No valid entries found in the file.");
       }
 
-      const res = await rpc.api.library.$get();
-      if (!res.ok) throw new Error("Please sign in before importing a library");
-      const existing = (await res.json()) as LibraryEntry[];
+      const existing = listEntries();
       const existingKeys = new Set(existing.map(entryKey));
       const uniqueEntries: TransferEntry[] = [];
       let skipped = 0;
@@ -371,8 +361,7 @@ export default function SettingsPage() {
     setIsImporting(true);
     try {
       for (const entry of pendingImport) {
-        const res = await rpc.api.library.upsert.$post({ json: entry });
-        if (!res.ok) throw new Error("The import could not be completed");
+        upsertEntry(entry);
       }
       await refreshLibrary();
       toast.success(
@@ -404,8 +393,8 @@ export default function SettingsPage() {
           Settings
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-[#968677]">
-          AniStash uses your own Google Gemini key for bookmark title
-          extraction. Stored encrypted at rest in your database.
+          AniStash uses your own Google Gemini key for AI features. Stored
+          locally in your browser.
         </p>
       </header>
 
@@ -473,10 +462,10 @@ export default function SettingsPage() {
       <section className="space-y-4 rounded-3xl border border-[rgba(255,243,224,0.08)] bg-[rgba(34,25,26,0.85)] p-5 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
         <div>
           <h2 className="inline-flex items-center gap-2 font-display text-lg sm:text-xl font-bold text-[#fff3e0]">
-            <Tag className="h-4 w-4 text-[#f0788a]" /> Categories & Tags
+            <Tag className="h-4 w-4 text-[#f0788a]" /> Categories &amp; Tags
           </h2>
           <p className="mt-1 text-xs sm:text-sm leading-relaxed text-[#968677]">
-            Manage custom tags for your anime & manga filters.
+            Manage custom tags for your anime &amp; manga filters.
           </p>
         </div>
 
@@ -533,8 +522,8 @@ export default function SettingsPage() {
             <LockKeyhole className="h-4 w-4 text-[#f0788a]" /> Local app PIN
           </h2>
           <p className="mt-1 text-xs sm:text-sm leading-relaxed text-[#968677]">
-            Add a 4-digit PIN for this browser. Three incorrect attempts sign
-            you out automatically.
+            Add a 4-digit PIN for this browser. Three incorrect attempts clear
+            the PIN lock automatically.
           </p>
         </div>
 
